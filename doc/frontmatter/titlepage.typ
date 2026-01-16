@@ -59,6 +59,5 @@
     Vilnius \
     #datetime.year(datetime.today())
   ]
-  pagebreak()
 }
 

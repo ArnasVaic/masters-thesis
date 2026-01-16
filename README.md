@@ -1,10 +1,16 @@
-# Magistro baigiamasis darbas
+# Master's thesis
 
-## Failų struktūra
+## Files structure
 
-- `/thesis` - dokumentui kurti naudojami failai
-- `/src` - kodo failai
+- `/doc` - thesis document source files
+- `/src` - code source files
 
-## Naudojamos technologijos
+## Tech stack
 
-- `typst` - moderni dokumentų rinkimo sistema
+- `typst` - markup-based typesetting system for the sciences
+
+## Important dates
+
+| Status | Action         | Date       |
+| ------ | -------------- | ---------- |
+| Done   | Choose a topic | 2025-12-18 |

@@ -1,11 +1,13 @@
 #import "config/layout.typ"
 #import "config/fonts.typ"
-#import "config/headings.typ"
+#import "config/headings.typ": heading-style
 #import "config/floats.typ"
-#import "config/toc.typ"
+#import "config/outline.typ": my_custom_outline
 #import "config/bibliography.typ"
 
 #import "frontmatter/titlepage.typ": title_page
+
+#show: heading-style
 
 #title_page(
   "Kompiuterinio modeliavimo antro kurso magistro baigiamasis darbas",
@@ -17,20 +19,19 @@
 )
 
 #pagebreak()
-#import "frontmatter/abstract-lt.typ"
+#include "frontmatter/abstract-lt.typ"
 #pagebreak()
-#import "frontmatter/abstract-en.typ"
+#include "frontmatter/abstract-en.typ"
 
 #pagebreak()
-#outline(
-)
+#my_custom_outline()
 
 #pagebreak()
-#import "chapters/introduction.typ"
-#import "chapters/chapter1.typ"
+#include "chapters/introduction.typ"
+#include "chapters/chapter1.typ"
 
 #pagebreak()
-#import "backmatter/references.typ"
+#include "backmatter/references.typ"
 
 #pagebreak()
-#import "backmatter/appendices.typ"
+#include "backmatter/appendices.typ"
