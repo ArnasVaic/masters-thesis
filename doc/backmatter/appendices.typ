@@ -1,7 +1,11 @@
-= Priedai
+#heading(level: 1, numbering: none, "Priedai")
 
-= Priedas A
+#set heading(numbering: "A")
+
+#counter(heading).update(0)
+
+= Priedas
 Turinys…
 
-= Priedas B
+= Priedas
 Turinys…

@@ -47,5 +47,14 @@
     title: "Literatūros šaltiniai"
   )
 
+  //  Iliustracijos, lentelės ir pseudokodas privalo tenkinti reikalavimus, nurodytus [2] (žr. „Rašto darbai”
+  // TODO: the link for this reference in the university page doesn't work so I no idea what are the requirements. Will need to update once I get feedback from university about this.
+  
+  // Titulinis puslapis apipavidalinamas, kaip parodyta pavyzdyje [2] (žr. „Rašto darbai”)
+  // Title page is configured in config/titlepage.typ
+
+  // Nenumeruojami: turinys, pratarmė, sutartinis terminų sąrašas (jeigu yra), anotacija lietuvių kalba, anotacija anglų kalba (summary), įvadas, išvados ir rekomendacijos, ateities tyrimų planas arba gairės ir literatūros sąrašas. Priedai numeruojami atskirai didžiosiomis lotyniškomis raidėmis (A, B, C ir t. t.).
+  // Structure is configured in thesis.typ
+  
   #doc
 ]

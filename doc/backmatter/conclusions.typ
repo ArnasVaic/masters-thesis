@@ -1,0 +1,1 @@
+#heading(numbering: none, "Išvados ir rekomendacijos")

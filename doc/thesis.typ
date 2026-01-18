@@ -1,6 +1,5 @@
 #import "config/style.typ": vu_template_style_config
-
-#import "frontmatter/titlepage.typ": title_page
+#import "config/titlepage.typ": title_page
 
 #import "frontmatter/abstract-lt.typ": 
 
