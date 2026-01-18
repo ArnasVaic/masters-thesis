@@ -1,0 +1,37 @@
+name: 📄 Deploy thesis doc on GitHub pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - uses: actions/checkout@v3
+
+      # 2. Install Typst
+      - name: Install Typst
+        run: |
+          curl -sSf https://typst.app/install.sh | bash
+          echo "$HOME/.typst/bin" >> $GITHUB_PATH
+
+      # 3. Build PDF
+      - name: Build PDF
+        run: typst compile doc/thesis.typ thesis.pdf
+
+      # 4. Deploy to GitHub Pages
+      - name: Deploy PDF
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          # Optional: Only deploy the PDF
+          keep_files: false
+          # Specify only thesis.pdf
+          file_patterns: thesis.pdf
