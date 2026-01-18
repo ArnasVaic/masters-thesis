@@ -9,18 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-        uses: typst-community/setup-typst@v4
-        with:
-          typst-version: 0.13.1
-
-      - name: Build PDF
-        run: typst compile doc/thesis.typ bin/thesis.pdf
-
-      - name: Deploy PDF
-        uses: peaceiris/actions-gh-pages@v4
+      - uses: typst-community/setup-typst@v4
+      - run: typst compile doc/thesis.typ bin/thesis.pdf
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
