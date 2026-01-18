@@ -1,4 +1,4 @@
-name: 📄 Deploy thesis doc on GitHub pages
+name: GitHub Pages
 
 on:
   push:
@@ -6,21 +6,39 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           lfs: true
-      - uses: typst-community/setup-typst@v4
-      - run: typst compile doc/thesis.typ bin/thesis.pdf
-      - uses: peaceiris/actions-gh-pages@v4
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Build PDF
+        run: |
+          mkdir -p site
+          typst compile doc/thesis.typ site/thesis.pdf
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          publish_branch: gh-pages
-          # Optional: Only deploy the PDF
-          keep_files: false
-          # Specify only thesis.pdf
-          file_patterns: bin/thesis.pdf
+          path: site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
