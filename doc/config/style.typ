@@ -1,4 +1,4 @@
-// This template was built to fulfill the formal stylistic requirements of Vilnius University, department of computational and data modelling. Structural requirements are part of the document defined in main.typ.
+// This template was built to fulfill the formal stylistic requirements of Vilnius University, department of computational and data modelling. Structural requirements are part of the document defined in thesis.typ.
 // The requirements can be found here: https://mif.vu.lt/lt3/dokumentai/dokumentai/KOMP/Reglamentuojantys/Reikalavimai_Magistriniams_Darbams.pdf (last updated 2026-01-16)
 
 #let vu_template_style_config(doc) = [
@@ -37,6 +37,15 @@
   // - darbo priedai (jeigu yra) pradedamos naujame puslapyje. 
   // Einamąjį skyrių sudarantys poskyriai ir skirsniai (1.1, 1.2, 1.2.1, 1.3 ir t. t.) neturi būti priverstinai pradedami naujame puslapyje.
   #set heading(numbering: "1.1.1")
+  
+  // Susitikimų su darbo vadovu deklaracija (rekomenduojama pateikti) viešinant darbą neturi būti matoma, todėl elektroninėje darbo versijoje šią deklaraciją pateikite atskiroje byloje. Ji neminima darbo turinyje, neturi puslapio numerio ir neįtakoja darbo puslapių numeracijos.
+
+  // Literatūros sąrašas numeruojamas skaičiais, abėcėlės tvarka (pagal pirmojo autoriaus pavardę, jei ji sutampa, atsižvelgiama į kitų autorių pavardes, pavadinimą). Literatūros šaltiniais gali būti: knygos, straipsniai, studentų bakalauriniai ir magistriniai darbai, internete patalpinta medžiaga. Literatūros sąraše privalo būti bent penki šaltiniai iš knygų ir straipsnių kategorijos (pagal galimybes stenkitės remtis naujausiais šaltiniais). Visos literatūros sąrašo pozicijos privalo būti cituojamos darbo tekste. Literatūros sąrašas privalo būti apiformintas ir cituojamas taip, kaip pateiktame pavyzdyje [2] (žr. „Rašto darbai”).
+  #set bibliography(
+    style: "plain.csl",
+    full: false,
+    title: "Literatūros šaltiniai"
+  )
 
   #doc
 ]

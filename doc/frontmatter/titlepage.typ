@@ -45,12 +45,12 @@
   align(center, {
     image("../assets/logos/vu_logo.svg", width: 2cm)
     origin_text(in-lithuanian)
-    v(5cm)
+    v(4cm)
     report_type
     v(0.5cm)
     text(size: 18pt, weight: "bold")[#title]
   })
-  v(5cm)
+  v(4cm)
   authors_block(author, in-lithuanian)
   v(0.5cm) 
   supervisor_block(supervisor, in-lithuanian)

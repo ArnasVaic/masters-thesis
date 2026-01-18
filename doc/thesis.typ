@@ -15,20 +15,22 @@
   in-lithuanian: true,
 )
 
-#include "supervisor-declaration.typ"
-
-#pagebreak(weak: true)
-
 #heading(numbering: none, outlined: false, "Turinys")
 #outline(depth: 3)
+
+#pagebreak(weak: true)
 
 // #import "frontmatter/preface.typ"
 // #import "frontmatter/keywords-and-notation.typ"
 
 #include "frontmatter/abstract-lt.typ"
+
 #pagebreak(weak: true)
+
 #include "frontmatter/abstract-en.typ"
+
 #pagebreak(weak: true)
+
 #include "chapters/introduction.typ"
 
 #pagebreak(weak: true)
@@ -49,5 +51,4 @@
 
 #pagebreak(weak:true)
 
-#heading(numbering: none, outlined: false, "Literatūros šaltiniai")
-// #bibliography(references_bib_filename, style: "numeric")
+#bibliography("references.bib")

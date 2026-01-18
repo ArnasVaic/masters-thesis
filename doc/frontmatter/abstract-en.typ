@@ -1,3 +1,3 @@
 #heading(numbering: none, outlined: false, "Summary")
 
-English abstract goes here.
+#lorem(400)
