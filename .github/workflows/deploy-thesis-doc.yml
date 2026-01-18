@@ -26,8 +26,8 @@ jobs:
 
       - name: Build PDF
         run: |
-          mkdir -p site
           typst compile doc/thesis.typ bin/thesis.pdf
+          typst compile doc/supervisor-declaration.typ bin/supervisor-declaration.pdf
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
