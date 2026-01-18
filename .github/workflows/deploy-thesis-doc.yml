@@ -22,11 +22,11 @@ jobs:
 
       # 3. Build PDF
       - name: Build PDF
-        run: typst compile doc/thesis.typ thesis.pdf
+        run: typst compile doc/thesis.typ bin/thesis.pdf
 
       # 4. Deploy to GitHub Pages
       - name: Deploy PDF
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./
@@ -34,4 +34,4 @@ jobs:
           # Optional: Only deploy the PDF
           keep_files: false
           # Specify only thesis.pdf
-          file_patterns: thesis.pdf
+          file_patterns: bin/thesis.pdf
