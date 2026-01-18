@@ -11,20 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
       - uses: actions/checkout@v3
+        uses: typst-community/setup-typst@v4
+        with:
+          typst-version: 0.13.1
 
-      # 2. Install Typst
-      - name: Install Typst
-        run: |
-          curl -sSf https://typst.app/install.sh | bash
-          echo "$HOME/.typst/bin" >> $GITHUB_PATH
-
-      # 3. Build PDF
       - name: Build PDF
         run: typst compile doc/thesis.typ bin/thesis.pdf
 
-      # 4. Deploy to GitHub Pages
       - name: Deploy PDF
         uses: peaceiris/actions-gh-pages@v4
         with:
