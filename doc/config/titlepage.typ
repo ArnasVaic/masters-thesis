@@ -34,7 +34,7 @@
   grid(columns: (50%, 40%), gutter: 0pt, [], supervisor_info)
 }
 
-#let title_page(
+#let vu_template_title_page(
   report_type, 
   title, 
   author, 
