@@ -1,13 +1,10 @@
-#import "config/layout.typ"
-#import "config/fonts.typ"
-#import "config/headings.typ": heading-style
-#import "config/floats.typ"
-#import "config/outline.typ": my_custom_outline
-#import "config/bibliography.typ"
+#import "config/style.typ": vu_template_style_config
 
 #import "frontmatter/titlepage.typ": title_page
 
-#show: heading-style
+#import "frontmatter/abstract-lt.typ": 
+
+#show: vu_template_style_config
 
 #title_page(
   "Kompiuterinio modeliavimo antro kurso magistro baigiamasis darbas",
@@ -18,20 +15,39 @@
   in-lithuanian: true,
 )
 
-#pagebreak()
+#include "supervisor-declaration.typ"
+
+#pagebreak(weak: true)
+
+#heading(numbering: none, outlined: false, "Turinys")
+#outline(depth: 3)
+
+// #import "frontmatter/preface.typ"
+// #import "frontmatter/keywords-and-notation.typ"
+
 #include "frontmatter/abstract-lt.typ"
-#pagebreak()
+#pagebreak(weak: true)
 #include "frontmatter/abstract-en.typ"
-
-#pagebreak()
-#my_custom_outline()
-
-#pagebreak()
+#pagebreak(weak: true)
 #include "chapters/introduction.typ"
+
+#pagebreak(weak: true)
+
 #include "chapters/chapter1.typ"
 
-#pagebreak()
-#include "backmatter/references.typ"
+#pagebreak(weak:true)
 
-#pagebreak()
+#include "backmatter/conclusions.typ"
+
+#pagebreak(weak:true)
+
+#include "backmatter/future_plans.typ"
+
+#pagebreak(weak:true)
+
 #include "backmatter/appendices.typ"
+
+#pagebreak(weak:true)
+
+#heading(numbering: none, outlined: false, "Literatūros šaltiniai")
+// #bibliography(references_bib_filename, style: "numeric")
