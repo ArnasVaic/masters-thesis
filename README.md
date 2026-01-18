@@ -1,3 +1,5 @@
+[![GitHub Pages](https://github.com/ArnasVaic/masters-thesis/actions/workflows/deploy-thesis-doc.yml/badge.svg)](https://github.com/ArnasVaic/masters-thesis/actions/workflows/deploy-thesis-doc.yml)
+
 # Master's thesis
 
 This repository contains all documents and code related to my master's thesis.
