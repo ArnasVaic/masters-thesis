@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
       - uses: typst-community/setup-typst@v4
       - run: typst compile doc/thesis.typ bin/thesis.pdf
       - uses: peaceiris/actions-gh-pages@v4
