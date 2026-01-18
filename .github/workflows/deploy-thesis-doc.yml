@@ -26,8 +26,8 @@ jobs:
 
       - name: Build PDF
         run: |
-          typst compile doc/thesis.typ bin/thesis.pdf
-          typst compile doc/supervisor-declaration.typ bin/supervisor-declaration.pdf
+          typst compile doc/thesis.typ site/thesis.pdf
+          typst compile doc/supervisor-declaration.typ site/supervisor-declaration.pdf
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -35,7 +35,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: bin
+          path: site
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
