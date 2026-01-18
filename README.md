@@ -16,4 +16,4 @@ This repository contains all documents and code related to my master's thesis.
 
 | Status | Action         | Date       |
 | ------ | -------------- | ---------- |
-| Done   | Choose a topic | 2025-12-18 |
+| 🟢 Done | Choose a topic | 2025-12-18 |
