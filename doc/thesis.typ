@@ -46,8 +46,8 @@
 
 #pagebreak(weak:true)
 
-#include "backmatter/appendices.typ"
+#bibliography("references.bib")
 
 #pagebreak(weak:true)
 
-#bibliography("references.bib")
+#include "backmatter/appendices.typ"

@@ -1,6 +1,8 @@
 # Master's thesis
 
-## Files structure
+This repository contains all documents and code related to my master's thesis.
+
+## File structure
 
 - `/doc` - thesis document source files
 - `/src` - code source files

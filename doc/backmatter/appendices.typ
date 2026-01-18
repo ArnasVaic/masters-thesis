@@ -1,11 +1,17 @@
 #heading(level: 1, numbering: none, "Priedai")
 
-#set heading(numbering: "A")
+Dokumentą sudaro du priedai: @a_appendix priede ...
+
+#pagebreak(weak: true)
+
+#set heading(numbering: "A.")
 
 #counter(heading).update(0)
 
-= Priedas
-Turinys…
+= Pirmojo priedo pavadinimas <a_appendix>
 
-= Priedas
-Turinys…
+#pagebreak(weak: true)
+
+= Antrojo priedo pavadinimas
+
+#pagebreak(weak: true)

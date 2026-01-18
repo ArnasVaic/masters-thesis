@@ -1,3 +1,3 @@
-#heading(numbering: none, outlined: false, "Anotacija")
+#heading(numbering: none, "Santrauka")
 
 #lorem(100)

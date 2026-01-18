@@ -62,5 +62,8 @@
   // 14. Nenumeruojami: turinys, pratarmė, sutartinis terminų sąrašas (jeigu yra), anotacija lietuvių kalba, anotacija anglų kalba (summary), įvadas, išvados ir rekomendacijos, ateities tyrimų planas arba gairės ir literatūros sąrašas. Priedai numeruojami atskirai didžiosiomis lotyniškomis raidėmis (A, B, C ir t. t.).
   // Non-numbered headings are configured explicitly throughout the document
 
+  // TODO: Priskirti konfigūracija kažkuriam tai reikalavimui
+  #set ref(supplement: none)
+
   #doc
 ]

@@ -1,3 +1,3 @@
-#heading(numbering: none, outlined: false, "Summary")
+#heading(numbering: none, "Summary")
 
 #lorem(400)
