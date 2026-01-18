@@ -16,13 +16,13 @@
   #show heading.where(level: 1): set text(size: 14pt)
   #show heading: set text(weight: "bold")
 
-  // Intervalas tarp teksto eilučių: 1.1 (10% didesnis už standartinį viengubą intervalą).
+  // 5. Intervalas tarp teksto eilučių: 1.1 (10% didesnis už standartinį viengubą intervalą).
   #set par(spacing: 2em)
 
-  // Puslapiai numeruojami viršuje arba apačioje, dešinėje pusėje
+  // 6. Puslapiai numeruojami viršuje arba apačioje, dešinėje pusėje
   #set page(numbering: "1", number-align: right + bottom)
 
-  // Pagrindinės darbą sudarančios dalys (darbe eina viena po kitos būtent tokia tvarka): 
+  // 7. Pagrindinės darbą sudarančios dalys (darbe eina viena po kitos būtent tokia tvarka): 
   // - susitikimų su darbo vadovu deklaracija (rekomenduojama pateikti), 
   // - turinys, 
   // - pratarmė (jeigu yra), 
@@ -36,25 +36,31 @@
   // - literatūros sąrašas, 
   // - darbo priedai (jeigu yra) pradedamos naujame puslapyje. 
   // Einamąjį skyrių sudarantys poskyriai ir skirsniai (1.1, 1.2, 1.2.1, 1.3 ir t. t.) neturi būti priverstinai pradedami naujame puslapyje.
-  #set heading(numbering: "1.1.1")
+  // Structure is configured in thesis.typ
   
-  // Susitikimų su darbo vadovu deklaracija (rekomenduojama pateikti) viešinant darbą neturi būti matoma, todėl elektroninėje darbo versijoje šią deklaraciją pateikite atskiroje byloje. Ji neminima darbo turinyje, neturi puslapio numerio ir neįtakoja darbo puslapių numeracijos.
+  // 8. Susitikimų su darbo vadovu deklaracija (rekomenduojama pateikti) viešinant darbą neturi būti matoma, todėl elektroninėje darbo versijoje šią deklaraciją pateikite atskiroje byloje. Ji neminima darbo turinyje, neturi puslapio numerio ir neįtakoja darbo puslapių numeracijos.
 
-  // Literatūros sąrašas numeruojamas skaičiais, abėcėlės tvarka (pagal pirmojo autoriaus pavardę, jei ji sutampa, atsižvelgiama į kitų autorių pavardes, pavadinimą). Literatūros šaltiniais gali būti: knygos, straipsniai, studentų bakalauriniai ir magistriniai darbai, internete patalpinta medžiaga. Literatūros sąraše privalo būti bent penki šaltiniai iš knygų ir straipsnių kategorijos (pagal galimybes stenkitės remtis naujausiais šaltiniais). Visos literatūros sąrašo pozicijos privalo būti cituojamos darbo tekste. Literatūros sąrašas privalo būti apiformintas ir cituojamas taip, kaip pateiktame pavyzdyje [2] (žr. „Rašto darbai”).
+  // 9. Literatūros sąrašas numeruojamas skaičiais, abėcėlės tvarka (pagal pirmojo autoriaus pavardę, jei ji sutampa, atsižvelgiama į kitų autorių pavardes, pavadinimą). Literatūros šaltiniais gali būti: knygos, straipsniai, studentų bakalauriniai ir magistriniai darbai, internete patalpinta medžiaga. Literatūros sąraše privalo būti bent penki šaltiniai iš knygų ir straipsnių kategorijos (pagal galimybes stenkitės remtis naujausiais šaltiniais). Visos literatūros sąrašo pozicijos privalo būti cituojamos darbo tekste. Literatūros sąrašas privalo būti apiformintas ir cituojamas taip, kaip pateiktame pavyzdyje [2] (žr. „Rašto darbai”).
   #set bibliography(
     style: "plain.csl",
     full: false,
     title: "Literatūros šaltiniai"
   )
 
-  //  Iliustracijos, lentelės ir pseudokodas privalo tenkinti reikalavimus, nurodytus [2] (žr. „Rašto darbai”
+  // 10. Iliustracijos, lentelės ir pseudokodas privalo tenkinti reikalavimus, nurodytus [2] (žr. „Rašto darbai”
   // TODO: the link for this reference in the university page doesn't work so I no idea what are the requirements. Will need to update once I get feedback from university about this.
   
-  // Titulinis puslapis apipavidalinamas, kaip parodyta pavyzdyje [2] (žr. „Rašto darbai”)
-  // Title page is configured in config/titlepage.typ
+  // 11. Titulinis puslapis apipavidalinamas, kaip parodyta pavyzdyje [2] (žr. „Rašto darbai”)
+  // Title page is configured in config/titlepage.typ and is made to look like the official LaTeX template: https://www.overleaf.com/project/60c9ac7c5cf5eefc6065666a
 
-  // Nenumeruojami: turinys, pratarmė, sutartinis terminų sąrašas (jeigu yra), anotacija lietuvių kalba, anotacija anglų kalba (summary), įvadas, išvados ir rekomendacijos, ateities tyrimų planas arba gairės ir literatūros sąrašas. Priedai numeruojami atskirai didžiosiomis lotyniškomis raidėmis (A, B, C ir t. t.).
-  // Structure is configured in thesis.typ
-  
+  // 12. Turinyje pateikiami darbą sudarančių dalių (pradedant anotacija lietuvių kalba, įskaitant skyrius, poskyrius ir skirsnius) pavadinimai su nuorodomis į puslapius.
+  // Default outline options are OK
+
+  // 13. Skyriaus, poskyrio ir skirsnio numeriai vienas nuo kito skiriami taškais (1.1, 1.2, 1.2.1, 1.3 ir t. t.).
+  #set heading(numbering: "1.1.1")
+
+  // 14. Nenumeruojami: turinys, pratarmė, sutartinis terminų sąrašas (jeigu yra), anotacija lietuvių kalba, anotacija anglų kalba (summary), įvadas, išvados ir rekomendacijos, ateities tyrimų planas arba gairės ir literatūros sąrašas. Priedai numeruojami atskirai didžiosiomis lotyniškomis raidėmis (A, B, C ir t. t.).
+  // Non-numbered headings are configured explicitly throughout the document
+
   #doc
 ]
