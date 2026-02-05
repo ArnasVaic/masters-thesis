@@ -23,3 +23,10 @@ This repository contains all documents and code related to my master's thesis.
 ## GitHub Pages
 
 https://arnasvaic.github.io/masters-thesis/
+
+
+## Requirements and general information for mid-term
+
+- Defense will be held online
+- Will need to upload proof of work during the first week of each month
+- Grading: 30% from lectures, 70% from defense
