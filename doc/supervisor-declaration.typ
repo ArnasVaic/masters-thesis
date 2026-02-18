@@ -1,8 +1,10 @@
 #heading(numbering: none, outlined: false, "Susitikimų su darbo vadovu deklaracija")
 
+// Req. R7
+
 #table(
 
   columns: 3,
-  [ *Data* ], [ *Susitikimo būdas* ],  [ *Aprašas* ],
-  [ 2026-02-04 ], [ Gyvai ], [ Susitiko metu buvo aptariamos galimos temos baigiamajam darbui. ]
+  [ *Data* ], [ *Susitikimo būdas* ], [ *Aprašas* ],
+  [ 2026-02-04 ], [ Gyvai ], [ Susitiko metu buvo aptariamos galimos temos baigiamajam darbui. ],
 )

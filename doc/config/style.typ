@@ -1,14 +1,18 @@
 // This template was built to fulfill the formal stylistic requirements of Vilnius University, department of computational and data modelling. Structural requirements are part of the document defined in thesis.typ.
 // The requirements can be found here: https://mif.vu.lt/lt3/dokumentai/dokumentai/KOMP/Reglamentuojantys/Reikalavimai_Magistriniams_Darbams.pdf (last updated 2026-01-16)
 
-#let vu_template_style_config(doc) = [
-  
+#let text_size_config(doc) = [
   // Title size \Large according to LaTeX template 
   // which is 17.28pt when default font size is 12pt
   // source: https://tug.org/texinfohtml/latex2e.html#Font-sizes
   #show title: set text(size: 17.28pt, weight: "bold")
 
-  #set text(lang: "lt")
+  #doc
+]
+
+#let vu_template_style_config(doc) = [
+  
+  #show: text_size_config
 
   // 2. Darbas rašomas viena skiltimi (vienu stulpeliu).
   #set page(columns: 1)

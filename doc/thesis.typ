@@ -1,9 +1,9 @@
 #import "config/style.typ": vu_template_style_config
 #import "config/titlepage.typ": vu_template_title_page
 
-#import "frontmatter/abstract-lt.typ": 
-
 #show: vu_template_style_config
+
+// Req. R6
 
 #vu_template_title_page(
   "Kompiuterinio modeliavimo antro kurso magistro baigiamasis darbas",
