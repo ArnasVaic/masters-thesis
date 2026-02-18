@@ -7,10 +7,9 @@
     message: "Language has to be either 'lt' or 'en'" 
   )
 
-  show: page_config()
+  show: page_config
+  show: bibliography_config(lang)
 
-
-  
 
   // Custom headings:
   // Numbering + h space + name
