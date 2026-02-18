@@ -1,3 +1,8 @@
 #heading(numbering: none, outlined: false, "Susitikimų su darbo vadovu deklaracija")
 
-#lorem(400)
+#table(
+
+  columns: 3,
+  [ *Data* ], [ *Susitikimo būdas* ],  [ *Aprašas* ],
+  [ 2026-02-04 ], [ Gyvai ], [ Susitiko metu buvo aptariamos galimos temos baigiamajam darbui. ]
+)
