@@ -1,7 +1,7 @@
 #import "config/style.typ": style_config
 #import "config/titlepage.typ": title_page
 
-#show: style_config("lt")
+#show: style_config("en")
 
 // Req. R6
 

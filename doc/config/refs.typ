@@ -13,21 +13,24 @@
   // supplement and numbering. Example:
   // LT: <numbering> <supplement>
   // EN: <supplement> <numbering> (default)
-  if lang == "lt" {
+  
     show ref: it => {
-      let el = it.element
+      if lang == "lt" {
+        let el = it.element
 
-      if el == none or el.func() != figure { return it }
-      let capt = it.element.caption
+        if el == none or el.func() != figure { return it }
+        let capt = it.element.caption
 
-      link(
-        el.location(), 
-        numbering(
-          el.numbering, ..counter(figure).at(el.location())
-        ) + " " + el.supplement,
-      )
+        link(
+          el.location(), 
+          numbering(
+            el.numbering, ..counter(figure).at(el.location())
+          ) + " " + el.supplement,
+        )
+      } else if lang == "en" {
+        it
+      }
     }
-  }
 
   body
 }

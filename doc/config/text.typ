@@ -1,4 +1,4 @@
-#let text_config = body =>  {
+#let text_config(lang) = body =>  {
 
   set text(
 
@@ -15,7 +15,7 @@
     style: "normal",
 
     // Unspecified, language configuration
-    lang: "lt",
+    lang: lang,
   )
 
   body

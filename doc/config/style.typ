@@ -15,10 +15,10 @@
 
   show: bibliography_config(lang)
   show: figure_config(lang)
+  show: text_config(lang)
   show: ref_config(lang)
-
+   
   show: heading_config
-  show: text_config
   show: page_config
   show: par_config
   
