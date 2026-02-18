@@ -1,5 +1,5 @@
-#let origin_text(in-lithuanian) = { 
-  if in-lithuanian [
+#let origin_text(lang) = { 
+  if lang == "lt" [
     VILNIAUS UNIVERSITETAS \
     MATEMATIKOS IR INFORMATIKOS FAKULTETAS \
     INFORMATIKOS INSTITUTAS \
@@ -12,9 +12,9 @@
   ]
 }
 
-#let authors_block(author, in-lithuanian) = {
+#let authors_block(author, lang) = {
   let author_info = { 
-    if in-lithuanian { "Atliko:" } else { "Done by:" } 
+    if lang == "lt" { "Atliko:" } else { "Done by:" } 
     linebreak()
     author 
     h(2cm)
@@ -24,9 +24,9 @@
   grid(columns: (50%, 40%), gutter: 0pt, [], author_info)
 }
 
-#let supervisor_block(supervisor, in-lithuanian) = {
+#let supervisor_block(supervisor, lang) = {
   let supervisor_info = { 
-    if in-lithuanian { "Vadovas:" } else { "Supervisor:" } 
+    if lang == "lt" { "Vadovas:" } else { "Supervisor:" } 
     linebreak()
     supervisor 
   }
@@ -39,21 +39,27 @@
   title, 
   author, 
   supervisor, 
-  in-lithuanian: true
+  lang
 ) = {
+
+  assert(
+    lang == "lt" or lang == "en", 
+    message: "Language has to be either 'lt' or 'en'" 
+  )
+
   set page(header: none, footer: none)
   align(center, {
     image("../assets/logos/vu_logo.svg", width: 2cm)
-    origin_text(in-lithuanian)
+    origin_text(lang)
     v(4cm)
     report_type
     v(0.5cm)
     text(size: 18pt, weight: "bold")[#title]
   })
   v(4cm)
-  authors_block(author, in-lithuanian)
+  authors_block(author, lang)
   v(0.5cm) 
-  supervisor_block(supervisor, in-lithuanian)
+  supervisor_block(supervisor, lang)
   v(1fr)
   align(center)[
     Vilnius \

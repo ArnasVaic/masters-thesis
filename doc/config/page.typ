@@ -1,5 +1,5 @@
-#let page_base() = {
-  
+#let page_config() = {
+
   // Req. R1
   set page(columns: 1)
 

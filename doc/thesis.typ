@@ -1,7 +1,7 @@
 #import "config/style.typ": vu_template_style_config
 #import "config/titlepage.typ": vu_template_title_page
 
-#show: vu_template_style_config
+#show: vu_template_style_config("lt")
 
 // Req. R6
 
@@ -13,7 +13,7 @@
   ],
   "Arnas Vaicekauskas",
   "asist. dr. Rokas Astrauskas",
-  in-lithuanian: true,
+  "lt",
 )
 
 #outline(depth: 3)
