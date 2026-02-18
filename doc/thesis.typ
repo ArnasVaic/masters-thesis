@@ -16,7 +16,6 @@
   in-lithuanian: true,
 )
 
-#heading(numbering: none, outlined: false, "Turinys")
 #outline(depth: 3)
 
 #pagebreak(weak: true)
