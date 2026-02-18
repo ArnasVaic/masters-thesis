@@ -4,6 +4,7 @@ Dokumentą sudaro du priedai: @a_appendix priede ...
 
 #pagebreak(weak: true)
 
+// Req. R9.3
 #set heading(numbering: "A.")
 
 #counter(heading).update(0)
