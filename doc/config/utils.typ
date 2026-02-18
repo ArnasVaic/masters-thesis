@@ -1,13 +1,8 @@
 #let get_supplement(it, lang) = {
 
-  let localized_table_supplement = 
-    if lang == "lt" [ lentelė. ] else [ Table ]
-
-  let localized_image_supplement = 
-    if lang == "lt" [ pav. ] else [ Fig. ]
-
-  let localized_code_supplement = 
-    if lang == "lt" [ išeities kodas. ] else [ Listing ]
+  let localized_table_supplement = if lang == "lt" [ lentelė. ] else [ Table ]
+  let localized_image_supplement = if lang == "lt" [ pav. ] else [ Fig. ]
+  let localized_code_supplement = if lang == "lt" [ išeities kodas. ] else [ Listing ]
 
   if it.func() == figure and it.kind == table {
     return localized_table_supplement

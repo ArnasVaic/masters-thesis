@@ -1,6 +1,6 @@
-#import "utils.typ"
+#import "utils.typ": get_supplement
 
-#let reference_config(lang) = {
+#let ref_config(lang) = body =>  {
 
   // Req. R14
   // Supplement names for different kinds of figures
@@ -28,4 +28,6 @@
       )
     }
   }
+
+  body
 }

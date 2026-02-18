@@ -1,4 +1,4 @@
-#let heading_styles() = {
+#let heading_config = body => {
 
   // Req. R3.4
   show title:   set text(weight: "bold")
@@ -15,6 +15,7 @@
   // Req. R9.1
   set heading(numbering: "1.")
 
+  // Req. R16
   show heading: it => block(
     if it.numbering != none {
       counter(heading).display(it.numbering)
@@ -22,4 +23,6 @@
     }
     + it.body
   )
+
+  body
 }

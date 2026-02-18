@@ -1,11 +1,11 @@
-#import "config/style.typ": vu_template_style_config
-#import "config/titlepage.typ": vu_template_title_page
+#import "config/style.typ": style_config
+#import "config/titlepage.typ": title_page
 
-#show: vu_template_style_config("lt")
+#show: style_config("lt")
 
 // Req. R6
 
-#vu_template_title_page(
+#title_page(
   "Kompiuterinio modeliavimo antro kurso magistro baigiamasis darbas",
   [ 
     Medžiagų maišymo kompiuterinis modeliavimas cheminėse reakcijose \ 

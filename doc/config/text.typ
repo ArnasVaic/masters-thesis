@@ -1,4 +1,4 @@
-#let text_base() = {
+#let text_config = body =>  {
 
   set text(
 
@@ -18,4 +18,5 @@
     lang: "lt",
   )
 
+  body
 }

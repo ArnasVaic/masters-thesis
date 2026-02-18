@@ -1,4 +1,4 @@
-#let figure_config(lang: str) = {
+#let figure_config(lang) = body =>  {
 
   // Req. R10
   show figure.where(
@@ -12,7 +12,7 @@
 
   // Req. R12
   show figure.where(
-    kind: code
+    kind: raw
   ): set figure.caption(position: top)
 
   // Req. R13.1, R13.2, R13.3
@@ -60,4 +60,6 @@
     set par(justify: true)
     it
   }
+
+  body
 }

@@ -1,31 +1,26 @@
-#import "page.typ"
+#import "bibliography.typ": bibliography_config
+#import "headings.typ": heading_config
+#import "figures.typ": figure_config
+#import "page.typ": page_config
+#import "text.typ": text_config
+#import "refs.typ": ref_config
+#import "par.typ": par_config
 
-#let vu_template_style_config(lang) = (doc) => {
+#let style_config(lang) = body => {
   
   assert(
     lang == "lt" or lang == "en", 
     message: "Language has to be either 'lt' or 'en'" 
   )
 
-  show: page_config
   show: bibliography_config(lang)
+  show: figure_config(lang)
+  show: ref_config(lang)
 
-
-  // Custom headings:
-  // Numbering + h space + name
-  show heading: it => block(
-    if it.numbering != none {
-      counter(heading).display(it.numbering)
-      h(1em)       // space *only if numbered*
-    }
-    + it.body       // title text always
-  )
-
-  // First line is idented
-  set par(
-    first-line-indent: (amount: 1.5em, all: true)
-  )
-
-
-  doc
+  show: heading_config
+  show: text_config
+  show: page_config
+  show: par_config
+  
+  body
 }

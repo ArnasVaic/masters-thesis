@@ -1,9 +1,4 @@
-#let bibliography_config(lang) = {
-
-  assert(
-    lang == "lt" or lang == "en", 
-    "Language has to be either 'lt' or 'en'" 
-  )
+#let bibliography_config(lang) = (body) => {
 
   // Req. R8
   set bibliography(
@@ -25,4 +20,6 @@
       else if lang == "en"
         [ References ]
   )
+
+  body
 }

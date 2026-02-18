@@ -1,4 +1,4 @@
-#let page_config() = {
+#let page_config = body => {
 
   // Req. R1
   set page(columns: 1)
@@ -18,4 +18,6 @@
     numbering: "1",
     number-align: right + bottom,
   )
+
+  body
 }
