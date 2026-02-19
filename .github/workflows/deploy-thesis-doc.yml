@@ -2,6 +2,9 @@ name: GitHub Pages
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 permissions:
   contents: read
