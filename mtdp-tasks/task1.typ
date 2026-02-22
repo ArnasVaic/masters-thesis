@@ -4,9 +4,9 @@
 
 = Kelio parametrų įtaka automobilio judėjimui
 
-- Egidijus Pranskus, VGTU.
+- Autorius -- Egidijus Pranskus, VGTU.
 
-- Darbo pristatoma problema -- žmonių saugumas kelyje, modeliuojamas automobilio judėjimas, autorius pagrindžia, kad tokių fizikinių procesų modeliavimas yra svarbus norint kurti automobilių saugos sistemas.
+- Darbe pristatoma problema -- žmonių saugumas kelyje, modeliuojamas automobilio judėjimas, autorius pagrindžia, kad tokių fizikinių procesų modeliavimas yra svarbus norint kurti automobilių saugos sistemas.
 
 - Dauguma šaltinių sudaro žurnaluose publikuoti straipsniai bei vadovėliai.
 
@@ -16,4 +16,16 @@
 
 - Rezultatai ir išvados neatskirti. Didžiąją dalį išvadų sudaro eksperimento ir modeliavimo rezultatai. Nėra pateikta išvadų, kurias galima būtų padaryti neatlikus tyrimo.
 
-=
+= Didelių erdvių, turinčių didelius įstiklintus paviršius, mikroklimato užtikrinimo galimybės
+
+- Autorius -- Edvinas Bartkus, VGTU
+
+- Darbe pristatoma problema -- stiklinių fasadų sudaromi konvekciniai srautai, kurie sudaro nemalonias oro sąlygas žmonėms, kompiuterinis šio proceso modeliavimas galėtų padėti išsiaiškinti, koks šildymo būdas galėtų būtų geriausias šiai problemai spręsti.
+
+- Dominuoja statybos ir architektūros žurnalai, tačiau yra konferencijų pranešimų, teisės aktų.
+
+- Nėra pristatomų teoremų arba algoritmų, didžioji darbo dalis yra modeliavimo rezultatų aptarimas (modeliavimas vyksta naudojantis programa, o ne rašant savo modelį).
+
+- Sintetiniai duomenys, modeliuojami įvairių patalpų temperatūrų laukai.
+
+- Visos išvados seka iš tyrimo rezultatų.
