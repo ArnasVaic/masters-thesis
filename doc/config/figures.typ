@@ -21,7 +21,7 @@
 
   // Req. R13.1
   show figure.where(kind: image): set figure(supplement: 
-    if lang == "lt" { "pav" } else if lang == "en" { "Figure" }
+    if lang == "lt" { "pav." } else if lang == "en" { "Figure" }
   )
 
   // Req. R13.2
@@ -40,7 +40,11 @@
       it.counter.display(it.numbering)
       " "
       it.supplement
-      it.separator
+      // Only add separator when figure type is not image
+      // because lithuanian supplement pav. already contains
+      // dot
+      if it.kind != image { it.separator }
+
       // Typst only automatically adds space after separator if figure kind is table 
       if it.kind == image or it.kind == raw { " " }
       it.body
