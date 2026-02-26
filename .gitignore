@@ -1,1 +1,5 @@
 *.pdf
+Manifest.toml
+__pycache__
+*.log
+*.lock
