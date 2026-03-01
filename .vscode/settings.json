@@ -2,5 +2,6 @@
   "cSpell.words": [
     "backmatter",
     "Typst"
-  ]
+  ],
+  "julia.environmentPath": "/home/arnas/projects/masters/masters-thesis/src/julia"
 }
