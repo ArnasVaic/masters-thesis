@@ -24,14 +24,8 @@ struct Checkerboard
     end
 end
 
-function build_ic(cfg::Checkerboard)::NTuple{3, Matrix{Float64}}
-
-    ic = (
-        zeros(cfg.grid.height, cfg.grid.width),
-        zeros(cfg.grid.height, cfg.grid.width),
-        zeros(cfg.grid.height, cfg.grid.width),
-    )
-
+function build_ic(cfg::Checkerboard)::SolutionState
+    ic = empty_solution_state(cfg.grid)
     pw = cfg.particle.width
     ph = cfg.particle.height
 
