@@ -1,4 +1,4 @@
-export FixedStep, dt, update!
+export FixedStep, dt, update_dt!
 
 struct FixedStep <: TimeStep
     dt::Float64
@@ -6,4 +6,4 @@ end
 
 dt(ts::FixedStep)::Float64 = ts.dt
 
-update!(_::FixedStep)::Nothing = nothing
+update_dt!(_::FixedStep, _::SolverState)::Nothing = nothing

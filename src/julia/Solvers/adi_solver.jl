@@ -1,26 +1,5 @@
 using LinearAlgebra
 
-
-struct SolverConfig
-    disc::DiscretizationConfig
-    phys::PhysicalParameterConfig
-end
-
-abstract type FrameCapture end
-
-struct EveryNFrames <: FrameCapture
-    n::Int
-    frames::NTuple{3, Vector{Matrix{Float64}}}
-    counter::Int
-end
-
-struct ADISolver
-    step::ConstantTimeStep
-end
-
-
-
-
 function solve_step!(
         cfg::SolverConfig,
         state::SolverState,

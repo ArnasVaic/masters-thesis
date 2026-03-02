@@ -1,7 +1,11 @@
 {
   "cSpell.words": [
     "backmatter",
+    "ldiv",
+    "ldlt",
+    "tridiag",
+    "Tridiagonal",
     "Typst"
-  ],
+],
   "julia.environmentPath": "/home/arnas/projects/masters/masters-thesis/src/julia"
 }
