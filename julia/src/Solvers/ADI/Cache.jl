@@ -1,9 +1,11 @@
+using LinearAlgebra
+
 export BandedFactorization, SolverCache, update_cache!
 
 const BandedFactorization = NTuple{3, LDLt{Float64, SymTridiagonal{Float64, Vector{Float64}}}}
 
 mutable struct SolverCache
-    mu::MuConstants,
+    mu::MuConstants
     Bx::NTuple{3, SymTridiagonal}
     By::NTuple{3, SymTridiagonal}
     Bx_fact::BandedFactorization

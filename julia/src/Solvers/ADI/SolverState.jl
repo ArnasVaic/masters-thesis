@@ -1,4 +1,4 @@
-export SolverState
+export SolverState, init_solver_state
 
 mutable struct SolverState
     curr::SolutionState

@@ -1,4 +1,4 @@
-export Brake
+export Brake, should_brake
 
 abstract type Brake end
 

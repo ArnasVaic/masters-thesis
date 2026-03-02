@@ -1,4 +1,4 @@
-export TimeStep
+export TimeStep, dt, update_dt!
 
 abstract type TimeStep end
 

@@ -1,3 +1,5 @@
+export PQTBrake, should_brake
+
 """
 Product Quantity Threshold Brake
 

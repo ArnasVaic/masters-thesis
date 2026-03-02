@@ -23,14 +23,13 @@ struct Discretization
     end
 end
 
-DiscretizationConfig(
+Discretization(
     sx::Float64,
     sy::Float64,
     nx::Int,
     ny::Int
-) = DiscretizationConfig(
+) = Discretization(
     sx / (nx - 1),
     sy / (ny - 1),
-    nx,
-    ny
+    Size(nx, ny)
 )
