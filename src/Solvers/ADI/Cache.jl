@@ -13,22 +13,23 @@ mutable struct SolverCache
 end
 
 function SolverCache(
-    disc::Discretization, 
-    rp::ReactionParameters, 
-    dt::Float64)
+        disc::Discretization,
+        rp::ReactionParameters,
+        dt::Float64
+    )
     mu = MuConstants(rp, disc, dt)
 
     w, h = disc.grid.width, disc.grid.height
 
-    Bx = ntuple(_ -> SymTridiagonal(zeros(w), zeros(w-1)), 3)
-    By = ntuple(_ -> SymTridiagonal(zeros(h), zeros(h-1)), 3)
+    Bx = ntuple(_ -> SymTridiagonal(zeros(w), zeros(w - 1)), 3)
+    By = ntuple(_ -> SymTridiagonal(zeros(h), zeros(h - 1)), 3)
 
     update_banded!(Bx, By, mu)
 
     Bx_fact = ntuple(i -> ldlt!(Bx[i]), 3)
     By_fact = ntuple(i -> ldlt!(By[i]), 3)
 
-    return new(mu, Bx, By, Bx_fact, By_fact)
+    return SolverCache(mu, Bx, By, Bx_fact, By_fact)
 end
 
 function update_banded!(
@@ -39,17 +40,17 @@ function update_banded!(
     @inbounds for (b, mu) in zip(Bx, mu.x)
         set_tridiag!(b, mu)
     end
-    @inbounds for (b, mu) in zip(By, mu.y)
+    return @inbounds for (b, mu) in zip(By, mu.y)
         set_tridiag!(b, mu)
     end
 end
 
 function update_cache!(
-    cache::SolverCache,
-    rp::ReactionParameters,
-    disc::Discretization,
-    dt::Float64
-)
+        cache::SolverCache,
+        rp::ReactionParameters,
+        disc::Discretization,
+        dt::Float64
+    )
     cache.mu = MuConstants(rp, disc, dt)
 
     update_banded!(cache.Bx, cache.By, cache.mu)

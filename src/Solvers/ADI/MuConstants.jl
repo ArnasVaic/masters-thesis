@@ -7,12 +7,12 @@ struct MuConstants
 end
 
 MuConstants(
-    phys::ReactionParameters,
+    rp::ReactionParameters,
     disc::Discretization,
     dt::Float64
 ) =
     MuConstants(
-    map(a -> 0.5 * dt * phys.k * a, phys.alpha),
-    map(d -> 0.5 * dt / disc.dx^2 * d, phys.D),
-    map(d -> 0.5 * dt / disc.dy^2 * d, phys.D)
+    map(d -> 0.5 * dt / (disc.dx^2) * d, rp.D),
+    map(d -> 0.5 * dt / (disc.dy^2) * d, rp.D),
+    map(a -> 0.5 * dt * rp.k * a, rp.alpha)
 )
