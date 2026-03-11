@@ -1,4 +1,4 @@
-export RQTBrake, should_brake
+using Printf
 
 """
 Reagent Quantity Threshold Brake
@@ -14,6 +14,9 @@ struct RQTBrake <: Brake
     step_stride::Int
 end
 
+Base.show(io::IO, brake::RQTBrake) = 
+    print(io, "RQTBrake(threshold=$(round(brake.t, digits=2)), q0=$(round(brake.q0, digits=4)), step_stride=$(brake.step_stride))")
+
 function should_brake(brake::RQTBrake, state::SolverState)::Bool
     if state.step % brake.step_stride != 0
         return false
@@ -22,10 +25,18 @@ function should_brake(brake::RQTBrake, state::SolverState)::Bool
     c1, c2, _ = state.c
     rq = sum(@views c1 .+ c2)
     ratio = rq / brake.q0
-    
-    # println("brake: ", ratio <= brake.t, ", r: ", round(ratio, digits=2), ", step:", state.step, ", t: ", state.t)
 
-    @debug "step=$(state.step), time=$(state.time), q0=$(brake.q0), q=$(rq), ratio=$(round(ratio, digits=2))"
+    @debug @sprintf(
+        "RQTBrake: step=%6d, time=%6.2f hrs, q=%6.5f, ratio=%6.2f",
+        state.step,
+        state.time / 3600,
+        rq,
+        ratio
+    )
+
+    if ratio <= brake.t
+        @debug "RQTBrake: break!"
+    end
 
     return ratio <= brake.t
 end

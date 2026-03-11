@@ -1,5 +1,3 @@
-export SolverState, init_solver_state
-
 mutable struct SolverState
     c::SolutionState
     time::Float64

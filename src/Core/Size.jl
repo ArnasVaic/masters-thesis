@@ -1,5 +1,3 @@
-export Size
-
 struct Size
     width::Int
     height::Int

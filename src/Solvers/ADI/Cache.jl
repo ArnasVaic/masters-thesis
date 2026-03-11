@@ -1,7 +1,5 @@
 using LinearAlgebra
 
-export BandedFactorization, SolverCache, update_cache!
-
 const BandedFactorization = NTuple{3, LDLt{Float64, SymTridiagonal{Float64, Vector{Float64}}}}
 
 mutable struct SolverCache

@@ -1,5 +1,3 @@
-export Checkerboard, build_ic
-
 struct Checkerboard
     grid::Size
     particle::Size

@@ -1,5 +1,3 @@
-export ReactionParameters
-
 """
 # Arguments
 - `D :: NTuple{3, Float64}`: Diffusion coefficients for each element

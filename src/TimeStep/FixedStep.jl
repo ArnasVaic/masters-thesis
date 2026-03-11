@@ -1,5 +1,3 @@
-export FixedStep, dt, update_dt!
-
 struct FixedStep <: TimeStep
     dt::Float64
 end

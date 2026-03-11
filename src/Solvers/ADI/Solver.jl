@@ -1,58 +1,58 @@
 using LinearAlgebra
 using Logging
 
-export solve, solve_step!
-
-struct SimpleFileLogger <: AbstractLogger
-    io::IO
+struct ADISolver{TS<:TimeStep, B<:Brake, L<:AbstractLogger, C<:Capture}
+    disc::Discretization
+    rp::ReactionParameters
+    ts::TS
+    brake::B
+    capture::C
+    logger::L
 end
 
-Logging.shouldlog(logger::SimpleFileLogger, level, _module, group, id) = true
-Logging.min_enabled_level(::SimpleFileLogger) = Logging.Debug
-Logging.handle_message(logger::SimpleFileLogger, level, message, _module, group, id, file, line; kwargs...) =
-    println(logger.io, message)
+ADISolver(disc, rp, ts, brake, capture; logger=current_logger()) =
+    ADISolver(disc, rp, ts, brake, capture, logger)
 
-io = open("solver_debug.log", "w")
-logger = SimpleFileLogger(io)
-global_logger(logger)
+function solve(solver::ADISolver, ic::SolutionState)
 
-function solve(
-        disc::Discretization,
-        rp::ReactionParameters,
-        ic::SolutionState,
-        ts::TimeStepType,
-        brake::BrakeType
-    ) where {TimeStepType <: TimeStep, BrakeType <: Brake}
+    with_logger(solver.logger) do
+        @debug solver.brake
 
-    
+        state = init_solver_state(ic)
 
-    state = init_solver_state(ic)
-    cache = SolverCache(disc, rp, dt(ts))
+        capture!(solver.capture, state)
 
-    dt_cached = dt(ts)
-    w, h = disc.grid.width, disc.grid.height
+        cache = SolverCache(
+            solver.disc,
+            solver.rp,
+            dt(solver.ts)
+        )
 
-    # Buffers for intermediate computations
-    row_buffer = zeros(w)
-    col_buffer = zeros(h)
-    half = empty_solution_state(Size(w, h))
-    c1c2 = zeros(h, w)
+        dt_cached = dt(solver.ts)
 
-    while !should_brake(brake, state)
+        w = solver.disc.grid.width
+        h = solver.disc.grid.height
 
-        dt_now = dt(ts)
-        if !isapprox(dt_now, dt_cached)
-            dt_cached = dt_now
-            update_cache!(cache, rp, disc, dt_now)
-        end
+        row_buffer = zeros(w)
+        col_buffer = zeros(h)
+        half = empty_solution_state(Size(w, h))
+        c1c2 = zeros(h, w)
 
-        solve_step!(dt_now, state, cache, half, c1c2, row_buffer, col_buffer)
+        while !should_brake(solver.brake, state)
 
-        update_dt!(ts, state)
-        @debug "dt=$(dt), step=$(state.step)"
+            dt_now = dt(solver.ts)
 
-        if state.step == 7683
-            println("a")
+            if !isapprox(dt_now, dt_cached)
+                dt_cached = dt_now
+                update_cache!(cache, solver.rp, solver.disc, dt_now)
+            end
+
+            solve_step!(dt_now, state, cache, half, c1c2, row_buffer, col_buffer)
+
+            update_dt!(solver.ts, state)
+
+            capture!(solver.capture, state)
+
         end
     end
 
@@ -72,7 +72,7 @@ function solve_step!(
     # use u because c is used for column index
     u1, u2, _ = state.c
     u1_h, u2_h = half_buffer[1], half_buffer[2]
-    w, h = last(axes(u1, 2)), last(axes(u1, 1))
+    h, w = size(u1)
 
     u1u2 .= u1 .* u2
 

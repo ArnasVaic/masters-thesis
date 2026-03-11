@@ -1,5 +1,3 @@
-export Discretization
-
 """
 
 Grid discretization configuration

@@ -1,5 +1,3 @@
-export MuConstants
-
 struct MuConstants
     x::NTuple{3, Float64}
     y::NTuple{3, Float64}
