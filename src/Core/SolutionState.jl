@@ -1,5 +1,8 @@
+using StaticArrays
+
 const SolutionState = NTuple{3, Matrix{Float64}}
 
-function empty_solution_state(size::Size)::SolutionState
-    return ntuple(_ -> zeros(Float64, size.height, size.width), 3)
+function empty_solution_state(size::SVector{2, Int})::SolutionState
+    w, h = size
+    return ntuple(_ -> zeros(Float64, h, w), 3)
 end

@@ -17,7 +17,7 @@ function SolverCache(
     )
     mu = MuConstants(rp, disc, dt)
 
-    w, h = disc.grid.width, disc.grid.height
+    w, h = disc.resolution
 
     Bx = ntuple(_ -> SymTridiagonal(zeros(w), zeros(w - 1)), 3)
     By = ntuple(_ -> SymTridiagonal(zeros(h), zeros(h - 1)), 3)

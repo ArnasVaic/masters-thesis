@@ -1,16 +1,13 @@
 module YagModel
 
-include("Core/Size.jl")
-export Size
-
 include("Core/SolutionState.jl")
 export SolutionState, empty_solution_state
 
-include("InitialConditions/Checkerboard.jl")
-export Checkerboard, build_ic
-
 include("Core/Discretization.jl")
 export Discretization
+
+include("InitialConditions/Checkerboard.jl")
+export build_checkerboard_ic
 
 include("Core/ReactionParameters.jl")
 export ReactionParameters

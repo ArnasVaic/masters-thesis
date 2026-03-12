@@ -4,12 +4,14 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 5d8b6933-6415-400b-b104-a73943767466
-begin
-	using Pkg
-	Pkg.activate("..")
-	Pkg.instantiate()
-end
+# ╔═╡ bca915c2-fbe7-4022-adfd-fe9913c73360
+using Pkg
+
+# ╔═╡ d242131b-5920-4253-bf20-553dcb0f3ee5
+Pkg.add("CairoMakie")
+
+# ╔═╡ 0eb867e8-bb86-43a2-9aed-1cff9b10f07c
+push!(LOAD_PATH, abspath(joinpath(@__DIR__, "..", "..", "src")))
 
 # ╔═╡ 1a55efd4-1d87-11f1-9ed7-8149f43b6dde
 using Revise
@@ -20,22 +22,14 @@ using YagModel
 # ╔═╡ 7750b49b-fc3b-4243-ac3d-48f59efc3e25
 begin
 	stride = 1000
-	grid_size = (100, 100)
-	block_size = map(s -> s ÷ 2, grid_size)
-	disc = Discretization(1.0, 1.0, grid_size[2], grid_size[1])
-	rp = ReactionParameters((15.0e-6, 15.0e-6, 15.0e-8), (-3.0, -5.0, 2.0), 146.0)
-	ic_cfg = Checkerboard(
-		disc.grid, 
-		Size(block_size[2], block_size[1]), 
-		(5.0e-6, 3.0e-6)
-	)
-	ic = build_ic(ic_cfg)
-	ts = FixedStep(0.001)
-	q0 = sum(ic[1] + ic[2])
-	brake = RQTBrake(0.03, q0, stride)
-	capture = StrideCapture(stride)
+	disc = Discretization(2, 20)
+	rp = ReactionParameters(Val(1600))
+	ic = build_checkerboard_ic(disc, 5.0e-6, 3.0e-6)
+	ts = FixedStep(0.001) 
+	brake = RQTBrake(0.03, sum(ic[1] + ic[2]), stride)
+	capture = StrideCapture(stride, 1000, disc)
 	
-	io = open("solver_debug.log", "w")
+	io = open("debug.log", "w")
 	logger = SimpleFileLogger(io)
 	
 	solver = ADISolver(disc, rp, ts, brake, capture, logger)
@@ -51,7 +45,7 @@ begin
 
 	gr()
 	
-	step = 13
+	step = 3
 	minval = 0
 	maxval = maximum(ic[1])
 	heatmap(capture.c1[step],
@@ -66,12 +60,14 @@ begin
 end
 
 # ╔═╡ b2f39ca0-9fe5-41ea-888b-b2fec58d5726
-capture.c1.size
+capture.len
 
 # ╔═╡ Cell order:
-# ╠═5d8b6933-6415-400b-b104-a73943767466
+# ╠═0eb867e8-bb86-43a2-9aed-1cff9b10f07c
 # ╠═1a55efd4-1d87-11f1-9ed7-8149f43b6dde
+# ╠═bca915c2-fbe7-4022-adfd-fe9913c73360
 # ╠═0bca0ba2-40d6-47fd-ad9e-0fae2444a5a9
 # ╠═7750b49b-fc3b-4243-ac3d-48f59efc3e25
 # ╠═b2f39ca0-9fe5-41ea-888b-b2fec58d5726
+# ╠═d242131b-5920-4253-bf20-553dcb0f3ee5
 # ╠═bdc6aac7-ee7c-4868-9f88-9a4e843ba55a

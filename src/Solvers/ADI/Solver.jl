@@ -30,12 +30,11 @@ function solve(solver::ADISolver, ic::SolutionState)
 
         dt_cached = dt(solver.ts)
 
-        w = solver.disc.grid.width
-        h = solver.disc.grid.height
-
+        w, h = solver.disc.resolution
+        
         row_buffer = zeros(w)
         col_buffer = zeros(h)
-        half = empty_solution_state(Size(w, h))
+        half = empty_solution_state(solver.disc.resolution)
         c1c2 = zeros(h, w)
 
         while !should_brake(solver.brake, state)
