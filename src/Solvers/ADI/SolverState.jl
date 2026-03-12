@@ -5,5 +5,5 @@ mutable struct SolverState
 end
 
 function init_solver_state(ic::SolutionState)::SolverState
-    return SolverState(ic, 0, 0)
+    return SolverState(map(c -> copy(c), ic), 0, 0)
 end

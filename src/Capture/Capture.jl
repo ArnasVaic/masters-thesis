@@ -3,8 +3,8 @@ abstract type Capture end
 capture!(_::Capture, _::SolverState)::Nothing = nothing
 
 mutable struct StrideCapture <: Capture
-    const stride::Int
-    const capacity::Int
+    stride::Int
+    capacity::Int
     len::Int
     t::Vector{Float64}
     c1::Vector{Matrix{Float64}}
@@ -39,6 +39,8 @@ function capture!(capture::StrideCapture, state::SolverState)::Nothing
     if capture.len >= capture.capacity
         return nothing
     end
+
+    @debug "capture step=$(state.step), time=$(state.time)"
 
     i = capture.len + 1
     capture.len = i
