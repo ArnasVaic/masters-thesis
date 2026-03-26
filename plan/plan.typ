@@ -51,15 +51,46 @@ Kompiuterinis modelis apibūdinantis kietafazę YAG reakcija bus sudaromas speci
 - LinearAlgebra.jl -- efektyviam tiesinės algebros uždavinių sprendimui
 - MPI.jl -- žinučių perdavimo sąsaja, kuri apibrėžia standartą, kaip programa  superkompiuteryje bendrauja tarpusavyje tarp skirtingų skaičiavimo vienetų
 - CairoMakie.jl @DanischKrumbiegel2021 -- paketas leidžiantis sudaryti aukštos kokybės duomenų vizualizacijas
-- Daug kitų.
-- 
+- ir daug kitų.
 
-= Duomenys ir resursai
+= Tyrimo duomenys
 
-= Projekto valdymas ir rezultatai
+Duomenys tyrimui bus gauti su Vilniaus Universiteto Chemijos fakulteto mokslininkų pagalba. Laboratorijoje bus vykdoma YAG sintezės reakcija, kuriai analizuoti bus pasitelktas spektrografas, iš šio prietaiso duomenų galima nustatyti produkto ir reagentų santykį skirtingais laiko momentais. Eksperimentai taip pat bus vykdomi prie skirtingų temperatūrų. Gauti duomenys leis nustatyti reakcijos modelio parametrus su kuriais rezultatai tiksliausiai atitinka eksperimentą. 
 
-= Įvertinimas ir sekantys žingsniai
+== Terminas
+Duomenys bus paruošti per ateinantį mėnesį t. y. iki 2026-05-01.
 
+== Resursai
+
+Kadangi cheminius eksperimentus atlieka VU CHF mokslininkai, resursų klausimo asmeniškai spręsti nereikia.
+
+= Projekto valdymas
+
+Norint užtikrinti projekto sėkmę, tyrimas yra išskaidytas į tikslias užduotis, kurios turi terminus (@tasks).
+
+#figure(
+
+  table(
+    columns: 2,
+    [*Užduotis*], [*Planuojama užbaigti*],
+    [ Kompiuterinis modelis paremtas egzistuojančiu matematiniu modeliu ], [ 2026-04-01 ],
+    [ Kompiuterinis modelis paremtas nauju, sudėtingesniu matematiniu modeliu ], [ 2026-04-15 ],
+    [ Papildomas karkasas parametrų paieškai ], [ 2026-05-01 ],
+    [ Pagrindinių tyrimo rezultatų sudarymas -- optimalių modelio parametrų paieška remiantis eksperimentinių rezultatų duomenimis ], [ 2026-05-15 ],
+
+  ),
+
+  caption: [ Mokslo tiriamojo darbo projekto užduočių ir terminų sąrašas]
+) <tasks>
+
+= Įsivertinimas ir tolimesni tyrimai
+
+== Sėkmės kriterijus
+
+Pagrindinis šio tyrimo sėkmės vertinimo kriterijus yra kompiuterinio modelio rezultatų panašumas į eksperimentinius duomenis -- jei eksperimento duomenys atitiks trendą, kuris bus matomas modelio rezultatuose, o skirtumas tarp jų bus mažesnis nei nustatyta paklaida, tai reiškia, kad tyrimo tikslas bus išpildytas.
+== Tolimesni tyrimai
+
+Šiame tyrime naudojamas modelis nebūtinai yra iki galo tikslus, pavyzdžiui: yra žinoma, kad  reakcijos metu, reaguojant itrio ir aliuminio oksidams produktas (YAG) susidaro ties šių dalelių sandūra, kur jis stabdo tolimesnę reagentų difuziją @dabulyte2022influence, todėl galima teigti, kad difuzijos konstantos yra funkcijos, kurios priklauso nuo produkto koncentracijos erdvėje. Toks modelis būtų daug sudėtingesnis, tačiau tai galėtų lemti tikslesnius rezultatus ir todėl toks tyrimas būtų aktualus.
 
 
 #bibliography("references.bib")
