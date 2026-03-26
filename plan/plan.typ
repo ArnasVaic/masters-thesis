@@ -41,9 +41,13 @@
 
 = Literatūros apžvalga ir teorinis karkasas
 
+YAG sintezės reakcijos modeliavimas nėra nauja tyrimų sritis. 
+
 = Metodologija
 
-Šiame tyrime bus pasitelkta kompiuteriniu modeliavimu pagrįsta metodologija, norint surasti modelio parametrus, kurie geriausiai apibūdina realius duomenis bus atliekama didelis kiekis skaičiavimų pasitelkiant MIF superkompiuterį.
+Šiame tyrime bus pasitelkta kompiuteriniu modeliavimu pagrįsta metodologija. Tyrimo tikslas -- surasti optimalius modelio parametrus, su kuriais modelio rezultatai yra arčiausiai eksperimentinių duomenų. Šiam tikslui pasiekti bus pasitelktas kompiuterinis modelis efektyviai sprendžiantis kietafazę YAG sintezės reakciją apibūdinančią diferencialinių lygčių sistemą.
+
+Matematinio modelio sudarymas nėra šio tyrimo dalis ir bus atliekama kartu su darbo vadovu bei kitais mokslininkais nagrinėjančiais šią temą.
 
 == Naudojami įrankiai
 
