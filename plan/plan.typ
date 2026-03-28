@@ -8,7 +8,8 @@
 #title_page(
   "Kompiuterinio modeliavimo pirmo kurso mokslo tiriamojo darbo projekto planas",
   [ 
-    Medžiagų maišymo kompiuterinis modeliavimas cheminėse reakcijose \ 
+    // Medžiagų maišymo kompiuterinis modeliavimas cheminėse reakcijose 
+    Kietafazės YAG sintezės reakcijos kompiuterinis modeliavimas \ 
     #text(size: 10pt)[Computer modeling of material mixing in chemical reactions] 
   ],
   "Arnas Vaicekauskas",
@@ -21,6 +22,14 @@
 #pagebreak(weak:true)
 
 = Įvadas
+
+Itrio aliuminio granatas (YAG) yra sintetinis kristalas, kuris pasižymi pageidaujamomis optinėmis savybėmis. Ši medžiaga naudojama įvairiose srityse, pavyzdžiui, aukštos energijos šviesolaidžiuose @pang2024recent ir aukštos energijos lazeriuose @fujioka2021aln. Pačios naudingiausios YAG optinės savybės atsiskleidžia legiruojant šį kristalą su retų medžiagų jonais -- šviesolaidžiuose naudojamas YAG būna legiruotas su erbio arba iterbio jonais, o lazeriams gaminti dažniausiai naudojamas neodimio jonais legiruotas YAG kristalas.
+
+Plačios šio kristalo pritaikymo galimybės lemia poreikį efektyviam sintezės procesui. Būdų sintezuoti šią medžiagą yra žinomą keletas, pavyzdžiui bendras nusodinimas (_angl. #box[co-precipitation]_) @wang2000synthesis, beslėgis sukepinimas (_angl. pressureless sintering_) @ikesue2022synthesis. Šiame tyrime bus nagrinėjama kietafazė (_angl. solid-state_) sintezės reakcija, kurios metu yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis yra 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1600$degree$C temperatūroje kelias dešimtis valandų per kurias susiformuoja YAG kristalai.
+
+Atlikti šią reakciją laboratorijoje reikia daug laiko ir energijos. Kompiuterinis modelis gali padėti nustatyti optimalų reakcijos laiką, temperatūra, pamatyti procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai. Matematinis modelis šiai reakcijai jau nagrinėtas @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a, jo pagrindas yra reakcijos-difuzijos sistema su netiesiniais nariais, kurie modeliuoja reagentų virsmą į produktą. Yra žinoma, kad šioje paprastoje reakcijoje, skirtingoje temperatūroje formuojami ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM)
+
+// , kur optiniai kabeliai pagaminti iš YAG kristalų legiruoti su $"Er"^(3+)$ pasireiškia ženkliai sumažėjusiu foto-elastiniu (_angl. fotoelastic_) koeficientu lyginant su standartiniais kabeliais, kurie yra pagaminti iš silico dioksido skaidulų. Taip pat . 
 
 
 
@@ -59,7 +68,7 @@ Kompiuterinis modelis apibūdinantis kietafazę YAG reakcija bus sudaromas speci
 
 = Tyrimo duomenys
 
-Duomenys tyrimui bus gauti su Vilniaus Universiteto Chemijos fakulteto mokslininkų pagalba. Laboratorijoje bus vykdoma YAG sintezės reakcija, kuriai analizuoti bus pasitelktas spektrografas, iš šio prietaiso duomenų galima nustatyti produkto ir reagentų santykį skirtingais laiko momentais. Eksperimentai taip pat bus vykdomi prie skirtingų temperatūrų. Gauti duomenys leis nustatyti reakcijos modelio parametrus su kuriais rezultatai tiksliausiai atitinka eksperimentą. 
+Duomenys tyrimui bus gauti su Vilniaus Universiteto Chemijos fakulteto mokslininkų pagalba. Laboratorijoje bus vykdoma YAG sintezės reakcija, kuriai analizuoti bus pasitelktas spektrografas, iš šio prietaiso duomenų galima nustatyti produkto ir reagentų santykį skirtingais laiko momentais. Eksperimentai taip pat bus vykdomi prie skirtingų temperatūrų. Gauti duomenys leis nustatyti reakcijos modelio parametrus su kuriais modelio nuspėjamas produkto kiekis tiksliausiai atitinka eksperimento rezultatus. 
 
 == Terminas
 Duomenys bus paruošti per ateinantį mėnesį t. y. iki 2026-05-01.
