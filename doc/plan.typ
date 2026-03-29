@@ -1,5 +1,5 @@
-#import "../doc/config/style.typ": style_config
-#import "../doc/config/titlepage.typ": title_page
+#import "config/style.typ": style_config
+#import "config/titlepage.typ": title_page
 
 #show: style_config("lt")
 
@@ -10,7 +10,10 @@
   [ 
     // Medžiagų maišymo kompiuterinis modeliavimas cheminėse reakcijose 
     Kietafazės YAG sintezės reakcijos kompiuterinis modeliavimas \ 
-    #text(size: 10pt)[Computer modeling of material mixing in chemical reactions] 
+    #text(size: 10pt)[
+      // Computer modeling of material mixing in chemical reactions
+      Computational modelling of solid-state YAG synthesis reaction
+      ] 
   ],
   "Arnas Vaicekauskas",
   "asist. dr. Rokas Astrauskas",
@@ -110,4 +113,4 @@ Pagrindinis šio tyrimo sėkmės vertinimo kriterijus yra kompiuterinio modelio 
 Šiame tyrime naudojamas modelis nebūtinai yra iki galo tikslus, pavyzdžiui: yra žinoma, kad reakcijos metu, reaguojant itrio ir aliuminio oksidams produktas (YAG) susidaro ties šių dalelių sandūra, kur jis stabdo tolimesnę reagentų difuziją @dabulyte2022influence, todėl galima teigti, kad difuzijos konstantos priklauso nuo produkto koncentracijos erdvėje. Toks modelis būtų daug sudėtingesnis, tačiau tai galėtų lemti tikslesnius rezultatus ir todėl toks tyrimas būtų aktualus.
 
 
-#bibliography("references.bib")
+#bibliography("plan-references.bib")
