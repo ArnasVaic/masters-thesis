@@ -52,9 +52,9 @@ $ <eq>
 
 Laikoma, kad metalų dalelės yra tolygiai pasiskirsčiusios po erdvę, todėl modeliuojama tik mažą, vienos dalelės dydžio sritis.
 
-Straipsnyje sistema sprendžiama paprasčiausiu baigtinių skirtumų metodu -- oilerio integracija, tačiau dviejų dimensijų modeliams egzistuoja efektyvesni metodai, pavyzdžiui neišreikštinis kintamosios krypties metodas (_angl. alternating direction implicit, ADI_), kurį pritaikius kartu su laiko žingsnio didinimo strategija galima efektyviai modeliuoti eksponentiškai didesnes erdves su tokia pačia diskrečių taškų rezoliucija @alma9917057149708451.
+Straipsnyje sistema sprendžiama paprasčiausiu baigtinių skirtumų metodu -- oilerio integracija, tačiau dviejų dimensijų modeliams egzistuoja efektyvesni metodai, pavyzdžiui neišreikštinis kintamosios krypties metodas (_angl. alternating direction implicit, ADI_), kurį pritaikius kartu su laiko žingsnio didinimo strategija galima efektyviai modeliuoti eksponentiškai didesnes erdves su tokia pačia diskrečių taškų rezoliucija @alma9917057149708451. Šis modelis bus naudojamas kaip pagrindas.
 
-Yra žinoma, kad šioje sintezės reakcijoje, skirtingoje temperatūroje formuojasi ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau anksčiau minėtas modelis į tai neatsižvelgia. Šie pereinami dariniai susidaro, kai reakcijos temperatūra nėra pakankamai aukšta.
+Yra žinoma, kad šioje sintezės reakcijoje formuojasi tarpiniai junginiai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau šis modelis į tai neatsižvelgia. Jei krosnies temperatūra nėra pakankamai aukšta, šie dariniai reakcijos eigoje nedingsta, kas ženkliai sumažina kristalo kokybę. Šiame tyrime taip pat buvo ištirta kaip nuo dalelių dydžio priklauso galutinio produkto išeiga -- nustatyta, kad optimaliausi dalelių dydžiai yra 110nm itrio oksido dalelėms, o aliuminio oksido -- 90nm, tokiu atveju vykdant reakciją prie 1450$degree$C galima pasiekti 93% YAG turinio pagal tūrį.
 
 = Metodologija
 
