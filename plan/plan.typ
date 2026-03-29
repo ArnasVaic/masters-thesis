@@ -23,11 +23,11 @@
 
 = Įvadas
 
-Itrio aliuminio granatas (YAG) yra sintetinis kristalas, kuris pasižymi pageidaujamomis optinėmis savybėmis. Ši medžiaga naudojama įvairiose srityse, pavyzdžiui, aukštos energijos šviesolaidžiuose @pang2024recent ir aukštos energijos lazeriuose @fujioka2021aln. Konkrečiai sričiai pritaikyti YAG kristai būna legiruoti su retų metalų jonais, kurie suteikia kristalui papildomų savybių. Minėtuose šviesolaidžiuose, naudojamas YAG būna legiruotas su erbio arba iterbio jonais, o lazerių aktyviosioms terpėms gaminti dažniausiai naudojamas YAG kristalas legiruotas su neodimiu arba ceriu.
+Itrio aliuminio granatas (YAG) yra sintetinis kristalas, kuris pasižymi pageidaujamomis optinėmis savybėmis. Ši medžiaga naudojama įvairiose srityse, pavyzdžiui, aukštos energijos šviesolaidžiuose @pang2024recent ir aukštos energijos lazeriuose @fujioka2021aln. Konkrečiai sričiai pritaikyti YAG kristalai būna legiruoti su retųjų žemės metalų jonais, kurie suteikia kristalui papildomų savybių. Minėtuose šviesolaidžiuose, naudojamas YAG būna legiruotas su erbio arba iterbio jonais, o lazerių aktyviosioms terpėms gaminti dažniausiai naudojamas YAG kristalas legiruotas su neodimiu arba ceriu.
 
-YAG kristalai turio daugybe taikymų, todėl šios medžiagos sintezės būdai yra plačiai tiriami. Keletas iš populiariausiu sintezės būdų yra  nusodinimas (_angl. #box[co-precipitation]_) @wang2000synthesis, beslėgis sukepinimas (_angl. pressureless sintering_) @ikesue2022synthesis, zolio-gelio metodas (_angl. sol-gel_) @singlard2018sol, tačiau šiame tyrime bus nagrinėjama kietafazė (_angl. solid-state_) sintezės reakcija, kuri išsiskiria paprastu praktiniu įgyvendinimu -- itrio ir aliuminio oksidų mišinys yra kaitinamas aukštoje temperatūroje, kurioje pradeda formuotis YAG kristalai. 
+YAG kristalai turi daugybę taikymų, todėl šios medžiagos sintezės būdai yra plačiai tiriami. Keletas iš žinomų sintezės būdų yra nusodinimas (_angl. #box[co-precipitation]_) @wang2000synthesis, beslėgis sukepinimas (_angl. pressureless sintering_) @ikesue2022synthesis, zolio-gelio metodas (_angl. sol-gel_) @singlard2018sol, tačiau šiame tyrime bus nagrinėjama kietafazė (_angl. solid-state_) sintezės reakcija, kuri išsiskiria paprastu praktiniu įgyvendinimu -- itrio ir aliuminio oksidų mišinys yra kaitinamas aukštoje temperatūroje, kurioje pradeda formuotis YAG kristalai. 
 
-Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tačiau kompiuterinis šios reakcijos modelis gali padėti greitai ir pigiai nustatyti optimalų reakcijos vykdymo laiką, temperatūra ir pamatyti mechaninius procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai vykdyti.
+Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tačiau kompiuterinis šios reakcijos modelis gali padėti greitai ir pigiai nustatyti optimalų reakcijos vykdymo laiką, temperatūrą ir pamatyti mechaninius procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai vykdyti.
 
 Šios reakcijos modelį sudaro keletas fizikinių konstantų, kurias būtina nustatyti norint, kad modelio rezultatai atitiktų fizinius rezultatus. Šiam tikslui pasiekti bus naudojami eksperimentiniu būdu gauti reakcijos duomenys, kuriuos paruoš Vilniaus Universiteto Chemijos fakulteto mokslininkai.
 
@@ -45,7 +45,7 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modelį sudarė F. Ivanauskas et al. @ivanauskasModellingSolidState2005a, kuris ir toliau buvo naudojamas susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009. Šiame darbe modeliuojamas cheminis procesas atrodo štai taip: ruošiant eksperimentą yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1000$degree$C, 1200$degree$C, 1600$degree$C temperatūrose kelias dešimtis valandų per kurias susiformuoja YAG kristalai. Tyrimuose procesas yra modeliuojamas kaip trijų netiesinių diferencialinių lygčių sistema:
 
 $
-  (partial c_i) / (partial t) = D_i nabla^2 c_i + alpha_i k c_1 c_2, quad bold(alpha) = (-3, -5, 2), quad i = 1, 2, 3
+(partial c_i) / (partial t) = D_i nabla^2 c_i + alpha_i k c_1 c_2, quad bold(alpha) = (-3, -5, 2), quad i = 1, 2, 3
 $ <eq>
 
 Čia $c_i = c_i (bold(x), t)$ yra medžiagų koncentracijos taške $bold(x)$ laiko momentu $t$. Medžiagos sunumeruotos taip: itrio oksidas ($i = 1$), aliuminio oksidas ($i = 2$) ir YAG ($i = 3$). $D_i$ -- medžiagų difuzijos konstantos, o $k$ -- reakcijos greičio konstanta. 
@@ -66,7 +66,7 @@ Matematinio modelio sudarymas nėra šio tyrimo dalis ir bus atliekama kartu su 
 
 Kompiuterinis modelis apibūdinantis kietafazę YAG reakcija bus sudaromas specialiai šiam tyrimui pasitelkiant egzistuojančias technologijas leidžiančias išnaudoti MIF superkompiuterio resursus efektyviam darbui. Modelio programinis kodas bus rašomas kalba Julia, naudojant šios kalbos ekosistemoje egzistuojančius paketus įvairiems tikslams:
 - LinearAlgebra.jl -- efektyviam tiesinės algebros uždavinių sprendimui
-- MPI.jl -- žinučių perdavimo sąsaja, kuri apibrėžia standartą, kaip programa  superkompiuteryje bendrauja tarpusavyje tarp skirtingų skaičiavimo vienetų
+- MPI.jl -- žinučių perdavimo sąsaja, kuri apibrėžia standartą, kaip programa superkompiuteryje bendrauja tarpusavyje tarp skirtingų skaičiavimo vienetų
 - CairoMakie.jl @DanischKrumbiegel2021 -- paketas leidžiantis sudaryti aukštos kokybės duomenų vizualizacijas
 - ir daug kitų.
 
@@ -107,7 +107,7 @@ Norint užtikrinti projekto sėkmę, tyrimas yra išskaidytas į tikslias užduo
 Pagrindinis šio tyrimo sėkmės vertinimo kriterijus yra kompiuterinio modelio rezultatų panašumas į eksperimentinius duomenis -- jei eksperimento duomenys atitiks trendą, kuris bus matomas modelio rezultatuose, o skirtumas tarp jų bus mažesnis nei nustatyta paklaida, tai reiškia, kad tyrimo tikslas bus išpildytas.
 == Tolimesni tyrimai
 
-Šiame tyrime naudojamas modelis nebūtinai yra iki galo tikslus, pavyzdžiui: yra žinoma, kad  reakcijos metu, reaguojant itrio ir aliuminio oksidams produktas (YAG) susidaro ties šių dalelių sandūra, kur jis stabdo tolimesnę reagentų difuziją @dabulyte2022influence, todėl galima teigti, kad difuzijos konstantos yra funkcijos, kurios priklauso nuo produkto koncentracijos erdvėje. Toks modelis būtų daug sudėtingesnis, tačiau tai galėtų lemti tikslesnius rezultatus ir todėl toks tyrimas būtų aktualus.
+Šiame tyrime naudojamas modelis nebūtinai yra iki galo tikslus, pavyzdžiui: yra žinoma, kad reakcijos metu, reaguojant itrio ir aliuminio oksidams produktas (YAG) susidaro ties šių dalelių sandūra, kur jis stabdo tolimesnę reagentų difuziją @dabulyte2022influence, todėl galima teigti, kad difuzijos konstantos yra funkcijos, kurios priklauso nuo produkto koncentracijos erdvėje. Toks modelis būtų daug sudėtingesnis, tačiau tai galėtų lemti tikslesnius rezultatus ir todėl toks tyrimas būtų aktualus.
 
 
 #bibliography("references.bib")
