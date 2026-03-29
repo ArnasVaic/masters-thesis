@@ -35,17 +35,26 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 
 Šio *darbo tikslas* -- sudaryti kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis.
 
+#pagebreak()
+
 = Literatūros apžvalga ir teorinis karkasas
 
 // Reakcijos detalės
 // Modeliavimo būdai
 // Mūsų pasirinktas
-Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modelį sudarė F. Ivanauskas et al. @ivanauskasModellingSolidState2005a
-Ruošiant eksperimentą yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1600$degree$C temperatūroje kelias dešimtis valandų per kurias susiformuoja YAG kristalai.
+Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modelį sudarė F. Ivanauskas et al. @ivanauskasModellingSolidState2005a, kuris ir toliau buvo naudojamas susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009. Šiame darbe modeliuojamas cheminis procesas atrodo štai taip: ruošiant eksperimentą yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1000$degree$C, 1200$degree$C, 1600$degree$C temperatūrose kelias dešimtis valandų per kurias susiformuoja YAG kristalai. Tyrimuose procesas yra modeliuojamas kaip trijų netiesinių diferencialinių lygčių sistema:
 
-Matematinis modelis šiai reakcijai jau nagrinėtas @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a, jo pagrindas yra reakcijos-difuzijos sistema su netiesiniais nariais, kurie modeliuoja reagentų virsmą į produktą. Sistema bendru atveju yra sprendžiama baigtinių skirtumų metodu, tačiau dviejų dimensijų atveju, efektyvesniam sprendimui galima panaudoti neišreikštinį kintamosios krypties metodą (_angl. alternating direction implicit, ADI_) kartu su laiko žingsnio strategija, kurios metu žingsnio dydis didinamas geometrinės progresijos pagrindu @alma9917057149708451.
+$
+  (partial c_i) / (partial t) = D_i nabla^2 c_i + alpha_i k c_1 c_2, quad bold(alpha) = (-3, -5, 2), quad i = 1, 2, 3
+$ <eq>
 
-Yra žinoma, kad šioje sintezės reakcijoje, skirtingoje temperatūroje formuojasi ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau anksčiau minėtas modelis į tai neatsižvelgia. Šiame tyrime mes naudosime papildytą matematinį modelį, kuris numato ir šių medžiagų poveikį reakcijai ir bandysime nustatyti tokio modelio parametrus 
+Čia $c_i = c_i (bold(x), t)$ yra medžiagų koncentracijos taške $bold(x)$ laiko momentu $t$. Medžiagos sunumeruotos taip: itrio oksidas ($i = 1$), aliuminio oksidas ($i = 2$) ir YAG ($i = 3$). $D_i$ -- medžiagų difuzijos konstantos, o $k$ -- reakcijos greičio konstanta. 
+
+Laikoma, kad metalų dalelės yra tolygiai pasiskirsčiusios po erdvę, todėl modeliuojama tik mažą, vienos dalelės dydžio sritis.
+
+Straipsnyje sistema sprendžiama paprasčiausiu baigtinių skirtumų metodu -- oilerio integracija, tačiau dviejų dimensijų modeliams egzistuoja efektyvesni metodai, pavyzdžiui neišreikštinis kintamosios krypties metodas (_angl. alternating direction implicit, ADI_), kurį pritaikius kartu su laiko žingsnio didinimo strategija galima efektyviai modeliuoti eksponentiškai didesnes erdves su tokia pačia diskrečių taškų rezoliucija @alma9917057149708451.
+
+Yra žinoma, kad šioje sintezės reakcijoje, skirtingoje temperatūroje formuojasi ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau anksčiau minėtas modelis į tai neatsižvelgia. Šie pereinami dariniai susidaro, kai reakcijos temperatūra nėra pakankamai aukšta.
 
 = Metodologija
 
