@@ -23,36 +23,29 @@
 
 = Įvadas
 
-Itrio aliuminio granatas (YAG) yra sintetinis kristalas, kuris pasižymi pageidaujamomis optinėmis savybėmis. Ši medžiaga naudojama įvairiose srityse, pavyzdžiui, aukštos energijos šviesolaidžiuose @pang2024recent ir aukštos energijos lazeriuose @fujioka2021aln. Pačios naudingiausios YAG optinės savybės atsiskleidžia legiruojant šį kristalą su retų medžiagų jonais -- šviesolaidžiuose naudojamas YAG būna legiruotas su erbio arba iterbio jonais, o lazeriams gaminti dažniausiai naudojamas neodimio jonais legiruotas YAG kristalas.
+Itrio aliuminio granatas (YAG) yra sintetinis kristalas, kuris pasižymi pageidaujamomis optinėmis savybėmis. Ši medžiaga naudojama įvairiose srityse, pavyzdžiui, aukštos energijos šviesolaidžiuose @pang2024recent ir aukštos energijos lazeriuose @fujioka2021aln. Konkrečiai sričiai pritaikyti YAG kristai būna legiruoti su retų metalų jonais, kurie suteikia kristalui papildomų savybių. Minėtuose šviesolaidžiuose, naudojamas YAG būna legiruotas su erbio arba iterbio jonais, o lazerių aktyviosioms terpėms gaminti dažniausiai naudojamas YAG kristalas legiruotas su neodimiu arba ceriu.
 
-Plačios šio kristalo pritaikymo galimybės lemia poreikį efektyviam sintezės procesui. Būdų sintezuoti šią medžiagą yra žinomą keletas, pavyzdžiui bendras nusodinimas (_angl. #box[co-precipitation]_) @wang2000synthesis, beslėgis sukepinimas (_angl. pressureless sintering_) @ikesue2022synthesis. Šiame tyrime bus nagrinėjama kietafazė (_angl. solid-state_) sintezės reakcija, kurios metu yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis yra 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1600$degree$C temperatūroje kelias dešimtis valandų per kurias susiformuoja YAG kristalai.
+YAG kristalai turio daugybe taikymų, todėl šios medžiagos sintezės būdai yra plačiai tiriami. Keletas iš populiariausiu sintezės būdų yra  nusodinimas (_angl. #box[co-precipitation]_) @wang2000synthesis, beslėgis sukepinimas (_angl. pressureless sintering_) @ikesue2022synthesis, zolio-gelio metodas (_angl. sol-gel_) @singlard2018sol, tačiau šiame tyrime bus nagrinėjama kietafazė (_angl. solid-state_) sintezės reakcija, kuri išsiskiria paprastu praktiniu įgyvendinimu -- itrio ir aliuminio oksidų mišinys yra kaitinamas aukštoje temperatūroje, kurioje pradeda formuotis YAG kristalai. 
 
-Atlikti šią reakciją laboratorijoje reikia daug laiko ir energijos. Kompiuterinis modelis gali padėti nustatyti optimalų reakcijos laiką, temperatūra, pamatyti procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai. Matematinis modelis šiai reakcijai jau nagrinėtas @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a, jo pagrindas yra reakcijos-difuzijos sistema su netiesiniais nariais, kurie modeliuoja reagentų virsmą į produktą. Sistema bendru atveju yra sprendžiama baigtinių skirtumų metodu, tačiau dviejų dimensijų atveju, efektyvesniam sprendimui galima panaudoti neišreikštinį kintamosios krypties metodą (_angl. alternating direction implicit, ADI_) kartu su laiko žingsnio strategija, kurios metu žingsnio dydis didinamas geometrinės progresijos pagrindu @alma9917057149708451.
+Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tačiau kompiuterinis šios reakcijos modelis gali padėti greitai ir pigiai nustatyti optimalų reakcijos vykdymo laiką, temperatūra ir pamatyti mechaninius procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai vykdyti.
 
-Yra žinoma, kad šioje sintezės reakcijoje, skirtingoje temperatūroje formuojasi ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau anksčiau minėtas modelis į tai neatsižvelgia. Šiame tyrime mes naudosime papildytą matematinį modelį, kuris numato ir šių medžiagų poveikį reakcijai.
+Šios reakcijos modelį sudaro keletas fizikinių konstantų, kurias būtina nustatyti norint, kad modelio rezultatai atitiktų fizinius rezultatus. Šiam tikslui pasiekti bus naudojami eksperimentiniu būdu gauti reakcijos duomenys, kuriuos paruoš Vilniaus Universiteto Chemijos fakulteto mokslininkai.
 
-// , kur optiniai kabeliai pagaminti iš YAG kristalų legiruoti su $"Er"^(3+)$ pasireiškia ženkliai sumažėjusiu foto-elastiniu (_angl. fotoelastic_) koeficientu lyginant su standartiniais kabeliais, kurie yra pagaminti iš silico dioksido skaidulų. Taip pat . 
+= Tyrimo tikslas
 
-
-
-= Tyrimo tikslai ir klausimai
-
-== Tikslai
-
-// Suprojektuoti ir suprogramuoti kompiuterinį modelį, kuris efektyviai spręstų diferencialinių lygčių sistemas apibūdinančias YAG sintezės reakciją.
-
-- Nustatyti ar egzistuojančio YAG sintezės modelio rezultatai atitinka eksperimentinius duomenis
-- Nustatyti naujas egzistuojančio modelio fizines konstantas naudojant tikroviškesnę pradinę sąlygą
-
-== Tyrimo klausimai
-
-- Kaip kitokios pradinės sąlygos pasirinkimas 
-
-== Apimtis
+Šio *darbo tikslas* -- sudaryti kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis.
 
 = Literatūros apžvalga ir teorinis karkasas
 
-YAG sintezės reakcijos modeliavimas nėra nauja tyrimų sritis. 
+// Reakcijos detalės
+// Modeliavimo būdai
+// Mūsų pasirinktas
+Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modelį sudarė F. Ivanauskas et al. @ivanauskasModellingSolidState2005a
+Ruošiant eksperimentą yra sudaromas homogeninis ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių dydis būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1600$degree$C temperatūroje kelias dešimtis valandų per kurias susiformuoja YAG kristalai.
+
+Matematinis modelis šiai reakcijai jau nagrinėtas @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a, jo pagrindas yra reakcijos-difuzijos sistema su netiesiniais nariais, kurie modeliuoja reagentų virsmą į produktą. Sistema bendru atveju yra sprendžiama baigtinių skirtumų metodu, tačiau dviejų dimensijų atveju, efektyvesniam sprendimui galima panaudoti neišreikštinį kintamosios krypties metodą (_angl. alternating direction implicit, ADI_) kartu su laiko žingsnio strategija, kurios metu žingsnio dydis didinamas geometrinės progresijos pagrindu @alma9917057149708451.
+
+Yra žinoma, kad šioje sintezės reakcijoje, skirtingoje temperatūroje formuojasi ir kiti produktai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau anksčiau minėtas modelis į tai neatsižvelgia. Šiame tyrime mes naudosime papildytą matematinį modelį, kuris numato ir šių medžiagų poveikį reakcijai ir bandysime nustatyti tokio modelio parametrus 
 
 = Metodologija
 
