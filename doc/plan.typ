@@ -66,6 +66,8 @@ Straipsnyje sistema sprendžiama standartiniu Oilerio metodu (_angl. Euler metho
 
 Yra žinoma, kad šioje sintezės reakcijoje formuojasi tarpiniai junginiai -- itrio aliuminio perovskitas (YAP) bei monoklininis itrio aluminatas (YAM) @kupp2014particle, tačiau šis modelis į tai neatsižvelgia. Jei krosnies temperatūra nėra pakankamai aukšta, šie dariniai reakcijos eigoje nedingsta, kas ženkliai sumažina kristalo kokybę. Šiame tyrime taip pat buvo ištirta kaip nuo dalelių dydžio priklauso galutinio produkto išeiga -- nustatyta, kad optimaliausi dalelių dydžiai yra 110nm itrio oksido dalelėms, o aliuminio oksido -- 90nm, tokiu atveju vykdant reakciją prie 1450$degree$C galima pasiekti 93% YAG turinio pagal tūrį.
 
+#pagebreak(weak: true)
+
 = Metodologija
 
 == Kompiuterinis modelis
@@ -127,5 +129,6 @@ Pagrindinis šio tyrimo sėkmės vertinimo kriterijus yra kompiuterinio modelio 
 
 Šiame tyrime naudojamas modelis nebūtinai yra iki galo tikslus, pavyzdžiui: yra žinoma, kad reakcijos metu, reaguojant itrio ir aliuminio oksidams produktas (YAG) susidaro ties šių dalelių sandūra, kur jis stabdo tolimesnę reagentų difuziją @dabulyte2022influence, todėl galima teigti, kad difuzijos konstantos priklauso nuo produkto koncentracijos erdvėje. Toks modelis būtų daug sudėtingesnis, tačiau tai galėtų lemti tikslesnius rezultatus ir todėl toks tyrimas būtų aktualus.
 
+#pagebreak(weak: true)
 
 #bibliography("plan-references.bib")
