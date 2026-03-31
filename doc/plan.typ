@@ -50,12 +50,9 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 
 #pagebreak()
 
-= Literatūros apžvalga ir teorinis karkasas
+= Literatūros apžvalga ir matematinis modelis
 
-// Reakcijos detalės
-// Modeliavimo būdai
-// Mūsų pasirinktas
-Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modelį sudarė F. Ivanauskas et al. @ivanauskasModellingSolidState2005a, kuris ir toliau buvo naudojamas susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009. Šiame darbe modeliuojamas cheminis procesas atrodo štai taip: ruošiant eksperimentą yra sudaromas homogeniškas ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių tūris būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1000$degree$C, 1200$degree$C, 1600$degree$C temperatūrose kelias dešimtis valandų, per kurias susiformuoja YAG kristalai. Tyrimuose procesas yra modeliuojamas kaip trijų netiesinių diferencialinių lygčių sistema:
+Kietafazės YAG sintezės modeliavimas nėra nauja sritis, šios reakcijos modeliai yra aktyviai tiriami @vsumskas2026yttrium. Šis modelis yra pagrįstas F. Ivanausko et al. pasiūlytu reakcijos-difuzijos modeliu @ivanauskasModellingSolidState2005a, kurio fiziniai parametrai buvo rasti susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009. Šiame darbe modeliuojamas cheminis procesas atrodo štai taip: ruošiant eksperimentą yra sudaromas homogeniškas ir stoichiometrinis aliuminio ($"Al"_2"O"_3$) ir itrio ($"Y"_2"O"_3$) oksidų miltelių mišinys. Abiejų oksidų milteliai yra sutrinti taip, kad vidutinis dalelių tūris būtų 1 $mu m^3$. Mišinys yra kaitinamas krosnyje 1000$degree$C, 1200$degree$C, 1600$degree$C temperatūrose kelias dešimtis valandų, per kurias susiformuoja YAG kristalai. Yra žinoma, kad mechaninis maišymas gali pagreitinti reakcijos trukmę, todėl naujesniuose tyrimuose šis procesas yra įtraukiamas į modelį @vsumskas2026yttrium. Tyrimuose procesas yra modeliuojamas kaip trijų netiesinių diferencialinių lygčių sistema:
 
 $
 (partial c_i) / (partial t) = D_i nabla^2 c_i + alpha_i k c_1 c_2, quad bold(alpha) = (-3, -5, 2), quad i = 1, 2, 3
