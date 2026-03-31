@@ -9,10 +9,10 @@
   "Kompiuterinio modeliavimo pirmo kurso mokslo tiriamojo darbo projekto planas",
   [ 
     // Medžiagų maišymo kompiuterinis modeliavimas cheminėse reakcijose 
-    Kietafazės YAG sintezės reakcijos kompiuterinis modeliavimas \ 
+    Kietafazės YAG sintezės reakcijos parametrų nustatymas kompiuteriniais modeliais \ 
     #text(size: 10pt)[
       // Computer modeling of material mixing in chemical reactions
-      Computational modelling of solid-state YAG synthesis reaction
+      Determination of reaction parameters for solid-phase YAG synthesis using computer models
       ] 
   ],
   "Arnas Vaicekauskas",
@@ -37,6 +37,16 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 = Tyrimo tikslas
 
 Šio *darbo tikslas* -- sudaryti kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis bei įvertinti modelio tikslumą.
+
+== Uždaviniai
+
+- Įgyvendinti kompiuterinį modelį pritaikytą MIF superkompiuteriui, kuris spręstų diferencialinių lygčių sistema aprašyta YAG sintezės reakciją.
+
+- Patobulinti kompiuterinį modelį -- modeliuoti sumažėjusią difuziją vietose, kuriose YAG koncentracija yra padidėjusi.
+
+- Įgyvendinti programinį karkasą, kuris leistu atlikti parametrų paiešką lygiagretinant skaičiavimus tarp daugelio superkompiuterio skaičiavimo mazgų.
+
+- Naudojant kompiuterinį modelį surasti optimalius modelio parametrus
 
 #pagebreak()
 
