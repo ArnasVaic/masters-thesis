@@ -37,6 +37,23 @@ using JLD2
 # ╔═╡ 82f06035-70aa-4eac-a40c-525f11e79f4c
 using CairoMakie
 
+# ╔═╡ 7bd3c3fe-4f8e-4392-9411-4fef9d0ad732
+begin
+	using Printf
+	
+	function hours_to_hhmm(hours::Float64)
+	    h = floor(Int, hours)
+	    m = round(Int, (hours - h) * 60)
+	    
+	    if m == 60
+	        h += 1
+	        m = 0
+	    end
+	    
+	    @sprintf("%02dh %02dmin", h, m)
+	end
+end
+
 # ╔═╡ 0541bc9d-128d-4b96-a45e-d53208c2842a
 stride = 1000 # match capture and brake stride to capture final frame
 
@@ -98,23 +115,31 @@ capture
 
 # ╔═╡ cacad40a-3834-49fa-95db-d2143f330a9c
 begin
-	# Example: select the step
-	show_step = 1
+	show_step = 700
+
+	minval, maxval = 0, maximum([maximum(ic[1]), maximum(ic[2])])
+	fig = Figure(fontsize=18)
+
+	time = hours_to_hhmm(capture.t[show_step] / 3600)
 	
-	# Determine color limits
-	minval = 0
-	maxval = maximum([maximum(ic[1]), maximum(ic[2])])
+	ax = Axis(
+		fig[1, 1], 
+		title=L"Concentration of $c_3$ at step %$(show_step) (%$(time))", 
+		xlabel="X", 
+		ylabel="Y"
+	)
+
+	ct = capture.c3[show_step]
 	
-	# Create figure
-	fig = Figure(resolution = (600, 600))
-	ax = Axis(fig[1, 1], title="Heatmap with Colorbar", xlabel="X", ylabel="Y")
+	hm = heatmap!(
+		ax,
+		ct, 
+		colormap = :viridis, 
+		colorrange = (minval, maxval)
+	)
 	
-	# Plot heatmap
-	hm = heatmap!(ax, capture.c1[show_step], colormap = :viridis, colorrange = (minval, maxval))
-	
-	cb = Colorbar(fig[1, 2], hm, label="Concentration")
-	cb.ticks = [0, maxval]
-	
+	Colorbar(fig[:, end+1], hm, label="Concentration")
+
 	fig
 end
 
@@ -143,5 +168,6 @@ capture.c1[1]
 # ╠═5af67abe-ff2a-4e26-815f-1536ba7f6725
 # ╠═b2f39ca0-9fe5-41ea-888b-b2fec58d5726
 # ╠═8c49e690-167e-4c0d-a3cd-52af2f6adaa0
+# ╠═7bd3c3fe-4f8e-4392-9411-4fef9d0ad732
 # ╠═cacad40a-3834-49fa-95db-d2143f330a9c
 # ╠═58e30cdc-6c0f-4566-b45d-973185ee685c

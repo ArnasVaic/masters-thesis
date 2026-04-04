@@ -89,7 +89,7 @@ function solve_step!(
             ldiv!(cache.Bx_fact[mat], row_buffer)
 
             # Swap the order of the half u_h shape is [w, h]
-            u_h[:, r] .= row_buffer
+            u_h[r, :] .= row_buffer
         end
     end
 
