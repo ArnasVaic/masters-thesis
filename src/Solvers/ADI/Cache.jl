@@ -57,6 +57,8 @@ function update_cache!(
     cache.Bx_fact = ntuple(i -> ldlt!(cache.Bx[i]), 3)
     cache.By_fact = ntuple(i -> ldlt!(cache.By[i]), 3)
 
+    @debug "Cache update"
+
     return nothing
 end
 

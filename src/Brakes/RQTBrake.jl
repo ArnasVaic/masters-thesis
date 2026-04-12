@@ -9,13 +9,13 @@ Reagent Quantity Threshold Brake
 - `step_stride`: will only check to brake every `step_stride` frames
 """
 struct RQTBrake <: Brake
-    t::Float64
+    threshold::Float64
     q0::Float64
     step_stride::Int
 end
 
 Base.show(io::IO, brake::RQTBrake) = 
-    print(io, "RQTBrake(threshold=$(round(brake.t, digits=2)), q0=$(round(brake.q0, digits=4)), step_stride=$(brake.step_stride))")
+    print(io, "RQTBrake(threshold=$(round(brake.threshold, digits=2)), q0=$(round(brake.q0, digits=4)), step_stride=$(brake.step_stride))")
 
 function should_brake(brake::RQTBrake, state::SolverState)::Bool
     if state.step % brake.step_stride != 0
@@ -36,9 +36,9 @@ function should_brake(brake::RQTBrake, state::SolverState)::Bool
         q3
     )
 
-    if ratio <= brake.t
+    if ratio <= brake.threshold
         @debug "RQTBrake: break!"
     end
 
-    return ratio <= brake.t
+    return ratio <= brake.threshold
 end

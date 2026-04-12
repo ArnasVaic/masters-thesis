@@ -6,6 +6,9 @@ export SolutionState, empty_solution_state
 include("Core/Discretization.jl")
 export Discretization
 
+include("Core/Quantity.jl")
+export quantity, reagent_quantity
+
 include("InitialConditions/Checkerboard.jl")
 export build_checkerboard_ic
 
@@ -29,6 +32,9 @@ export TimeStep, dt, update_dt!
 
 include("TimeStep/FixedStep.jl")
 export FixedStep
+
+include("TimeStep/SCGQMStep.jl")
+export SCGQMStep
 
 include("Brakes/Brake.jl")
 export Brake, should_brake
