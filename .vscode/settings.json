@@ -15,5 +15,6 @@
     "Tridiagonal",
     "Typst"
 ],
-  "julia.environmentPath": "c:\\Users\\arnas\\uni\\masters-thesis"
+  "julia.environmentPath": "c:\\Users\\arnas\\uni\\masters-thesis",
+  "cmake.sourceDirectory": "/home/arnas/uni/masters-thesis/cpp"
 }

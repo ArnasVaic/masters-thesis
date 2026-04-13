@@ -1,0 +1,6 @@
+[requires]
+xtensor/0.26.0
+
+[generators]
+CMakeToolchain
+CMakeDeps

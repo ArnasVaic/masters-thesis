@@ -3,3 +3,5 @@ Manifest.toml
 __pycache__
 *.log
 *.lock
+
+build
