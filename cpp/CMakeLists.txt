@@ -3,7 +3,7 @@ project(test_xtensor LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(xtensor REQUIRED)
+find_package(xtensor CONFIG REQUIRED)
 
 add_executable(app src/main.cpp)
 
