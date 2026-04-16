@@ -39,6 +39,10 @@
 
 #pagebreak(weak:true)
 
+#include "chapters/math-model.typ"
+
+#pagebreak(weak:true)
+
 #include "backmatter/conclusions.typ"
 
 #pagebreak(weak:true)

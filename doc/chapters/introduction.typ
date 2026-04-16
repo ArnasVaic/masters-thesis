@@ -8,7 +8,7 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 
 Šios reakcijos modelį sudaro keletas fizikinių parametrų, kuriuos būtina nustatyti norint, kad modelio rezultatai atitiktų fizinius rezultatus. Šiam tikslui pasiekti bus naudojami eksperimentiniu būdu gauti reakcijos duomenys, kuriuos paruoš Vilniaus Universiteto Chemijos fakulteto mokslininkai.
 
-Šio *darbo tikslas* -- sudaryti kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis bei įvertinti modelio tikslumą.
+Šio *darbo tikslas* -- sudaryti dviejų dimensijų kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis bei įvertinti modelio tikslumą.
 
 Šiam tikslui pasiekti buvo iškelti šie uždaviniai: 
 - Įgyvendinti kompiuterinį modelį pritaikytą MIF superkompiuteriui, kuris spręstų diferencialinių lygčių sistema aprašyta YAG sintezės reakciją.

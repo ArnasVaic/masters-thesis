@@ -1,4 +1,5 @@
 #import "bibliography.typ": bibliography_config
+#import "equations.typ": equation_config
 #import "headings.typ": heading_config
 #import "figures.typ": figure_config
 #import "page.typ": page_config
@@ -18,6 +19,7 @@
   show: text_config(lang)
   show: ref_config(lang)
    
+  show: equation_config
   show: heading_config
   show: page_config
   show: par_config
