@@ -1,0 +1,31 @@
+//
+// Created by arnas on 4/23/2026.
+//
+
+#ifndef TEST_XTENSOR_SOLVER_STATE_H
+#define TEST_XTENSOR_SOLVER_STATE_H
+
+#include <xtensor.hpp>
+
+#include "SolutionState.h"
+
+namespace yag_model {
+
+class SolverState {
+public:
+    SolutionState solution;
+    double time;
+    size_t step;
+
+    SolverState(size_t const rows, size_t const cols)
+    : solution(rows, cols)
+    , time(0)
+    , step(0)
+    {
+
+    }
+};
+
+} // yag_model
+
+#endif //TEST_XTENSOR_SOLVER_STATE_H
