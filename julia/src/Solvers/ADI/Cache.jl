@@ -1,11 +1,11 @@
 using LinearAlgebra
 
-const BandedFactorization = NTuple{3, LDLt{Float64, SymTridiagonal{Float64, Vector{Float64}}}}
+const BandedFactorization = NTuple{5, LDLt{Float64, SymTridiagonal{Float64, Vector{Float64}}}}
 
 mutable struct SolverCache
     mu::MuConstants
-    Bx::NTuple{3, SymTridiagonal}
-    By::NTuple{3, SymTridiagonal}
+    Bx::NTuple{5, SymTridiagonal}
+    By::NTuple{5, SymTridiagonal}
     Bx_fact::BandedFactorization
     By_fact::BandedFactorization
 end
@@ -19,20 +19,20 @@ function SolverCache(
 
     w, h = disc.resolution
 
-    Bx = ntuple(_ -> SymTridiagonal(zeros(w), zeros(w - 1)), 3)
-    By = ntuple(_ -> SymTridiagonal(zeros(h), zeros(h - 1)), 3)
+    Bx = ntuple(_ -> SymTridiagonal(zeros(w), zeros(w - 1)), 5)
+    By = ntuple(_ -> SymTridiagonal(zeros(h), zeros(h - 1)), 5)
 
     update_banded!(Bx, By, mu)
 
-    Bx_fact = ntuple(i -> ldlt!(Bx[i]), 3)
-    By_fact = ntuple(i -> ldlt!(By[i]), 3)
+    Bx_fact = ntuple(i -> ldlt!(Bx[i]), 5)
+    By_fact = ntuple(i -> ldlt!(By[i]), 5)
 
     return SolverCache(mu, Bx, By, Bx_fact, By_fact)
 end
 
 function update_banded!(
-        Bx::NTuple{3, SymTridiagonal},
-        By::NTuple{3, SymTridiagonal},
+        Bx::NTuple{5, SymTridiagonal},
+        By::NTuple{5, SymTridiagonal},
         mu::MuConstants
     )
     @inbounds for (b, mu) in zip(Bx, mu.x)
@@ -54,8 +54,8 @@ function update_cache!(
     update_banded!(cache.Bx, cache.By, cache.mu)
 
     # MUST replace factorizations
-    cache.Bx_fact = ntuple(i -> ldlt!(cache.Bx[i]), 3)
-    cache.By_fact = ntuple(i -> ldlt!(cache.By[i]), 3)
+    cache.Bx_fact = ntuple(i -> ldlt!(cache.Bx[i]), 5)
+    cache.By_fact = ntuple(i -> ldlt!(cache.By[i]), 5)
 
     @debug "Cache update"
 

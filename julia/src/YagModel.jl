@@ -25,7 +25,7 @@ include("Solvers/ADI/SolverState.jl")
 export SolverState, init_solver_state
 
 include("Capture/Capture.jl")
-export Capture, StrideCapture, capture!
+export Capture, StrideCapture, NoCapture, capture!
 
 include("TimeStep/TimeStep.jl")
 export TimeStep, dt, update_dt!

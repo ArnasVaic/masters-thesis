@@ -22,18 +22,20 @@ function should_brake(brake::RQTBrake, state::SolverState)::Bool
         return false
     end
 
-    c1, c2, c3 = state.c
+    c1, c2, c3, c4, c5 = state.c
     rq = sum(@views c1 .+ c2)
-    q3 = sum(c3) 
+    q3, q4, q5 = sum(c3), sum(c4), sum(c5)
     ratio = rq / brake.q0
 
     @debug @sprintf(
-        "RQTBrake: step=%6d, time=%6.2f hrs, q=%6.5f, ratio=%6.2f, q3=%6.5f",
+        "RQTBrake: step=%6d, time=%6.2f hrs, dt= q=%6.5f, ratio=%6.2f, q3=%6.5f, q4=%6.5f, q5=%6.5f",
         state.step,
         state.time / 3600,
         rq,
         ratio,
-        q3
+        q3,
+        q4,
+        q5
     )
 
     if ratio <= brake.threshold

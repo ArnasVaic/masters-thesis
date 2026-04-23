@@ -36,6 +36,8 @@ function solve(solver::ADISolver, ic::SolutionState)
         col_buffer = zeros(h)
         half = empty_solution_state(solver.disc.resolution)
         c1c2 = zeros(h, w)
+        c1c3 = zeros(h, w)
+        c1c4 = zeros(h, w)
 
         while !should_brake(solver.brake, state)
 
@@ -46,7 +48,7 @@ function solve(solver::ADISolver, ic::SolutionState)
                 update_cache!(cache, solver.rp, solver.disc, dt_now)
             end
 
-            solve_step!(dt_now, state, cache, half, c1c2, row_buffer, col_buffer)
+            solve_step!(dt_now, state, cache, half, c1c2, c1c3, c1c4, row_buffer, col_buffer)
 
             update_dt!(solver.ts, state)
 
@@ -64,47 +66,87 @@ function solve_step!(
         cache::SolverCache,
         half_buffer::SolutionState,
         u1u2::Matrix{Float64},
+        u1u3::Matrix{Float64},
+        u1u4::Matrix{Float64},
         row_buffer::Vector{Float64},
         col_buffer::Vector{Float64}
     )::Nothing
 
     # use u because c is used for column index
-    u1, u2, _ = state.c
-    u1_h, u2_h = half_buffer[1], half_buffer[2]
+    u1, u2, u3, u4, _ = state.c
+    u1_h, u2_h, u3_h, u4_h, _ = half_buffer
     h, w = size(u1)
 
     u1u2 .= u1 .* u2
+    u1u3 .= u1 .* u3
+    u1u4 .= u1 .* u4
 
-    # use @inbounds to avoid bounds checking
-    for mat in 1:3
-        u, u_h = state.c[mat], half_buffer[mat]
-        mu_y, mu_m = cache.mu.y[mat], cache.mu.m[mat]
+    mu_m = cache.mu.mat
 
-        # use @views to avoid allocating temporary storage
+    @inbounds for mat in 1:5
+
+        # u - current timestep solution
+        u = state.c[mat]
+
+        # u_h - solution after half step 
+        u_h = half_buffer[mat]
+
+        # precomputed diffusion term coeficients 
+        mu_y = cache.mu.y[mat]
+
+        # x sweep
         @views for r in 1:h
             rt, rb = min(r + 1, h), max(r - 1, 1)
-            @. row_buffer = (1 - 2mu_y) * u[r, :]
-            + mu_y * (u[rt, :] + u[rb, :])
-            + mu_m * u1u2[r, :]
+
+            @inbounds for j in 1:w
+                row_buffer[j] =
+                    # Diffusion term
+                    (1 - 2 * mu_y) * u[r, j] + mu_y * (u[rt, j] + u[rb, j]) +
+                    # Reaction term
+                    mu_m[mat, 1] * u1[r, j] * u2[r, j] +
+                    mu_m[mat, 2] * u1[r, j] * u3[r, j] +
+                    mu_m[mat, 3] * u1[r, j] * u4[r, j]
+            end
+
             ldiv!(cache.Bx_fact[mat], row_buffer)
 
-            # Swap the order of the half u_h shape is [w, h]
             u_h[r, :] .= row_buffer
         end
     end
 
+    # use u as storage for next step solution
     u1u2 .= u1_h .* u2_h
+    u1u3 .= u1_h .* u3_h
+    u1u4 .= u1_h .* u4_h
 
-    for mat in 1:3
-        u_new, u_h = state.c[mat], half_buffer[mat]
-        mu_x, mu_m = cache.mu.x[mat], cache.mu.m[mat]
-        @views for c in 1:w
+    for mat in 1:5
+
+        # u_h - solution after half step 
+        u_h = half_buffer[mat]
+
+        # u - next timestep solution
+        u = state.c[mat]
+
+        # precomputed diffusion term coeficients 
+        mu_x = cache.mu.x[mat]
+
+        # y sweep
+        @views for c in 1:w 
             cl, cr = min(c + 1, w), max(c - 1, 1)
-            @. col_buffer = (1 - 2mu_x) * u_h[:, c]
-            + mu_x * (u_h[:, cl] + u_h[:, cr])
-            + mu_m * u1u2[:, c]
+
+            @inbounds for i in 1:h
+                col_buffer[j] =
+                    # Diffusion term
+                    (1 - 2mu_x) * u_h[i, c] + mu_x * (u_h[i, cl] + u_h[i, cr])
+                    # Reaction term
+                    + mu_m[mat, 1] * u1[i, c] * u2[i, c]
+                    + mu_m[mat, 2] * u1[i, c] * u3[i, c]
+                    + mu_m[mat, 3] * u1[i, c] * u4[i, c]
+            end
+        
             ldiv!(cache.By_fact[mat], col_buffer)
-            u_new[:, c] .= col_buffer
+
+            u[:, c] .= col_buffer
         end
     end
 
