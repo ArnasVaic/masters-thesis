@@ -11,28 +11,24 @@ namespace yag_model {
 
 class Discretization {
     public:
+    double physical_space_w;
+    double physical_space_h;
+    size_t mesh_res_x;
+    size_t mesh_res_y;
     double dx;
     double dy;
-
-    // double physical_w;
-    // double physical_h;
-    //
-    // size_t mesh_res_x;
-    // size_t mesh_res_y;
-    //
-    // size_t particle_cnt_x;
-    // size_t particle_cnt_y;
-    //
-    // size_t particle_res_x;
-    // size_t particle_res_y;
 
     Discretization(
         double const physical_space_w,
         double const physical_space_h,
         size_t const mesh_res_x,
         size_t const mesh_res_y)
-    : dx(physical_space_w / (mesh_res_x - 1))
-    , dy(physical_space_h / (mesh_res_y - 1))
+    : physical_space_w(physical_space_w)
+    , physical_space_h(physical_space_h)
+    , mesh_res_x(mesh_res_x)
+    , mesh_res_y(mesh_res_y)
+    , dx(physical_space_w / static_cast<double>(mesh_res_x - 1))
+    , dy(physical_space_h / static_cast<double>(mesh_res_y - 1))
     {
 
     }
