@@ -10,21 +10,13 @@
 namespace yag_model {
 
 class SolutionState {
-    public:
-    xt::xarray<double> c1;
-    xt::xarray<double> c2;
-    xt::xarray<double> c3;
-    xt::xarray<double> c4;
-    xt::xarray<double> c5;
+public:
+    std::array<xt::xarray<double>, 5> c;
 
     SolutionState(size_t rows, size_t cols)
-    : c1({rows, cols}, 0.0)
-    , c2({rows, cols}, 0.0)
-    , c3({rows, cols}, 0.0)
-    , c4({rows, cols}, 0.0)
-    , c5({rows, cols}, 0.0)
     {
-
+        for (auto& ci : c)
+            ci = xt::xarray<double>({rows, cols}, 0.0);
     }
 };
 

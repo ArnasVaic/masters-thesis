@@ -17,11 +17,20 @@ add_library(core
         src/SolverState.cpp
         src/SolutionState.cpp
         src/Discretization.cpp
-        src/ReactionParameters.cpp
+        src/YAGModelParameters.cpp
         src/ReagentQuantityThresholdBrake.cpp
         src/Quantity.cpp
         src/StridedCapture.cpp
         src/CheckerboardInitialCondition.cpp
+        src/FixedTimeStep.cpp
+        src/FixedTimeStep.h
+        src/ADISolver.cpp
+        src/ADISolver.h
+        src/ADISolverCache.cpp
+        src/ADISolverCache.h
+        src/TridiagonalLU.h
+        src/TridiagonalLU.cpp
+        src/MuCoefficients.h
 )
 
 target_include_directories(core PUBLIC src)

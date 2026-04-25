@@ -1,0 +1,27 @@
+//
+// Created by arnas on 4/24/2026.
+//
+
+#ifndef YAG_MODEL_FIXED_TIMESTEP_H
+#define YAG_MODEL_FIXED_TIMESTEP_H
+
+#include "SolverState.h"
+
+namespace yag_model {
+
+class FixedTimeStep {
+
+    double dt;
+
+    explicit FixedTimeStep(double const dt) : dt(dt) {  }
+
+public:
+
+    double getTimestep() const;
+
+    void advance(SolverState const& state);
+};
+
+} // yag_model
+
+#endif //YAG_MODEL_FIXED_TIMESTEP_H

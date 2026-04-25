@@ -6,17 +6,22 @@
 #define YAG_MODEL_REACTION_PARAMETERS_H
 
 #include <array>
+#include <xtensor.hpp>
 
 namespace yag_model
 {
 
-class ReactionParameters {
+class YAGModelParameters {
 public:
     // Diffusion coefficients
-    std::array<double, 5> D = { 0.0 };
+    xt::xarray<double> D = {
+        0.0, 0.0, 0.0, 0.0, 0.0
+    };
 
     // Reaction speed coefficients
-    std::array<double, 3> K = { 0.0 };
+    xt::xarray<double> K = {
+        0.0, 0.0, 0.0
+    };
 };
 
 }

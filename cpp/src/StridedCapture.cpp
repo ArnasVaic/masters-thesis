@@ -6,7 +6,7 @@
 
 namespace yag_model
 {
-    void StridedCapture::capture(SolverState const& state)
+    inline void StridedCapture::capture(SolverState const& state)
     {
         if (state.step % this->stride != 0)
         {

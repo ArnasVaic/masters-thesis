@@ -7,7 +7,7 @@
 
 namespace yag_model
 {
-    bool ReagentQuantityThresholdBrake::shouldBrake(SolverState const& state) const
+    inline bool ReagentQuantityThresholdBrake::shouldBrake(SolverState const& state) const
     {
         if (state.step % this->step_stride != 0)
         {
