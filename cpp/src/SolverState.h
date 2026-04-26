@@ -17,13 +17,7 @@ public:
     double time;
     size_t step;
 
-    SolverState(size_t const rows, size_t const cols)
-    : solution(rows, cols)
-    , time(0)
-    , step(0)
-    {
-
-    }
+    SolverState(size_t const rows, size_t const cols);
 };
 
 } // yag_model

@@ -11,7 +11,7 @@
 namespace yag_model
 {
 
-class YAGModelParameters {
+class ModelParameters {
 public:
     // Diffusion coefficients
     xt::xarray<double> D = {

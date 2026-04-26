@@ -8,7 +8,7 @@
 #include <xtensor.hpp>
 
 #include "Discretization.h"
-#include "YAGModelParameters.h"
+#include "ModelParameters.h"
 
 namespace yag_model
 {
@@ -19,7 +19,7 @@ struct MuCoefficients
     xt::xarray<double> y = xt::zeros<double>({5});
 
     void initialize(Discretization const& disc,
-        YAGModelParameters const& params,
+        ModelParameters const& params,
         double const dt)
     {
         x = 0.5 * dt * params.D / (disc.dx * disc.dx);

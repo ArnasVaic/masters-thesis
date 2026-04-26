@@ -2,4 +2,4 @@
 // Created by arnas on 4/23/2026.
 //
 
-#include "YAGModelParameters.h"
+#include "ModelParameters.h"

@@ -2,55 +2,40 @@
 // Created by arnas on 4/25/2026.
 //
 
-#ifndef YAG_MODEL_TRIDIAGONALLU_H
-#define YAG_MODEL_TRIDIAGONALLU_H
+#ifndef YAG_MODEL_TRIDIAGONAL_LU_H
+#define YAG_MODEL_TRIDIAGONAL_LU_H
 
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 extern "C" {
 
-// LAPACK tridiagonal factorization
-void dgtrf_(int* n,
-            double* dl,
-            double* d,
-            double* du,
-            double* du2,
-            int* ipiv,
-            int* info);
+// factorization (ONCE)
+void dgttrf_(int* n, double* dl, double* d, double* du, double* du2, int* ipiv,
+             int* info);
 
-// LAPACK tridiagonal solve
-void dgtrs_(char* trans,
-            int* n,
-            int* nrhs,
-            double* dl,
-            double* d,
-            double* du,
-            double* du2,
-            int* ipiv,
-            double* b,
-            int* ldb,
-            int* info);
+// solve (MANY TIMES)
+void dgttrs_(char* trans, int* n, int* nrhs, double* dl, double* d, double* du,
+             double* du2, int* ipiv, double* b, int* ldb, int* info);
 }
 
-namespace yag_model
-{
+namespace yag_model {
 
 struct TridiagonalLU {
-    int n;
+  int n;
 
-    std::vector<double> dl;   // n-1
-    std::vector<double> d;    // n
-    std::vector<double> du;   // n-1
-    std::vector<double> du2;  // n-2
-    std::vector<int> ipiv;
+  std::vector<double> dl;   // n-1
+  std::vector<double> d;    // n
+  std::vector<double> du;   // n-1
+  std::vector<double> du2;  // n-2
+  std::vector<int> ipiv;
 
-    TridiagonalLU(size_t n);
+  TridiagonalLU(size_t n);
 
-    void factor();
-    void solve(int nrhs, double* B);
+  void factor();
+  void solve(int nrhs, double* B);
 };
 
-}
+}  // namespace yag_model
 
-#endif //YAG_MODEL_TRIDIAGONALLU_H
+#endif  // YAG_MODEL_TRIDIAGONAL_LU_H

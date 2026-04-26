@@ -13,11 +13,7 @@ class SolutionState {
 public:
     std::array<xt::xarray<double>, 5> c;
 
-    SolutionState(size_t rows, size_t cols)
-    {
-        for (auto& ci : c)
-            ci = xt::xarray<double>({rows, cols}, 0.0);
-    }
+    SolutionState(size_t rows, size_t cols);
 };
 
 } // yag_model

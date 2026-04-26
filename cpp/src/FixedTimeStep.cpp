@@ -6,13 +6,20 @@
 
 namespace yag_model
 {
-    inline double FixedTimeStep::getTimestep() const
-    {
-        return this->dt;
-    }
 
-    inline void FixedTimeStep::advance(SolverState const& state)
-    {
+FixedTimeStep::FixedTimeStep(double const dt): dt(dt)
+{
 
-    }
+}
+
+double FixedTimeStep::getTimestep() const
+{
+    return dt;
+}
+
+void FixedTimeStep::advance(SolverState const& state)
+{
+
+}
+
 } // yag_model

@@ -13,8 +13,8 @@ namespace yag_model
 
     double reagentQuantity(SolutionState const& state, Discretization const& disc)
     {
-        double const q1 = quantity(state.c1, disc);
-        double const q2 = quantity(state.c2, disc);
+        double const q1 = quantity(state.c[0], disc);
+        double const q2 = quantity(state.c[1], disc);
         return q1 + q2;
     }
 }

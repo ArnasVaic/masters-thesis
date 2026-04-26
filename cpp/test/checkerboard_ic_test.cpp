@@ -12,10 +12,7 @@ TEST_CASE("Checkerboard initial condition", "[initial_condition]")
     auto state = yag_model::buildCheckerboardInitialCondition(
         disc, 1.0, 2.0);
 
-    auto tmp = state.c1.data();
-    auto tmp2 = state.c2.data();
-
-    REQUIRE(xt::allclose(state.c1, xt::xarray<double>(
+    REQUIRE(xt::allclose(state.c[0], xt::xarray<double>(
         {
             {1.0, 1.0, 0.0, 0.0},
             {1.0, 1.0, 0.0, 0.0},
@@ -24,7 +21,7 @@ TEST_CASE("Checkerboard initial condition", "[initial_condition]")
         }
     )));
 
-    REQUIRE(xt::allclose(state.c2, xt::xarray<double>(
+    REQUIRE(xt::allclose(state.c[1], xt::xarray<double>(
         {
             {0.0, 0.0, 2.0, 2.0},
             {0.0, 0.0, 2.0, 2.0},

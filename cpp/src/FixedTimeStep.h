@@ -10,12 +10,11 @@
 namespace yag_model {
 
 class FixedTimeStep {
+public:
 
     double dt;
 
-    explicit FixedTimeStep(double const dt) : dt(dt) {  }
-
-public:
+    explicit FixedTimeStep(double const dt);
 
     double getTimestep() const;
 
