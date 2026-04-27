@@ -5,3 +5,4 @@ __pycache__
 *.lock
 .idea
 build
+vcpkg_installed
