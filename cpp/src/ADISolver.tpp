@@ -60,9 +60,11 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::solveStep(
 
 template <typename TimeStepPolicy, typename BrakePolicy, typename CapturePolicy>
 void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
-    size_t mat, SolverState const& state, ADISolverCache& cache) const {
-  const double mu_y = cache.mu.y[mat];
-  const auto& mu_m = xt::view(cache.reactionCoefficients, mat, xt::all());
+    size_t const mat, SolverState const& state, ADISolverCache& cache) const {
+  double const mu_y = cache.mu.y[mat];
+  double const mu_1 = cache.reactionCoefficients(mat, 0);
+  double const mu_2 = cache.reactionCoefficients(mat, 1);
+  double const mu_3 = cache.reactionCoefficients(mat, 2);
 
   const auto& c = state.solution.c[mat];
   const auto& c1 = state.solution.c[0];
@@ -71,37 +73,28 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
   const auto& c4 = state.solution.c[3];
 
   for (int row = 0; row < disc.mesh_res_y; ++row) {
-    size_t const top_row =
-        std::min(row + 1, static_cast<int>(disc.mesh_res_y) - 1);
-    size_t const bot_row = std::max(row - 1, 0);
+    size_t const top_row = std::min<int>(row + 1, disc.mesh_res_y - 1);
+    size_t const bot_row = std::max<int>(row - 1, 0);
 
-    auto const& c_row = xt::view(c, row, xt::all());
-    auto const& c_top_row = xt::view(c, top_row, xt::all());
-    auto const& c_bot_row = xt::view(c, bot_row, xt::all());
-    auto const& c1_row = xt::view(c1, row, xt::all());
-    auto const& c2_row = xt::view(c2, row, xt::all());
-    auto const& c3_row = xt::view(c3, row, xt::all());
-    auto const& c4_row = xt::view(c4, row, xt::all());
-
-    auto const diffusion_part =
-        (1 - 2 * mu_y) * c_row + mu_y * (c_top_row + c_bot_row);
-
-    auto reaction_part =
-        c1_row * (mu_m(0) * c2_row + mu_m(1) * c3_row + mu_m(2) * c4_row);
-
-    auto col = xt::view(cache.rhsBuffer, xt::all(), row);
-    col = diffusion_part + reaction_part;
+    for (int col = 0; col < disc.mesh_res_x; ++col) {
+      cache.rhsBuffer(row, col) =
+          (1 - 2 * mu_y) * c(row, col) +
+          mu_y * (c(top_row, col) + c(bot_row, col)) +
+          c(row, col) *
+              (mu_1 * c2(row, col) + mu_2 * c3(row, col) + mu_3 * c4(row, col));
+    }
   }
-
   cache.xSweepMats[mat].solve(disc.mesh_res_y, cache.rhsBuffer.data());
   xt::noalias(cache.halfBuffer.c[mat]) = cache.rhsBuffer;
 }
 
 template <typename TimeStepPolicy, typename BrakePolicy, typename CapturePolicy>
 void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
-    size_t mat, SolverState& state, ADISolverCache& cache) const {
+    size_t const mat, SolverState& state, ADISolverCache& cache) const {
   double const mu_x = cache.mu.x[mat];
-  auto const& mu_m = xt::view(cache.reactionCoefficients, mat, xt::all());
+  double const mu_1 = cache.reactionCoefficients(mat, 0);
+  double const mu_2 = cache.reactionCoefficients(mat, 1);
+  double const mu_3 = cache.reactionCoefficients(mat, 2);
 
   auto const& c = cache.halfBuffer.c[mat];
   auto const& c1 = cache.halfBuffer.c[0];
@@ -110,26 +103,16 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
   auto const& c4 = cache.halfBuffer.c[3];
 
   for (int col = 0; col < disc.mesh_res_x; ++col) {
-    size_t const l_col =
-        std::min(col + 1, static_cast<int>(disc.mesh_res_x) - 1);
-    size_t const r_col = std::max(col - 1, 0);
+    size_t const l_col = std::min<int>(col + 1, disc.mesh_res_x - 1);
+    size_t const r_col = std::max<int>(col - 1, 0);
 
-    auto const& c_col = xt::view(c, col, xt::all());
-    auto const& c_l_col = xt::view(c, l_col, xt::all());
-    auto const& c_r_col = xt::view(c, r_col, xt::all());
-    auto const& c1_col = xt::view(c1, col, xt::all());
-    auto const& c2_col = xt::view(c2, col, xt::all());
-    auto const& c3_col = xt::view(c3, col, xt::all());
-    auto const& c4_col = xt::view(c4, col, xt::all());
-
-    auto const diffusion_part =
-        (1 - 2 * mu_x) * c_col + mu_x * (c_l_col + c_r_col);
-
-    auto const reaction_part =
-        c1_col * (mu_m(0) * c2_col + mu_m(1) * c3_col + mu_m(2) * c4_col);
-
-    auto rhs_col = xt::view(cache.rhsBuffer, xt::all(), col);
-    rhs_col = diffusion_part + reaction_part;
+    for (int row = 0; row < disc.mesh_res_y; ++row) {
+      cache.rhsBuffer(row, col) =
+          (1 - 2 * mu_x) * c(row, col) +
+          mu_x * (c(row, l_col) + c(row, r_col)) +
+          c(row, col) *
+              (mu_1 * c2(row, col) + mu_2 * c3(row, col) + mu_3 * c4(row, col));
+    }
   }
 
   cache.ySweepMats[mat].solve(disc.mesh_res_x, cache.rhsBuffer.data());

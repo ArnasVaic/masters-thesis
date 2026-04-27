@@ -19,7 +19,7 @@ TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
 
   yag_model::ModelParameters params({1.0, 1.0, 1.0, 1.0, 1.0},
                                     // Nothing reacts, only diffuses
-                                    {0.0, 0.0, 0.0});
+                                    {5000.0, 5000.0, 5000.0});
 
   yag_model::FixedTimeStep const timeStepPolicy(0.0001);
 

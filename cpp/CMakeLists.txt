@@ -62,7 +62,8 @@ target_link_libraries(app PRIVATE core)
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp)
 
 add_executable(tests ${TEST_SOURCES}
-        test/const_quant_test.cpp)
+        test/const_quant_test.cpp
+)
 
 target_link_libraries(tests PRIVATE
         core
