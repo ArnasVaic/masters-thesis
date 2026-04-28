@@ -1,6 +1,6 @@
-//
-// Created by arnas on 4/24/2026.
-//
+#pragma once
+
+#include <xtensor/core/xnoalias.hpp>
 
 #include "ADISolver.h"
 
@@ -66,11 +66,11 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
   double const mu_2 = cache.reactionCoefficients(mat, 1);
   double const mu_3 = cache.reactionCoefficients(mat, 2);
 
-  const auto& c = state.solution.c[mat];
-  const auto& c1 = state.solution.c[0];
-  const auto& c2 = state.solution.c[1];
-  const auto& c3 = state.solution.c[2];
-  const auto& c4 = state.solution.c[3];
+  auto const& c = state.solution.c[mat];
+  auto const& c1 = state.solution.c[0];
+  auto const& c2 = state.solution.c[1];
+  auto const& c3 = state.solution.c[2];
+  auto const& c4 = state.solution.c[3];
 
   for (int row = 0; row < disc.mesh_res_y; ++row) {
     size_t const top_row = std::min<int>(row + 1, disc.mesh_res_y - 1);
@@ -80,7 +80,7 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
       cache.rhsBuffer(row, col) =
           (1 - 2 * mu_y) * c(row, col) +
           mu_y * (c(top_row, col) + c(bot_row, col)) +
-          c(row, col) *
+          c1(row, col) *
               (mu_1 * c2(row, col) + mu_2 * c3(row, col) + mu_3 * c4(row, col));
     }
   }
@@ -110,7 +110,7 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
       cache.rhsBuffer(row, col) =
           (1 - 2 * mu_x) * c(row, col) +
           mu_x * (c(row, l_col) + c(row, r_col)) +
-          c(row, col) *
+          c1(row, col) *
               (mu_1 * c2(row, col) + mu_2 * c3(row, col) + mu_3 * c4(row, col));
     }
   }

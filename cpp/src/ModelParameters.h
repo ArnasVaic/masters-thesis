@@ -5,25 +5,18 @@
 #ifndef YAG_MODEL_REACTION_PARAMETERS_H
 #define YAG_MODEL_REACTION_PARAMETERS_H
 
-#include <array>
-#include <xtensor.hpp>
+#include <xtensor/containers/xarray.hpp>
 
-namespace yag_model
-{
-
+namespace yag_model {
 class ModelParameters {
-public:
-    // Diffusion coefficients
-    xt::xarray<double> D = {
-        0.0, 0.0, 0.0, 0.0, 0.0
-    };
+ public:
+  // Diffusion coefficients
+  xt::xarray<double> D = {0.0, 0.0, 0.0, 0.0, 0.0};
 
-    // Reaction speed coefficients
-    xt::xarray<double> K = {
-        0.0, 0.0, 0.0
-    };
+  // Reaction speed coefficients
+  xt::xarray<double> K = {0.0, 0.0, 0.0};
 };
 
-}
+}  // namespace yag_model
 
-#endif //YAG_MODEL_REACTION_PARAMETERS_H
+#endif  // YAG_MODEL_REACTION_PARAMETERS_H

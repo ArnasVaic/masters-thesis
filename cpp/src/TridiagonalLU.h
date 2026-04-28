@@ -5,7 +5,6 @@
 #ifndef YAG_MODEL_TRIDIAGONAL_LU_H
 #define YAG_MODEL_TRIDIAGONAL_LU_H
 
-#include <stdexcept>
 #include <vector>
 
 extern "C" {

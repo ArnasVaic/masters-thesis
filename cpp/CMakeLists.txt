@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(yag_model LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
 enable_testing()
@@ -24,8 +25,8 @@ add_library(core
         src/Quantity.cpp
         src/Captures/FrameCapture.cpp
         src/CheckerboardInitialCondition.cpp
-        src/FixedTimeStep.cpp
-        src/FixedTimeStep.h
+        src/TimeStep/FixedTimeStep.cpp
+        src/TimeStep/FixedTimeStep.h
         src/ADISolver.tpp
         src/ADISolver.h
         src/ADISolverCache.cpp

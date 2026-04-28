@@ -2,25 +2,23 @@
 // Created by arnas on 4/26/2026.
 //
 
-#ifndef YAG_MODEL_FIXEDSTEPBRAKE_H
-#define YAG_MODEL_FIXEDSTEPBRAKE_H
+#ifndef YAG_MODEL_FIXED_STEP_BRAKE_H
+#define YAG_MODEL_FIXED_STEP_BRAKE_H
 
-#include <cstddef>
 #include "SolverState.h"
 
-namespace yag_model
-{
+namespace yag_model {
 
-class FixedStepBrake
-{
-public:
-    size_t steps;
+class FixedStepBrake {
+ public:
+  size_t steps;
 
-    FixedStepBrake(size_t const steps);
+  explicit FixedStepBrake(size_t steps);
 
-    bool shouldBrake(SolverState const& state) const;
+  [[nodiscard]]
+  bool shouldBrake(SolverState const& state) const;
 };
 
-}
+}  // namespace yag_model
 
-#endif //YAG_MODEL_FIXEDSTEPBRAKE_H
+#endif  // YAG_MODEL_FIXED_STEP_BRAKE_H

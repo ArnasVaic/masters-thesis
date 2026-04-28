@@ -4,11 +4,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "../src/TimeStep/FixedTimeStep.h"
 #include "ADISolver.h"
 #include "Brakes/FixedStepBrake.h"
 #include "Captures/QuantityCapture.h"
 #include "CheckerboardInitialCondition.h"
-#include "FixedTimeStep.h"
+#include "Quantity.h"
 
 TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
   using TestSolver =
@@ -17,20 +18,20 @@ TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
 
   yag_model::Discretization disc(1.0, 1.0, 40, 40);
 
-  yag_model::ModelParameters params({1.0, 1.0, 1.0, 1.0, 1.0},
+  yag_model::ModelParameters params({0.01, 0.01, 0.01, 0.01, 0.01},
                                     // Nothing reacts, only diffuses
-                                    {5000.0, 5000.0, 5000.0});
+                                    {150.0, 100.0, 50.0});
 
   yag_model::FixedTimeStep const timeStepPolicy(0.0001);
 
-  size_t const totalSteps = 100;
+  size_t const totalSteps = 10000;
   yag_model::FixedStepBrake const brakePolicy(totalSteps);
   yag_model::QuantityCapture capturePolicy(totalSteps, 1, disc);
 
-  auto ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);
+  auto ic = yag_model::buildCheckerboardInitialCondition(disc, 3.0, 5.0);
 
-  TestSolver solver(disc, std::move(params), std::move(timeStepPolicy),
-                    std::move(brakePolicy), capturePolicy);
+  TestSolver solver(disc, std::move(params), timeStepPolicy, brakePolicy,
+                    capturePolicy);
 
   solver.solve(ic);
 
