@@ -7,15 +7,15 @@
 #include "ICaptureTrigger.h"
 
 namespace yag_model {
-    class StrideCaptureTrigger : public ICaptureTrigger {
-    public:
-        size_t stride;
+class StrideCaptureTrigger : public ICaptureTrigger {
+   public:
+    size_t stride;
 
-        explicit StrideCaptureTrigger(size_t stride);
+    explicit StrideCaptureTrigger(size_t stride);
 
-        [[nodiscard]]
-        bool shouldCapture(SolverState const &state) const override;
-    };
-} // yag_model
+    [[nodiscard]]
+    bool shouldCapture(SolverState const &state) const override;
+};
+}  // namespace yag_model
 
-#endif //YAG_MODEL_STRIDE_CAPTURE_TRIGGER_H
+#endif  // YAG_MODEL_STRIDE_CAPTURE_TRIGGER_H

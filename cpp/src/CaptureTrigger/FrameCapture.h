@@ -12,15 +12,15 @@
 namespace yag_model {
 
 class FrameCapture {
- public:
-  size_t stride;
-  size_t capacity;
-  std::vector<double> t_history;
-  std::array<std::vector<xt::xarray<double>>, 5> c_history;
+   public:
+    size_t stride;
+    size_t capacity;
+    std::vector<double> t_history;
+    std::array<std::vector<xt::xarray<double>>, 5> c_history;
 
-  FrameCapture(size_t const capacity, size_t const stride);
+    explicit FrameCapture(size_t capacity);
 
-  void capture(SolverState const& state);
+    void capture(SolverState const& state);
 };
 
 }  // namespace yag_model

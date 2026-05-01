@@ -24,7 +24,7 @@ class ReagentQuantityThresholdBrake : public IBrake {
         Discretization const& disc);
 
     [[nodiscard]]
-    bool shouldBrake(SolverState const& state) const;
+    bool shouldBrake(SolverState const& state) const override;
 };
 
 }  // namespace yag_model

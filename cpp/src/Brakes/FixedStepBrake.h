@@ -5,7 +5,7 @@
 #ifndef YAG_MODEL_FIXED_STEP_BRAKE_H
 #define YAG_MODEL_FIXED_STEP_BRAKE_H
 
-#include "../Core/SolverState.h"
+#include "Core/SolverState.h"
 #include "IBrake.h"
 
 namespace yag_model {

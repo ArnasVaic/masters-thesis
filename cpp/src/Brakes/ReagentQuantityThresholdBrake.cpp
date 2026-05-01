@@ -4,28 +4,23 @@
 
 #include "ReagentQuantityThresholdBrake.h"
 
-#include "../Core/Quantity.h"
+#include "Core/Quantity.h"
 
-namespace yag_model
-{
+namespace yag_model {
 
 ReagentQuantityThresholdBrake::ReagentQuantityThresholdBrake(
     double const threshold,
     double const initial_reagent_quantity,
     size_t const stride,
     Discretization const& disc)
-: threshold(threshold)
-, initial_reagent_quantity(initial_reagent_quantity)
-, stride(stride)
-, disc(disc)
-{
+    : threshold(threshold),
+      initial_reagent_quantity(initial_reagent_quantity),
+      stride(stride),
+      disc(disc) {}
 
-}
-
-inline bool ReagentQuantityThresholdBrake::shouldBrake(SolverState const& state) const
-{
-    if (state.step % stride != 0)
-    {
+inline bool ReagentQuantityThresholdBrake::shouldBrake(
+    SolverState const& state) const {
+    if (state.step % stride != 0) {
         return false;
     }
 
@@ -34,4 +29,4 @@ inline bool ReagentQuantityThresholdBrake::shouldBrake(SolverState const& state)
     return q / initial_reagent_quantity <= threshold;
 }
 
-} // yag_model
+}  // namespace yag_model

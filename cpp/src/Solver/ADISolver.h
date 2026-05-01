@@ -5,35 +5,43 @@
 #ifndef YAG_MODEL_ADI_SOLVER_H
 #define YAG_MODEL_ADI_SOLVER_H
 
-#include "../Config/Discretization.h"
-#include "../Config/ModelParameters.h"
-#include "../Core/SolutionState.h"
-#include "../Core/SolverState.h"
 #include "ADISolverCache.h"
+#include "Brakes/IBrake.h"
+#include "CaptureTrigger/ICaptureTrigger.h"
+#include "Config/Discretization.h"
+#include "Config/ModelParameters.h"
+#include "Core/SolutionState.h"
+#include "Core/SolverState.h"
+#include "TimeStep/ITimeStep.h"
 
 namespace yag_model {
 
-template <typename TimeStepPolicy, typename BrakePolicy, typename CapturePolicy>
+template <typename CapturePolicy>
 class ADISolver {
-  Discretization disc;
-  ModelParameters params;
-  TimeStepPolicy timeStepPolicy;
-  BrakePolicy brakePolicy;
-  CapturePolicy &capturePolicy;
+    Discretization disc;
+    ModelParameters params;
+    std::shared_ptr<ITimeStep> timeStep;
+    std::shared_ptr<IBrake> brake;
+    std::shared_ptr<ICaptureTrigger> captureTrigger;
+    CapturePolicy &capturePolicy;
 
- public:
-  ADISolver(Discretization const &disc, ModelParameters reactionParameters,
-            TimeStepPolicy timeStepPolicy, BrakePolicy brakePolicy,
-            CapturePolicy &capturePolicy);
+   public:
+    ADISolver(Discretization const &disc,
+        ModelParameters reactionParameters,
+        std::shared_ptr<ITimeStep> timeStep,
+        std::shared_ptr<IBrake> brake,
+        std::shared_ptr<ICaptureTrigger> captureTrigger,
+        CapturePolicy &capturePolicy);
 
-  void solve(SolutionState const &ic);
+    void solve(SolutionState const &ic);
 
-  void solveStep(SolverState &state, ADISolverCache &cache, double dt) const;
+    void solveStep(SolverState &state, ADISolverCache &cache, double dt) const;
 
-  void xSweepStep(size_t mat, SolverState const &state,
-                  ADISolverCache &cache) const;
+    void xSweepStep(
+        size_t mat, SolverState const &state, ADISolverCache &cache) const;
 
-  void ySweepStep(size_t mat, SolverState &state, ADISolverCache &cache) const;
+    void ySweepStep(
+        size_t mat, SolverState &state, ADISolverCache &cache) const;
 };
 
 }  // namespace yag_model

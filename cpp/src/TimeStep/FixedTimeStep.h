@@ -6,19 +6,20 @@
 #define YAG_MODEL_FIXED_TIMESTEP_H
 
 #include "../Core/SolverState.h"
+#include "ITimeStep.h"
 
 namespace yag_model {
 
-class FixedTimeStep {
- public:
-  double dt;
+class FixedTimeStep : public ITimeStep {
+   public:
+    double dt;
 
-  explicit FixedTimeStep(double dt);
+    explicit FixedTimeStep(double dt);
 
-  [[nodiscard]]
-  double getTimestep() const;
+    [[nodiscard]]
+    double getTimestep() const override;
 
-  void advance(SolverState const& state);
+    void advance(SolverState const& state) override;
 };
 
 }  // namespace yag_model

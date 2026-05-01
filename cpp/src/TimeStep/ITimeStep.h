@@ -4,16 +4,18 @@
 
 #ifndef YAG_MODEL_ITIMESTEP_H
 #define YAG_MODEL_ITIMESTEP_H
-#include "../Core/SolverState.h"
+
+#include "Core/SolverState.h"
 
 namespace yag_model {
 class ITimeStep {
    public:
     virtual ~ITimeStep() = default;
-    [[nodiscard]]
-    double getTimestep() const;
 
-    void advance(SolverState const& state);
+    [[nodiscard]]
+    virtual double getTimestep() const = 0;
+
+    virtual void advance(SolverState const& state) = 0;
 };
 
 }  // namespace yag_model

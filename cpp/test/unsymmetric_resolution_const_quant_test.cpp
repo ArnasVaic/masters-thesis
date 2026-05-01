@@ -12,26 +12,21 @@
 #include "TimeStep/FixedTimeStep.h"
 
 TEST_CASE("Const. reagent quant., reaction off, resolution w!=h", "[solver]") {
-    using TestSolver = yag_model::ADISolver<yag_model::FixedTimeStep,
-        yag_model::FixedStepBrake,
-        yag_model::QuantityCapture>;
-
     yag_model::Discretization disc(1.0, 1.0, 40, 20);
 
     yag_model::ModelParameters params({0.01, 0.01, 0.01, 0.01, 0.01},
         // Nothing reacts, only diffuses
         {0.0, 0.0, 0.0});
 
-    yag_model::FixedTimeStep const timeStepPolicy(0.0001);
-
     size_t const totalSteps = 1000;
-    yag_model::FixedStepBrake const brakePolicy(totalSteps);
+    auto step = std::make_shared<yag_model::FixedTimeStep>(0.0001);
+    auto brake = std::make_shared<yag_model::FixedStepBrake>(totalSteps);
     yag_model::QuantityCapture capturePolicy(totalSteps, 1, disc);
 
     auto ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);
 
-    TestSolver solver(
-        disc, std::move(params), timeStepPolicy, brakePolicy, capturePolicy);
+    yag_model::ADISolver<yag_model::QuantityCapture> solver(
+        disc, params, step, brake, capturePolicy);
 
     solver.solve(ic);
 
