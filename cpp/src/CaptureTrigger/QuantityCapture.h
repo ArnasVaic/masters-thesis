@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#include "../Discretization.h"
-#include "../SolverState.h"
+#include "../Config/Discretization.h"
+#include "../Core/SolverState.h"
 
 namespace yag_model {
 

@@ -5,12 +5,12 @@
 #ifndef YAG_MODEL_CHECKERBOARD_INITIAL_CONDITION_H
 #define YAG_MODEL_CHECKERBOARD_INITIAL_CONDITION_H
 
-#include "Discretization.h"
-#include "SolutionState.h"
+#include "Config/Discretization.h"
+#include "Core/SolutionState.h"
 
 namespace yag_model {
-SolutionState buildCheckerboardInitialCondition(
-    Discretization const& disc, double c1_initial_concentration,
+SolutionState buildCheckerboardInitialCondition(Discretization const& disc,
+    double c1_initial_concentration,
     double c2_initial_concentration);
 }
 

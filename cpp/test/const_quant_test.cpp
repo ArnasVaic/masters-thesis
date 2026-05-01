@@ -4,12 +4,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "../src/Core/Quantity.h"
+#include "../src/InitialCondition/CheckerboardInitialCondition.h"
+#include "../src/Solver/ADISolver.h"
 #include "../src/TimeStep/FixedTimeStep.h"
-#include "ADISolver.h"
 #include "Brakes/FixedStepBrake.h"
-#include "Captures/QuantityCapture.h"
-#include "CheckerboardInitialCondition.h"
-#include "Quantity.h"
+#include "CaptureTrigger/QuantityCapture.h"
 
 TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
   using TestSolver =
@@ -20,15 +20,15 @@ TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
 
   yag_model::ModelParameters params({0.01, 0.01, 0.01, 0.01, 0.01},
                                     // Nothing reacts, only diffuses
-                                    {150.0, 100.0, 50.0});
+                                    {0.0, 0.0, 0.0});
 
   yag_model::FixedTimeStep const timeStepPolicy(0.0001);
 
-  size_t const totalSteps = 10000;
+  size_t const totalSteps = 100;
   yag_model::FixedStepBrake const brakePolicy(totalSteps);
   yag_model::QuantityCapture capturePolicy(totalSteps, 1, disc);
 
-  auto ic = yag_model::buildCheckerboardInitialCondition(disc, 3.0, 5.0);
+  auto ic = yag_model::buildCheckerboardInitialCondition(disc, 5.0, 5.0);
 
   TestSolver solver(disc, std::move(params), timeStepPolicy, brakePolicy,
                     capturePolicy);

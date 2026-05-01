@@ -1,7 +1,7 @@
 #include <iostream>
 #include <xtensor.hpp>
 
-#include "SolutionState.h"
+#include "Core/SolutionState.h"
 
 int main() {
   xt::xarray<double> a = {{1, 2}, {3, 4}};

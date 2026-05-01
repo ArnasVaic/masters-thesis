@@ -4,7 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "../src/CheckerboardInitialCondition.h"
+#include "../src/InitialCondition/CheckerboardInitialCondition.h"
 
 TEST_CASE("Checkerboard initial condition", "[initial_condition]")
 {

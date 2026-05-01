@@ -61,7 +61,7 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::solveStep(
 template <typename TimeStepPolicy, typename BrakePolicy, typename CapturePolicy>
 void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
     size_t const mat, SolverState const& state, ADISolverCache& cache) const {
-  double const mu_y = cache.mu.y[mat];
+  double const mu_y = cache.mu_y[mat];
   double const mu_1 = cache.reactionCoefficients(mat, 0);
   double const mu_2 = cache.reactionCoefficients(mat, 1);
   double const mu_3 = cache.reactionCoefficients(mat, 2);
@@ -77,21 +77,24 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::xSweepStep(
     size_t const bot_row = std::max<int>(row - 1, 0);
 
     for (int col = 0; col < disc.mesh_res_x; ++col) {
-      cache.rhsBuffer(row, col) =
+      // LAPACK can batch solve all lines at once but expects them
+      // to be given as column vectors so even if were going line by
+      // line we must write column by column to the rhsBuffer
+      cache.xSweepRHSBuffer(col, row) =
           (1 - 2 * mu_y) * c(row, col) +
           mu_y * (c(top_row, col) + c(bot_row, col)) +
           c1(row, col) *
               (mu_1 * c2(row, col) + mu_2 * c3(row, col) + mu_3 * c4(row, col));
     }
   }
-  cache.xSweepMats[mat].solve(disc.mesh_res_y, cache.rhsBuffer.data());
-  xt::noalias(cache.halfBuffer.c[mat]) = cache.rhsBuffer;
+  cache.xSweepMats[mat].solve(disc.mesh_res_y, cache.xSweepRHSBuffer.data());
+  xt::noalias(cache.halfBuffer.c[mat]) = xt::transpose(cache.xSweepRHSBuffer);
 }
 
 template <typename TimeStepPolicy, typename BrakePolicy, typename CapturePolicy>
 void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
     size_t const mat, SolverState& state, ADISolverCache& cache) const {
-  double const mu_x = cache.mu.x[mat];
+  double const mu_x = cache.mu_x[mat];
   double const mu_1 = cache.reactionCoefficients(mat, 0);
   double const mu_2 = cache.reactionCoefficients(mat, 1);
   double const mu_3 = cache.reactionCoefficients(mat, 2);
@@ -103,11 +106,11 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
   auto const& c4 = cache.halfBuffer.c[3];
 
   for (int col = 0; col < disc.mesh_res_x; ++col) {
-    size_t const l_col = std::min<int>(col + 1, disc.mesh_res_x - 1);
-    size_t const r_col = std::max<int>(col - 1, 0);
+    size_t const l_col = std::max<int>(col - 1, 0);
+    size_t const r_col = std::min<int>(col + 1, disc.mesh_res_x - 1);
 
     for (int row = 0; row < disc.mesh_res_y; ++row) {
-      cache.rhsBuffer(row, col) =
+      cache.ySweepRHSBuffer(row, col) =
           (1 - 2 * mu_x) * c(row, col) +
           mu_x * (c(row, l_col) + c(row, r_col)) +
           c1(row, col) *
@@ -115,8 +118,8 @@ void ADISolver<TimeStepPolicy, BrakePolicy, CapturePolicy>::ySweepStep(
     }
   }
 
-  cache.ySweepMats[mat].solve(disc.mesh_res_x, cache.rhsBuffer.data());
-  xt::noalias(state.solution.c[mat]) = cache.rhsBuffer;
+  cache.ySweepMats[mat].solve(disc.mesh_res_x, cache.ySweepRHSBuffer.data());
+  xt::noalias(state.solution.c[mat]) = cache.ySweepRHSBuffer;
 }
 
 }  // namespace yag_model

@@ -2,7 +2,7 @@
 // Created by arnas on 4/23/2026.
 //
 
-#include "Captures/FrameCapture.h"
+#include "CaptureTrigger/FrameCapture.h"
 
 namespace yag_model
 {

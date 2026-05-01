@@ -5,7 +5,7 @@
 #ifndef YAG_MODEL_FIXED_TIMESTEP_H
 #define YAG_MODEL_FIXED_TIMESTEP_H
 
-#include "../SolverState.h"
+#include "../Core/SolverState.h"
 
 namespace yag_model {
 

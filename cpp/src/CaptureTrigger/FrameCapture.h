@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "../SolverState.h"
+#include "../Core/SolverState.h"
 
 namespace yag_model {
 

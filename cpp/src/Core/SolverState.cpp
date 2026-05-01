@@ -2,7 +2,7 @@
 // Created by arnas on 4/23/2026.
 //
 
-#include "SolverState.h"
+#include "Core/SolverState.h"
 
 namespace yag_model {
 SolverState::SolverState(size_t const rows, size_t const cols)

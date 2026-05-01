@@ -5,28 +5,28 @@
 #ifndef YAG_MODEL_BRAKE_H
 #define YAG_MODEL_BRAKE_H
 
-#include "../Discretization.h"
-#include "../SolverState.h"
+#include "../Config/Discretization.h"
+#include "../Core/SolverState.h"
+#include "IBrake.h"
 
 namespace yag_model {
 
-class ReagentQuantityThresholdBrake {
-    public:
+class ReagentQuantityThresholdBrake : public IBrake {
+   public:
     double threshold;
     double initial_reagent_quantity;
     size_t stride;
     Discretization disc;
 
-    ReagentQuantityThresholdBrake(
-        double threshold,
+    ReagentQuantityThresholdBrake(double threshold,
         double initial_reagent_quantity,
         size_t stride,
-        Discretization const& disc
-    );
+        Discretization const& disc);
 
+    [[nodiscard]]
     bool shouldBrake(SolverState const& state) const;
 };
 
-} // yag_model
+}  // namespace yag_model
 
-#endif //YAG_MODEL_BRAKE_H
+#endif  // YAG_MODEL_BRAKE_H

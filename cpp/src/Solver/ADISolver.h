@@ -5,11 +5,11 @@
 #ifndef YAG_MODEL_ADI_SOLVER_H
 #define YAG_MODEL_ADI_SOLVER_H
 
+#include "../Config/Discretization.h"
+#include "../Config/ModelParameters.h"
+#include "../Core/SolutionState.h"
+#include "../Core/SolverState.h"
 #include "ADISolverCache.h"
-#include "Discretization.h"
-#include "ModelParameters.h"
-#include "SolutionState.h"
-#include "SolverState.h"
 
 namespace yag_model {
 

@@ -2,9 +2,9 @@
 // Created by arnas on 4/26/2026.
 //
 
-#include "Captures/QuantityCapture.h"
+#include "CaptureTrigger/QuantityCapture.h"
 
-#include "../Quantity.h"
+#include "../Core/Quantity.h"
 
 namespace yag_model {
 

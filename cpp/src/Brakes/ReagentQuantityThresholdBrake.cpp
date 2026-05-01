@@ -3,7 +3,8 @@
 //
 
 #include "ReagentQuantityThresholdBrake.h"
-#include "../Quantity.h"
+
+#include "../Core/Quantity.h"
 
 namespace yag_model
 {

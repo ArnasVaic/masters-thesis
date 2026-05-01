@@ -4,7 +4,7 @@
 
 #ifndef YAG_MODEL_QUANTITY_H
 #define YAG_MODEL_QUANTITY_H
-#include "Discretization.h"
+#include "../Config/Discretization.h"
 #include "SolutionState.h"
 
 namespace yag_model {

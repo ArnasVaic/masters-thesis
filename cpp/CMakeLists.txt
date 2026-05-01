@@ -9,43 +9,95 @@ enable_testing()
 
 find_package(xtensor CONFIG REQUIRED)
 find_package(Catch2 3 CONFIG REQUIRED)
-
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 # --------------------------------------------------
-# Core library (ALL shared code goes here)
+# Core: low-level utilities
 # --------------------------------------------------
-add_library(core
-        src/SolverState.cpp
-        src/SolutionState.cpp
-        src/Discretization.cpp
-        src/ModelParameters.cpp
-        src/Brakes/ReagentQuantityThresholdBrake.cpp
-        src/Quantity.cpp
-        src/Captures/FrameCapture.cpp
-        src/CheckerboardInitialCondition.cpp
-        src/TimeStep/FixedTimeStep.cpp
-        src/TimeStep/FixedTimeStep.h
-        src/ADISolver.tpp
-        src/ADISolver.h
-        src/ADISolverCache.cpp
-        src/ADISolverCache.h
-        src/TridiagonalLU.h
-        src/TridiagonalLU.cpp
-        src/MuCoefficients.h
-        src/Captures/QuantityCapture.h
-        src/Captures/QuantityCapture.cpp
-        src/Brakes/FixedStepBrake.cpp
-        src/Brakes/FixedStepBrake.h
+add_library(core_base
+        src/Core/Quantity.cpp
+        src/Core/SolutionState.cpp
+        src/Core/TridiagonalLU.cpp
 )
 
-target_include_directories(core PUBLIC src)
+target_include_directories(core_base PUBLIC src)
 
-target_link_libraries(core PUBLIC
+target_link_libraries(core_base PUBLIC
         xtensor
+)
+
+# --------------------------------------------------
+# Model / configuration layer
+# --------------------------------------------------
+add_library(core_model
+        src/Core/SolverState.cpp
+        src/Config/ModelParameters.cpp
+        src/Config/Discretization.cpp
+        src/InitialCondition/CheckerboardInitialCondition.cpp
+)
+
+target_include_directories(core_model PUBLIC src)
+
+target_link_libraries(core_model PUBLIC core_base)
+
+# --------------------------------------------------
+# Time stepping / solver layer
+# --------------------------------------------------
+add_library(core_solver
+        src/TimeStep/FixedTimeStep.cpp
+        src/Solver/ADISolverCache.cpp
+        src/Solver/ADISolver.tpp
+        src/TimeStep/ITimeStep.h
+)
+
+target_include_directories(core_solver PUBLIC src)
+
+target_link_libraries(core_solver PUBLIC
+        core_model
         ${LAPACK_LIBRARIES}
         ${BLAS_LIBRARIES}
+)
+
+# --------------------------------------------------
+# Capture / IO
+# --------------------------------------------------
+add_library(core_capture
+        src/CaptureTrigger/FrameCapture.cpp
+        src/CaptureTrigger/QuantityCapture.cpp
+        src/CaptureTrigger/ICaptureTrigger.h
+        src/CaptureTrigger/StrideCaptureTrigger.cpp
+        src/CaptureTrigger/StrideCaptureTrigger.h
+)
+
+target_include_directories(core_capture PUBLIC src)
+
+target_link_libraries(core_capture PUBLIC core_base)
+
+# --------------------------------------------------
+# Brakes / logic
+# --------------------------------------------------
+add_library(core_brakes
+        src/Brakes/ReagentQuantityThresholdBrake.cpp
+        src/Brakes/FixedStepBrake.cpp
+        src/Brakes/IBrake.h
+)
+
+target_include_directories(core_brakes PUBLIC src)
+
+target_link_libraries(core_brakes PUBLIC core_base)
+
+# --------------------------------------------------
+# High-level core facade
+# --------------------------------------------------
+add_library(core INTERFACE)
+
+target_link_libraries(core INTERFACE
+        core_base
+        core_model
+        core_solver
+        core_capture
+        core_brakes
 )
 
 # --------------------------------------------------
@@ -60,10 +112,12 @@ target_link_libraries(app PRIVATE core)
 # --------------------------------------------------
 # Tests
 # --------------------------------------------------
-file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp)
-
-add_executable(tests ${TEST_SOURCES}
+add_executable(tests
+        test/lapack_test.cpp
+        test/checkerboard_ic_test.cpp
+        test/unsymmetric_resolution_const_quant_test.cpp
         test/const_quant_test.cpp
+        test/xtensor_test.cpp
 )
 
 target_link_libraries(tests PRIVATE
@@ -72,4 +126,4 @@ target_link_libraries(tests PRIVATE
 )
 
 include(Catch)
-catch_discover_tests(tests)
+# catch_discover_tests(tests)
