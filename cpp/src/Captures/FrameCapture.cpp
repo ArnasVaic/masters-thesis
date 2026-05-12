@@ -2,7 +2,7 @@
 // Created by arnas on 4/23/2026.
 //
 
-#include "CaptureTrigger/FrameCapture.h"
+#include "FrameCapture.h"
 
 namespace yag_model {
 FrameCapture::FrameCapture(size_t const capacity) : capacity(capacity) {

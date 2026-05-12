@@ -2,7 +2,7 @@
 // Created by arnas on 4/26/2026.
 //
 
-#include "CaptureTrigger/QuantityCapture.h"
+#include "QuantityCapture.h"
 
 #include "../Core/Quantity.h"
 

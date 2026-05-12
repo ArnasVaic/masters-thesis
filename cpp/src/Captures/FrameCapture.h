@@ -8,10 +8,11 @@
 #include <vector>
 
 #include "../Core/SolverState.h"
+#include "ICapture.h"
 
 namespace yag_model {
 
-class FrameCapture {
+class FrameCapture : public ICapture {
    public:
     size_t stride;
     size_t capacity;
@@ -20,7 +21,7 @@ class FrameCapture {
 
     explicit FrameCapture(size_t capacity);
 
-    void capture(SolverState const& state);
+    void capture(SolverState const& state) override;
 };
 
 }  // namespace yag_model

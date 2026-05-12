@@ -16,14 +16,13 @@
 
 namespace yag_model {
 
-template <typename CapturePolicy>
 class ADISolver {
     Discretization disc;
     ModelParameters params;
     std::shared_ptr<ITimeStep> timeStep;
     std::shared_ptr<IBrake> brake;
     std::shared_ptr<ICaptureTrigger> captureTrigger;
-    CapturePolicy &capturePolicy;
+    std::unique_ptr<ICapture> capture;
 
    public:
     ADISolver(Discretization const &disc,
@@ -31,9 +30,9 @@ class ADISolver {
         std::shared_ptr<ITimeStep> timeStep,
         std::shared_ptr<IBrake> brake,
         std::shared_ptr<ICaptureTrigger> captureTrigger,
-        CapturePolicy &capturePolicy);
+        std::unique_ptr<ICapture> capture);
 
-    void solve(SolutionState const &ic);
+    std::unique_ptr<ICapture> solve(SolutionState const &ic);
 
     void solveStep(SolverState &state, ADISolverCache &cache, double dt) const;
 
@@ -46,6 +45,6 @@ class ADISolver {
 
 }  // namespace yag_model
 
-#include "ADISolver.tpp"
+#include "ADISolver.cpp"
 
 #endif  // YAG_MODEL_ADI_SOLVER_H

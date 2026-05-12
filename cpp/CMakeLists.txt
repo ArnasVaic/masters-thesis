@@ -47,7 +47,7 @@ target_link_libraries(core_model PUBLIC core_base)
 add_library(core_solver
         src/TimeStep/FixedTimeStep.cpp
         src/Solver/ADISolverCache.cpp
-        src/Solver/ADISolver.tpp
+        src/Solver/ADISolver.cpp
         src/TimeStep/ITimeStep.h
 )
 
@@ -63,11 +63,14 @@ target_link_libraries(core_solver PUBLIC
 # Capture / IO
 # --------------------------------------------------
 add_library(core_capture
-        src/CaptureTrigger/FrameCapture.cpp
-        src/CaptureTrigger/QuantityCapture.cpp
+        src/Captures/FrameCapture.cpp
+        src/Captures/QuantityCapture.cpp
         src/CaptureTrigger/ICaptureTrigger.h
         src/CaptureTrigger/StrideCaptureTrigger.cpp
         src/CaptureTrigger/StrideCaptureTrigger.h
+        src/Captures/ICapture.h
+        src/CaptureTrigger/LastFrameCaptureTrigger.cpp
+        src/CaptureTrigger/LastFrameCaptureTrigger.h
 )
 
 target_include_directories(core_capture PUBLIC src)
@@ -81,6 +84,8 @@ add_library(core_brakes
         src/Brakes/ReagentQuantityThresholdBrake.cpp
         src/Brakes/FixedStepBrake.cpp
         src/Brakes/IBrake.h
+        src/Brakes/TimeBrake.cpp
+        src/Brakes/TimeBrake.h
 )
 
 target_include_directories(core_brakes PUBLIC src)

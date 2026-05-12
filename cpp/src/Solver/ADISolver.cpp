@@ -1,32 +1,28 @@
-#pragma once
+#include "ADISolver.h"
 
 #include <xtensor/core/xnoalias.hpp>
 
-#include "ADISolver.h"
-
 namespace yag_model {
 
-template <typename CapturePolicy>
-ADISolver<CapturePolicy>::ADISolver(Discretization const& disc,
+ADISolver::ADISolver(Discretization const& disc,
     ModelParameters reactionParameters,
     std::shared_ptr<ITimeStep> timeStep,
     std::shared_ptr<IBrake> brake,
     std::shared_ptr<ICaptureTrigger> captureTrigger,
-    CapturePolicy& capturePolicy)
+    std::unique_ptr<ICapture> capture)
     : disc(disc),
       params(std::move(reactionParameters)),
       timeStep(std::move(timeStep)),
       brake(std::move(brake)),
       captureTrigger(std::move(captureTrigger)),
-      capturePolicy(capturePolicy) {}
+      capture(std::move(capture)) {}
 
-template <typename CapturePolicy>
-void ADISolver<CapturePolicy>::solve(SolutionState const& ic) {
+std::unique_ptr<ICapture> ADISolver::solve(SolutionState const& ic) {
     SolverState state(disc.mesh_res_y, disc.mesh_res_x);
     state.solution = ic;
 
     if (captureTrigger->shouldCapture(state)) {
-        capturePolicy.capture(state);
+        capture->capture(state);
     }
 
     ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x);
@@ -42,17 +38,18 @@ void ADISolver<CapturePolicy>::solve(SolutionState const& ic) {
         }
 
         solveStep(state, cache, cached_dt);
-        
+
         timeStep->advance(state);
 
         if (captureTrigger->shouldCapture(state)) {
-            capturePolicy.capture(state);
+            capture->capture(state);
         }
     }
+
+    return std::move(capture);
 }
 
-template <typename CapturePolicy>
-void ADISolver<CapturePolicy>::solveStep(
+void ADISolver::solveStep(
     SolverState& state, ADISolverCache& cache, double const dt) const {
     size_t const matCount = state.solution.c.size();
     for (size_t mat = 0; mat < matCount; ++mat) {
@@ -67,8 +64,7 @@ void ADISolver<CapturePolicy>::solveStep(
     state.step++;
 }
 
-template <typename CapturePolicy>
-void ADISolver<CapturePolicy>::xSweepStep(
+void ADISolver::xSweepStep(
     size_t const mat, SolverState const& state, ADISolverCache& cache) const {
     double const mu_y = cache.mu_y[mat];
     double const mu_1 = cache.reactionCoefficients(mat, 0);
@@ -100,8 +96,7 @@ void ADISolver<CapturePolicy>::xSweepStep(
     xt::noalias(cache.halfBuffer.c[mat]) = xt::transpose(cache.xSweepRHSBuffer);
 }
 
-template <typename CapturePolicy>
-void ADISolver<CapturePolicy>::ySweepStep(
+void ADISolver::ySweepStep(
     size_t const mat, SolverState& state, ADISolverCache& cache) const {
     double const mu_x = cache.mu_x[mat];
     double const mu_1 = cache.reactionCoefficients(mat, 0);
