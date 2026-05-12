@@ -8,6 +8,7 @@
 #include "ADISolverCache.h"
 #include "Brakes/IBrake.h"
 #include "CaptureTrigger/ICaptureTrigger.h"
+#include "Captures/ICapture.h"
 #include "Config/Discretization.h"
 #include "Config/ModelParameters.h"
 #include "Core/SolutionState.h"
@@ -44,7 +45,5 @@ class ADISolver {
 };
 
 }  // namespace yag_model
-
-#include "ADISolver.cpp"
 
 #endif  // YAG_MODEL_ADI_SOLVER_H

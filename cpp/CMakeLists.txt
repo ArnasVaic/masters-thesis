@@ -1,16 +1,22 @@
 cmake_minimum_required(VERSION 3.20)
 project(yag_model LANGUAGES CXX)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CTest)
 enable_testing()
 
-find_package(xtensor CONFIG REQUIRED)
+
 find_package(Catch2 3 CONFIG REQUIRED)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
+
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
+find_package(pybind11 CONFIG REQUIRED)
+find_package(xtensor CONFIG REQUIRED)
+find_package(xtensor-python REQUIRED)
 
 # --------------------------------------------------
 # Core: low-level utilities
@@ -104,6 +110,15 @@ target_link_libraries(core INTERFACE
         core_capture
         core_brakes
 )
+
+#
+# Bindings
+#
+pybind11_add_module(yag_model
+        src/bindings.cpp
+)
+target_link_libraries(yag_model PUBLIC pybind11::module Python3::Python Python3::NumPy xtensor-python)
+target_link_libraries(yag_model PRIVATE core)
 
 # --------------------------------------------------
 # Main app
