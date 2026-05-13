@@ -1,0 +1,12 @@
+[build-system]
+requires = [
+    "scikit-build-core",
+    "pybind11",
+    "cmake",
+    "ninja"
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "yag_model"
+version = "0.1.0"
