@@ -1,9 +1,0 @@
-{
-  "name": "yag-model",
-  "version": "0.1.0",
-  "dependencies": [
-    "xtensor",
-    "catch2",
-    "pybind11"
-  ]
-}
