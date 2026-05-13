@@ -1,9 +1,0 @@
-mutable struct SolverState
-    c::SolutionState
-    time::Float64
-    step::Int
-end
-
-function init_solver_state(ic::SolutionState)::SolverState
-    return SolverState(map(c -> copy(c), ic), 0, 0)
-end
