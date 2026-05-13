@@ -69,7 +69,7 @@ target_link_libraries(core_solver PUBLIC
 # Capture / IO
 # --------------------------------------------------
 add_library(core_capture
-        src/Captures/FrameCapture.cpp
+        src/Captures/InMemoryFrameCapture.cpp
         src/Captures/QuantityCapture.cpp
         src/CaptureTrigger/ICaptureTrigger.h
         src/CaptureTrigger/StrideCaptureTrigger.cpp

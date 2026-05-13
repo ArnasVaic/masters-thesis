@@ -5,23 +5,21 @@
 #ifndef YAG_MODEL_QUANTITY_CAPTURE_H
 #define YAG_MODEL_QUANTITY_CAPTURE_H
 
-#include <vector>
-
-#include "../Config/Discretization.h"
-#include "../Core/SolverState.h"
+#include "Config/Discretization.h"
+#include "Core/SolverState.h"
 #include "ICapture.h"
 
 namespace yag_model {
 
 class QuantityCapture : public ICapture {
    public:
-    size_t stride;
+    size_t size;
     size_t capacity;
-    std::vector<double> t_history;
-    std::array<std::vector<double>, 5> q_history;
+    xt::xarray<double> t_history;
+    xt::xarray<double> q_history;
     Discretization disc;
 
-    QuantityCapture(size_t capacity, size_t stride, Discretization const& disc);
+    QuantityCapture(size_t capacity, Discretization const& disc);
 
     void capture(SolverState const& state) override;
 };

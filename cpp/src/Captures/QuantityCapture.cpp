@@ -4,31 +4,30 @@
 
 #include "QuantityCapture.h"
 
-#include "../Core/Quantity.h"
+#include <xtensor/views/xview.hpp>
+
+#include "Core/Quantity.h"
 
 namespace yag_model {
 
-QuantityCapture::QuantityCapture(size_t const capacity, size_t const stride,
-                                 Discretization const& disc)
-    : stride(stride), capacity(capacity), disc(disc) {
-  assert(stride > 0);
-  t_history.reserve(capacity);
-  for (auto& species_quantity_history : q_history) {
-    species_quantity_history.reserve(capacity);
-  }
+QuantityCapture::QuantityCapture(
+    size_t const capacity, Discretization const& disc)
+    : size(0), capacity(capacity), disc(disc) {
+    t_history = xt::xarray<double>({capacity}, 0.0);
+    q_history = xt::xarray<double>({5, capacity}, 0.0);
 }
 
 void QuantityCapture::capture(SolverState const& state) {
-  if (state.step % stride != 0) return;
+    if (size >= capacity) return;
 
-  if (t_history.size() >= capacity) return;
+    t_history[size] = state.time;
 
-  t_history.push_back(state.time);
+    for (size_t mat = 0; mat < state.solution.c.size(); ++mat) {
+        double const q = quantity(state.solution.c[mat], disc);
+        xt::view(q_history, mat, size) = q;
+    }
 
-  for (size_t mat = 0; mat < state.solution.c.size(); ++mat) {
-    double const q = quantity(state.solution.c[mat], disc);
-    q_history[mat].push_back(q);
-  }
+    size++;
 }
 
 }  // namespace yag_model
