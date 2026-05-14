@@ -5,6 +5,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(BUILD_PYTHON "Build Python module" ON)
+option(BUILD_APP "Build app" OFF)
+option(BUILD_TESTS "Build tests" OFF)
+
 include(CTest)
 enable_testing()
 
@@ -114,36 +118,40 @@ target_link_libraries(core INTERFACE
 #
 # Bindings
 #
-pybind11_add_module(yag_model
-        src/bindings.cpp
-)
-target_link_libraries(yag_model PUBLIC pybind11::module Python3::Python Python3::NumPy xtensor-python)
-target_link_libraries(yag_model PRIVATE core)
+if (BUILD_PYTHON)
+    pybind11_add_module(yag_model
+            src/bindings.cpp
+    )
+    target_link_libraries(yag_model PUBLIC pybind11::module Python3::Python Python3::NumPy xtensor-python)
+    target_link_libraries(yag_model PRIVATE core)
+
+    install(TARGETS yag_model LIBRARY DESTINATION .)
+endif ()
 
 # --------------------------------------------------
 # Main app
 # --------------------------------------------------
-add_executable(app
-        src/main.cpp
-)
-
-target_link_libraries(app PRIVATE core)
+if (BUILD_APP)
+    add_executable(app src/main.cpp)
+    target_link_libraries(app PRIVATE core)
+endif ()
 
 # --------------------------------------------------
 # Tests
 # --------------------------------------------------
-add_executable(tests
-        test/lapack_test.cpp
-        test/checkerboard_ic_test.cpp
-        test/unsymmetric_resolution_const_quant_test.cpp
-        test/const_quant_test.cpp
-        test/xtensor_test.cpp
-)
+if (BUILD_TESTS)
+    add_executable(tests
+            test/lapack_test.cpp
+            test/checkerboard_ic_test.cpp
+            test/unsymmetric_resolution_const_quant_test.cpp
+            test/const_quant_test.cpp
+            test/xtensor_test.cpp
+    )
 
-target_link_libraries(tests PRIVATE
-        core
-        Catch2::Catch2WithMain
-)
+    target_link_libraries(tests PRIVATE
+            core
+            Catch2::Catch2WithMain
+    )
 
-include(Catch)
-# catch_discover_tests(tests)
+    include(Catch)
+endif ()
