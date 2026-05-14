@@ -22,10 +22,9 @@ TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
     size_t const totalSteps = 100;
     auto step = std::make_shared<yag_model::FixedTimeStep>(0.0001);
     auto brake = std::make_shared<yag_model::FixedStepBrake>(totalSteps);
-    auto captureTrigger =
-        std::make_shared<yag_model::StrideCaptureTrigger>(totalSteps);
+    auto captureTrigger = std::make_shared<yag_model::StrideCaptureTrigger>(1);
     auto capture =
-        std::make_unique<yag_model::QuantityCapture>(totalSteps, 1, disc);
+        std::make_unique<yag_model::QuantityCapture>(totalSteps, disc);
 
     auto ic = yag_model::buildCheckerboardInitialCondition(disc, 5.0, 5.0);
 
@@ -42,7 +41,7 @@ TEST_CASE("Constant reagent quantity when reaction is off", "[solver]") {
         double const q_initial = quantity(ic.c[i], disc);
 
         for (size_t t = 0; t < capture->t_history.size(); ++t) {
-            double const qt = capture->q_history[i][t];
+            double const qt = capture->q_history(i, t);
             REQUIRE(std::abs(qt - q_initial) < 1e-9);
         }
     }

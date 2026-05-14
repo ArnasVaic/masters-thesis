@@ -23,81 +23,11 @@
 
 namespace py = pybind11;
 
-void bind_config(py::module_ const &m);
-void bind_core(py::module_ const &m);
-void bind_timestep(py::module_ const &m);
-void bind_brakes(py::module_ &m);
-void bind_capture_triggers(py::module_ const &m);
-void bind_captures(py::module_ const &m);
-void bind_utils(py::module_ const &m);
-
 PYBIND11_MODULE(yag_model, m) {
     m.doc() = "YAG model bindings";
 
     xt::import_numpy();
 
-    bind_config(m);
-    bind_core(m);
-    bind_brakes(m);
-    bind_capture_triggers(m);
-    bind_captures(m);
-
-    py::class_<yag_model::ADISolver>(m, "ADISolver")
-        .def(py::init<const yag_model::Discretization &,
-                 yag_model::ModelParameters,
-                 std::shared_ptr<yag_model::ITimeStep>,
-                 std::shared_ptr<yag_model::IBrake>,
-                 std::shared_ptr<yag_model::ICaptureTrigger>,
-                 std::unique_ptr<yag_model::ICapture>>(),
-            py::arg("disc"),
-            py::arg("params"),
-            py::arg("timeStep"),
-            py::arg("brake"),
-            py::arg("captureTrigger"),
-            py::arg("capture"))
-
-        .def("solve", &yag_model::ADISolver::solve, py::arg("ic"));
-
-    m.def("build_checkerboard_initial_condition",
-        &yag_model::buildCheckerboardInitialCondition,
-        py::arg("disc"),
-        py::arg("c1_initial_concentration"),
-        py::arg("c2_initial_concentration"),
-        "Creates a checkerboard initial condition");
-}
-
-void bind_core(py::module_ const &m) {
-    py::class_<yag_model::SolutionState>(m, "SolutionState")
-        .def(py::init<size_t, size_t>(), py::arg("rows"), py::arg("cols"))
-        .def("__getitem__",
-            [](yag_model::SolutionState &self, size_t i) { return self.c[i]; })
-        .def("__setitem__",
-            [](yag_model::SolutionState &self,
-                size_t i,
-                xt::pyarray<double> v) { self.c[i] = v; });
-
-    py::class_<yag_model::SolverState>(m, "SolverState")
-        .def(py::init<size_t, size_t>(), py::arg("rows"), py::arg("cols"))
-        .def_readwrite("solution", &yag_model::SolverState::solution)
-        .def_readwrite("time", &yag_model::SolverState::time)
-        .def_readwrite("step", &yag_model::SolverState::step);
-}
-void bind_timestep(py::module_ const &m) {
-    py::class_<yag_model::ITimeStep, std::shared_ptr<yag_model::ITimeStep>>(
-        m, "ITimeStep")
-        .def("getTimestep", &yag_model::ITimeStep::getTimestep)
-        .def("advance", &yag_model::ITimeStep::advance, py::arg("state"));
-
-    py::class_<yag_model::FixedTimeStep,
-        yag_model::ITimeStep,
-        std::shared_ptr<yag_model::FixedTimeStep>>(m, "FixedTimeStep")
-        .def(py::init<double>(), py::arg("dt"))
-        .def_readwrite("dt", &yag_model::FixedTimeStep::dt)
-        .def("getTimestep", &yag_model::FixedTimeStep::getTimestep)
-        .def("advance", &yag_model::FixedTimeStep::advance, py::arg("state"));
-}
-
-void bind_config(py::module_ const &m) {
     py::class_<yag_model::Discretization>(m, "Discretization")
         .def(py::init<double, double, size_t, size_t>(),
             py::arg("physical_space_w"),
@@ -114,12 +44,56 @@ void bind_config(py::module_ const &m) {
         .def_readonly("dy", &yag_model::Discretization::dy);
 
     py::class_<yag_model::ModelParameters>(m, "ModelParameters")
-        .def(py::init<>())
-        .def_readwrite("D", &yag_model::ModelParameters::D)
-        .def_readwrite("K", &yag_model::ModelParameters::K);
-}
+        .def(py::init<const xt::pyarray<double> &,
+                 const xt::pyarray<double> &>(),
+            py::arg("D"),
+            py::arg("K"))
+        .def_property(
+            "D",
+            [](yag_model::ModelParameters &self) {
+                return xt::pyarray<double>(self.D);
+            },
+            [](yag_model::ModelParameters &self, xt::pyarray<double> v) {
+                self.D = v;
+            })
 
-void bind_brakes(py::module_ const &m) {
+        .def_property(
+            "K",
+            [](yag_model::ModelParameters &self) {
+                return xt::pyarray<double>(self.K);
+            },
+            [](yag_model::ModelParameters &self, xt::pyarray<double> v) {
+                self.K = v;
+            });
+
+    py::class_<yag_model::SolutionState>(m, "SolutionState")
+        .def(py::init<size_t, size_t>(), py::arg("rows"), py::arg("cols"))
+        .def("__getitem__",
+            [](yag_model::SolutionState &self, size_t i) { return self.c[i]; })
+        .def("__setitem__",
+            [](yag_model::SolutionState &self,
+                size_t i,
+                xt::pyarray<double> v) { self.c[i] = v; });
+
+    py::class_<yag_model::SolverState>(m, "SolverState")
+        .def(py::init<size_t, size_t>(), py::arg("rows"), py::arg("cols"))
+        .def_readwrite("solution", &yag_model::SolverState::solution)
+        .def_readwrite("time", &yag_model::SolverState::time)
+        .def_readwrite("step", &yag_model::SolverState::step);
+
+    py::class_<yag_model::ITimeStep, std::shared_ptr<yag_model::ITimeStep>>(
+        m, "ITimeStep")
+        .def("getTimestep", &yag_model::ITimeStep::getTimestep)
+        .def("advance", &yag_model::ITimeStep::advance, py::arg("state"));
+
+    py::class_<yag_model::FixedTimeStep,
+        yag_model::ITimeStep,
+        std::shared_ptr<yag_model::FixedTimeStep>>(m, "FixedTimeStep")
+        .def(py::init<double>(), py::arg("dt"))
+        .def_readwrite("dt", &yag_model::FixedTimeStep::dt)
+        .def("getTimestep", &yag_model::FixedTimeStep::getTimestep)
+        .def("advance", &yag_model::FixedTimeStep::advance, py::arg("state"));
+
     py::class_<yag_model::IBrake, std::shared_ptr<yag_model::IBrake>>(
         m, "IBrake");
 
@@ -148,9 +122,7 @@ void bind_brakes(py::module_ const &m) {
         .def_readonly(
             "stride", &yag_model::ReagentQuantityThresholdBrake::stride)
         .def_readonly("disc", &yag_model::ReagentQuantityThresholdBrake::disc);
-}
 
-void bind_capture_triggers(py::module_ const &m) {
     py::class_<yag_model::ICaptureTrigger,
         std::shared_ptr<yag_model::ICaptureTrigger>>(m, "ICaptureTrigger");
 
@@ -173,9 +145,7 @@ void bind_capture_triggers(py::module_ const &m) {
         .def("shouldCapture",
             &yag_model::LastFrameCaptureTrigger::shouldCapture,
             py::arg("state"));
-}
 
-void bind_captures(py::module_ const &m) {
     py::class_<yag_model::InMemoryFrameCapture>(m, "InMemoryFrameCapture")
         .def(py::init<size_t, yag_model::Discretization>(),
             py::arg("capacity"),
@@ -193,8 +163,24 @@ void bind_captures(py::module_ const &m) {
         .def_readonly("capacity", &yag_model::QuantityCapture::capacity)
         .def_readonly("t_history", &yag_model::QuantityCapture::t_history)
         .def_readonly("q_history", &yag_model::QuantityCapture::q_history);
-}
-void bind_utils(py::module_ &m) {
+
+    m.def("solve",
+        &yag_model::solve,
+        py::arg("disc"),
+        py::arg("reactionParameters"),
+        py::arg("timeStep"),
+        py::arg("brake"),
+        py::arg("captureTrigger"),
+        py::arg("capture"),
+        py::arg("ic"));
+
+    m.def("build_checkerboard_initial_condition",
+        &yag_model::buildCheckerboardInitialCondition,
+        py::arg("disc"),
+        py::arg("c1_initial_concentration"),
+        py::arg("c2_initial_concentration"),
+        "Creates a checkerboard initial condition");
+
     m.def("quantity",
         &yag_model::quantity,
         py::arg("c"),
@@ -206,10 +192,4 @@ void bind_utils(py::module_ &m) {
         py::arg("state"),
         py::arg("disc"),
         "Compute reagent quantity from solution state");
-
-    m.def("mass",
-        &yag_model::mass,
-        py::arg("state"),
-        py::arg("disc"),
-        "Compute total mass from solver state");
 }

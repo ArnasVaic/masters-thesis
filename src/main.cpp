@@ -23,7 +23,7 @@ int main() {
     auto brake = std::make_shared<yag_model::FixedStepBrake>(totalSteps);
     auto captureTrigger =
         std::make_shared<yag_model::LastFrameCaptureTrigger>(brake);
-    auto capture = std::make_unique<yag_model::QuantityCapture>(1, 1, disc);
+    auto capture = std::make_unique<yag_model::QuantityCapture>(1, disc);
 
     auto ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);
 
