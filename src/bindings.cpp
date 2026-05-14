@@ -97,15 +97,21 @@ PYBIND11_MODULE(yag_model, m) {
     py::class_<yag_model::IBrake, std::shared_ptr<yag_model::IBrake>>(
         m, "IBrake");
 
-    py::class_<yag_model::FixedStepBrake>(m, "FixedStepBrake")
+    py::class_<yag_model::FixedStepBrake,
+        yag_model::IBrake,
+        std::shared_ptr<yag_model::FixedStepBrake>>(m, "FixedStepBrake")
         .def(py::init<size_t>(), py::arg("steps"))
         .def_readonly("steps", &yag_model::FixedStepBrake::steps);
 
-    py::class_<yag_model::TimeBrake>(m, "TimeBrake")
+    py::class_<yag_model::TimeBrake,
+        yag_model::IBrake,
+        std::shared_ptr<yag_model::TimeBrake>>(m, "TimeBrake")
         .def(py::init<double>(), py::arg("t_end"))
         .def_readonly("t_end", &yag_model::TimeBrake::t_end);
 
-    py::class_<yag_model::ReagentQuantityThresholdBrake>(
+    py::class_<yag_model::ReagentQuantityThresholdBrake,
+        yag_model::IBrake,
+        std::shared_ptr<yag_model::ReagentQuantityThresholdBrake>>(
         m, "ReagentQuantityThresholdBrake")
         .def(py::init<double,
                  double,
@@ -146,7 +152,13 @@ PYBIND11_MODULE(yag_model, m) {
             &yag_model::LastFrameCaptureTrigger::shouldCapture,
             py::arg("state"));
 
-    py::class_<yag_model::InMemoryFrameCapture>(m, "InMemoryFrameCapture")
+    py::class_<yag_model::ICapture, std::shared_ptr<yag_model::ICapture>>(
+        m, "ICapture");
+
+    py::class_<yag_model::InMemoryFrameCapture,
+        yag_model::ICapture,
+        std::shared_ptr<yag_model::InMemoryFrameCapture>>(
+        m, "InMemoryFrameCapture")
         .def(py::init<size_t, yag_model::Discretization>(),
             py::arg("capacity"),
             py::arg("disc"))
@@ -155,7 +167,9 @@ PYBIND11_MODULE(yag_model, m) {
         .def_readonly("t_history", &yag_model::InMemoryFrameCapture::t_history)
         .def_readonly("c_history", &yag_model::InMemoryFrameCapture::c_history);
 
-    py::class_<yag_model::QuantityCapture>(m, "QuantityCapture")
+    py::class_<yag_model::QuantityCapture,
+        yag_model::ICapture,
+        std::shared_ptr<yag_model::QuantityCapture>>(m, "QuantityCapture")
         .def(py::init<size_t, yag_model::Discretization>(),
             py::arg("capacity"),
             py::arg("disc"))
@@ -164,8 +178,23 @@ PYBIND11_MODULE(yag_model, m) {
         .def_readonly("t_history", &yag_model::QuantityCapture::t_history)
         .def_readonly("q_history", &yag_model::QuantityCapture::q_history);
 
-    m.def("solve",
-        &yag_model::solve,
+    m.def(
+        "solve",
+        [](yag_model::Discretization const &disc,
+            yag_model::ModelParameters const &reactionParameters,
+            std::shared_ptr<yag_model::ITimeStep> timeStep,
+            std::shared_ptr<yag_model::IBrake> brake,
+            std::shared_ptr<yag_model::ICaptureTrigger> captureTrigger,
+            std::shared_ptr<yag_model::ICapture> capture,
+            yag_model::SolutionState const &ic) {
+            return yag_model::solve(disc,
+                reactionParameters,
+                *timeStep,
+                *brake,
+                *captureTrigger,
+                *capture,
+                ic);
+        },
         py::arg("disc"),
         py::arg("reactionParameters"),
         py::arg("timeStep"),

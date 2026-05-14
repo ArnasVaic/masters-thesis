@@ -16,7 +16,7 @@
 namespace yag_model {
 
 void solve(Discretization const &disc,
-    ModelParameters const &reactionParameters,
+    ModelParameters const &params,
     ITimeStep &timeStep,
     IBrake const &brake,
     ICaptureTrigger const &captureTrigger,

@@ -79,7 +79,7 @@ void solveStep(Discretization const& disc,
 }
 
 void xSweepStep(size_t const mat,
-    SolverState const& state,
+    SolverState& state,
     ADISolverCache& cache,
     int const rows,
     int const cols) {
