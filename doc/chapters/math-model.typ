@@ -20,7 +20,7 @@ $
   #al-ox + 3"YAP" &arrow.r.long "YAG" #<reaction:3>
 $ 
 
-Reagentus žymėsime $c_1$ (#al-ox) ir $c_2$ (#it-ox). Į modelį įtrauksime YAM ($c_3$) ir YAP $(c_4)$ medžiagų koncentracijas, o YAG koncentraciją žymėsime $c_5$. Analogiškai žymėsime šių medžiagų kiekį laiko momentu $t$ visoje modeliuojamoje erdvėje -- $q_i (t) = q_i$. Iš kiekvienos  reakcijos lygties galime sudaryti diferencialines lygtis apibudinančias medžiagų kiekio priklausomybę nuo laiko. Iš @reaction:1 gauname:
+Reagentus žymėsime $c_1$ (#al-ox) ir $c_2$ (#it-ox). Į modelį įtrauksime YAM ($c_3$) ir YAP $(c_4)$ medžiagų koncentracijas, o YAG koncentraciją žymėsime $c_5$. Analogiškai žymėsime šių molinę medžiagų masę laiko momentu $t$ modeliuojamoje erdvėje -- $q_i (t) = q_i$. Iš kiekvienos  reakcijos lygties galime sudaryti diferencialines lygtis apibudinančias medžiagų kiekio priklausomybę nuo laiko. Iš @reaction:1 gauname:
 
 #let partial-t = var => $ (partial var) / (partial t) $
 
