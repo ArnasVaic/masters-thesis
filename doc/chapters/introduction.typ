@@ -11,10 +11,17 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 Šio *darbo tikslas* -- sudaryti dviejų dimensijų kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis bei įvertinti modelio tikslumą.
 
 Šiam tikslui pasiekti buvo iškelti šie uždaviniai: 
-- Įgyvendinti kompiuterinį modelį pritaikytą MIF superkompiuteriui, kuris spręstų diferencialinių lygčių sistema aprašyta YAG sintezės reakciją.
 
-- Patobulinti kompiuterinį modelį -- modeliuoti sumažėjusią difuziją vietose, kuriose YAG koncentracija yra padidėjusi.
+- Sukonstruoti matematinį YAG sintezės modelį remiantis cheminėmis reakcijomis
 
-- Įgyvendinti programinį karkasą, kuris leistu atlikti parametrų paiešką lygiagretinant skaičiavimus tarp daugelio superkompiuterio skaičiavimo mazgų.
+- Sukurti kompiuterį YAG sintezės modelį naujant C++ kalbą
 
-- Naudojant kompiuterinį modelį surasti optimalius modelio parametrus
+- Sukurti kompiuterinio modelio sąsajas (_angl. bindings_) Pytohn kalbai
+
+- Verifikuoti kompiuterinio modelio rezultatus
+
+- Pritaikyti kompiuterinį modelį MIF superkompiuterio infrastruktūrai
+
+- Įgyvendinti programinį karkasą, kuris leistu atlikti modelio parametrų paiešką lygiagretinant skaičiavimus tarp daugelio superkompiuterio skaičiavimo mazgų.
+
+- Naudojantis sukurta programine įranga optimalius modelio parametrus
