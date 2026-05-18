@@ -6,7 +6,7 @@ YAG kristalai turi daugybę taikymų, todėl šios medžiagos sintezės būdai y
 
 Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tačiau kompiuterinis šios reakcijos modelis gali padėti greitai ir pigiai nustatyti optimalų reakcijos vykdymo laiką, temperatūrą ir pamatyti mikroskopinius procesus, kurių tiesiogiai matyti negalime dėl fizinių sąlygų reikalingų reakcijai vykdyti.
 
-Šios reakcijos modelį sudaro keletas fizikinių parametrų, kuriuos būtina nustatyti norint, kad modelio rezultatai atitiktų fizinius rezultatus. Šiam tikslui pasiekti bus naudojami eksperimentiniu būdu gauti reakcijos duomenys, kuriuos paruoš Vilniaus Universiteto Chemijos fakulteto mokslininkai.
+Šios reakcijos modelį sudaro fizikiniai parametrai nusakantys medžiagų difuzijos bei reagavimo greičius. Šių parametrų pasirinkimas lemia modelio rezultatų atitikimą su eksperimento rezultatais. Šiam tikslui pasiekti bus naudojami eksperimentiniu būdu gauti reakcijos duomenys, kuriuos paruoš Vilniaus Universiteto Chemijos fakulteto mokslininkai.
 
 Šio *darbo tikslas* -- sudaryti dviejų dimensijų kompiuterinį kietafazės YAG sintezės reakcijos modelį ir nustatyti jo fizinius parametrus naudojantis eksperimentiniais duomenimis bei įvertinti modelio tikslumą.
 
