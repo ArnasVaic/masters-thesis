@@ -1,3 +1,5 @@
+#import "@preview/cetz:0.5.1": canvas, draw
+
 = Papildytas matematinis modelis
 
 == Modelio sudarymas
@@ -66,5 +68,72 @@ $
 
 kur $bold(D) = (D_1, D_2, D_3, D_4, D_5)$.
 
-== Pradinė ir kratinė sąlygos
+== Pradinė ir kraštinė sąlygos
+
+Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a darysime prielaidą, kad reagentų dalelės yra vienodai pasiskirsčiusios po erdvę ir yra apytiksliai kvadrato formos, dėl šios priežasties autoriai teigia, kad užtenka modeliuoti erdvės sritį, kuri yra 1 $mu m^3$ dydžio. Reikia pastebėti, kad tyrimų autoriai modeliuodami reakciją daro prielaidą, kad abiejų medžiagų dalelės yra vienodo dydžio -- $1 mu m^3$, tokias prielaidas darysime ir mes.
+
+#let mixture-pefect() = {
+
+  // draw.set-style(
+  //   grid: (
+  //     stroke: 2pt
+  //   )
+  // )
+
+  // draw.grid((0, 0), (5, 5), step: 5/3)
+  // 
+  // for x in range(n) {
+  let n = 3
+  let cell = 1.5
+  for x in range(n) {
+    for y in range(n) {
+
+      let color = if calc.rem(x + y, 2) == 0 {
+          rgb("#ffffff")
+        } else {
+          rgb("#dededeff")
+        }
+
+      draw.rect(
+        (x * cell, y * cell),
+        ((x + 1) * cell, (y + 1) * cell),
+        fill: color,
+        stroke: 2pt,
+      )
+    }
+  }
+
+  draw.rect(
+    (1.5/2, 1.5/2),
+    (1.5 * 1.5 , 1.5 * 1.5),
+    stroke: (dash: "dashed")
+  )
+}
+
+#figure(
+  grid(columns: 5, gutter: 20pt,
+  image("../assets/logos/diagrams/mixture-rough.svg"),
+  v(60pt) +
+  canvas({
+    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 2pt)
+  }),
+  canvas({
+    mixture-pefect()
+  }),
+  v(60pt) +
+  canvas({
+    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 2pt)
+  }),
+  canvas({
+
+    let color = rgb("dededeff")
+
+    draw.rect((0, 0), (2, 2), stroke: 2pt)
+    draw.rect((0, 2), (2, 4), stroke: 2pt, fill: color)
+    draw.rect((2, 0), (4, 2), stroke: 2pt, fill: color)
+    draw.rect((2, 2), (4, 4), stroke: 2pt)
+  })
+  )
+)
+
 
