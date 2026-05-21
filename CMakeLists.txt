@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_PYTHON "Build Python module" ON)
-option(BUILD_APP "Build app" OFF)
+option(BUILD_APP "Build app" ON)
 option(BUILD_TESTS "Build tests" OFF)
 
 include(CTest)
@@ -41,6 +41,8 @@ target_include_directories(core_base PUBLIC src)
 
 target_link_libraries(core_base PUBLIC
         xtensor
+        ${LAPACK_LIBRARIES}
+        ${BLAS_LIBRARIES}
 )
 
 # --------------------------------------------------
@@ -71,8 +73,6 @@ target_include_directories(core_solver PUBLIC src)
 
 target_link_libraries(core_solver PUBLIC
         core_model
-        ${LAPACK_LIBRARIES}
-        ${BLAS_LIBRARIES}
 )
 
 # --------------------------------------------------
@@ -137,10 +137,10 @@ endif ()
 # --------------------------------------------------
 # Main app
 # --------------------------------------------------
-if (BUILD_APP)
-    add_executable(app src/main.cpp)
-    target_link_libraries(app PRIVATE core)
-endif ()
+#if (BUILD_APP)
+add_executable(app src/main.cpp)
+target_link_libraries(app PRIVATE core)
+#endif ()
 
 # --------------------------------------------------
 # Tests
