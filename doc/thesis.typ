@@ -39,7 +39,7 @@
 
 #pagebreak(weak:true)
 
-#include "chapters/math-model.typ"
+#include "chapters/model.typ"
 
 #pagebreak(weak:true)
 

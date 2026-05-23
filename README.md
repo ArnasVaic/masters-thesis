@@ -90,11 +90,6 @@ In field `CMake options` add:
 
 In CLion you should now be able to succesfully reload CMake project.
 
-For locally installing bindings you will need to install packages:
-```
-pip install scikit-build-core
-```
-
 ## Workflow
 
 Build `yag_model` target, this will create a `.so` file in `cmake-wsl-debug` folder which is the built python bindings that can be directly imported in python using (note that this requires the `.so` file to be in the same directory as the python file):

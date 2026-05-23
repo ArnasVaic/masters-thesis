@@ -4,44 +4,42 @@ import numpy as np
 import yag_model as ym
 import matplotlib.pyplot as plt
 
-# %%
+# disc = ym.Discretization(0.5, 0.3, 40, 40)
 
-disc = ym.Discretization(0.5, 0.3, 40, 40)
+# ic = ym.build_checkerboard_initial_condition(disc, 1.0, 1.0)
 
-ic = ym.build_checkerboard_initial_condition(disc, 1.0, 1.0)
+# q0 = ym.reagent_quantity(ic, disc)
 
-q0 = ym.reagent_quantity(ic, disc)
+# mp = ym.ModelParameters(
+#     [1e-4, 1e-4, 1e-4, 1e-4, 1e-4],
+#     [100.0, 50.0, 20.0]
+# )
 
-mp = ym.ModelParameters(
-    [1e-4, 1e-4, 1e-4, 1e-4, 1e-4],
-    [100.0, 50.0, 20.0]
-)
+# ts = ym.ClampedGeometricReagentQuantityThresholdStep(
+#     1000,
+#     0.0001,
+#     2.0,
+#     0.01,
+#     0.0001,
+#     0.03,
+#     q0,
+#     disc,
+# )
 
-ts = ym.ClampedGeometricReagentQuantityThresholdStep(
-    1000,
-    0.0001,
-    2.0,
-    0.01,
-    0.0001,
-    0.03,
-    q0,
-    disc,
-)
+# br = ym.FixedStepBrake(10000)
+# cpt = ym.StrideCaptureTrigger(1)
+# # cp = ym.QuantityCapture(10000, disc)
+# cp = ym.InMemoryFrameCapture(10000, disc)
 
-br = ym.FixedStepBrake(10000)
-cpt = ym.StrideCaptureTrigger(1)
-# cp = ym.QuantityCapture(10000, disc)
-cp = ym.InMemoryFrameCapture(10000, disc)
+# # %%
+# ym.solve(disc, mp, ts, br, cpt, cp, ic)
 
-# %%
-ym.solve(disc, mp, ts, br, cpt, cp, ic)
+# # %%
+# plt.plot(np.diff(cp.t_history))
 
-# %%
-plt.plot(np.diff(cp.t_history))
-
-# %%
-plt.imshow(cp.c_history[4, 9000, :, :])
-plt.colorbar()
+# # %%
+# plt.imshow(cp.c_history[4, 9000, :, :])
+# plt.colorbar()
 
 # %%
 
@@ -69,10 +67,10 @@ def calculate_m_total(state: ym.SolutionState, disc: ym.Discretization) -> float
 
 def build_cfg(mp: ym.ModelParameters):
     disc = ym.Discretization(5e-6, 3e-6, 40, 40)
-    ic = ym.build_checkerboard_initial_condition(disc, 1.0, 1.0)
+    ic = ym.build_checkerboard_initial_condition(disc, 5e-6, 3e-6)
     # q0 = ym.reagent_quantity(ic, disc)
     # ts = ym.ClampedGeometricReagentQuantityThresholdStep(1000, 0.0001, 2.0, 0.01, 0.0001, 0.03, q0, disc)
-    ts = ym.FixedTimeStep(0.0001)
+    ts = ym.FixedTimeStep(0.01)
     # Fitting to 6hrs so need to continue further
     br = ym.TimeBrake(6 * 60 * 60)
     cpt = ym.LastFrameCaptureTrigger(br)
