@@ -1,3 +1,3 @@
 #heading(numbering: none, "Santrauka")
 
-#lorem(100)
+Šiame darbe nagrinėjamas itrio aliuminio granato (YAG) kietafazės sintezės reakcijos kompiuterinis modeliavimas. Matematinis modelis sudarytas pagal reakcijas, kurios vyksta sintezės metu. Pristatoma matematinio modelio pradinė bei kraštinės sąlygos. Gautam modeliui spręsti įgyvendinamas skaitinis modelis, kuris yra pagrįstas ADI metodu.Siekiant palengvinti naudojimą ir duomenų vizualizavimą, sukurtos Python sąsajos (_angl. bindings_). Fiziniai modelio parametrai nustatyti remiantis eksperimentiniais duomenimis, surinktais Vilniaus universiteto Chemijos ir geomokslų fakulteto tyrėjų.

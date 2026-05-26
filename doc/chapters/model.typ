@@ -25,25 +25,19 @@ $
 $ 
 
 Remiantis masės veikimo dėsniu (_angl. mass action law_) ir cheminėmis reakcijomis @reaction:1 @reaction:2 @reaction:3 galime sudaryti diferencialines lygtis, kurios nusako kaip molinis medžiagų kiekis kinta su laiku. Molinę medžiagų masę laiko momentu $t$ žymėsime taip: $q_1 (#al-ox)$, $q_2 (#it-ox)$, $q_3 ("YAM")$, $q_4 ("YAP")$, $q_5 ("YAG")$, čia $q_i = q_i (t)$. Analogiškai žymėsime molinį medžiagų konkrentracijos pasiskirstymą erdvėje $c_i = c_i (bold(x), t)$. Iš @reaction:1 gauname:
-
 #let partial-t = var => $ (partial var) / (partial t) $
-
 $
   #partial-t($q_1$) = -k_1q_1q_2 quad
   #partial-t($q_2$) = -2k_1q_1q_2 quad
   #partial-t($q_3$) = k_1q_1q_2
 $
-
 Iš @reaction:2:
-
 $
   #partial-t($q_1$) = - k_2q_1q_3 quad
   #partial-t($q_3$) = - k_2q_1q_3 quad
   #partial-t($q_4$) = 4k_2q_1q_3
 $
-
 Iš @reaction:3:
-
 $
   #partial-t($q_1$) = - k_3q_1q_4 quad
   #partial-t($q_4$) = - 3k_3q_1q_4 quad
@@ -55,12 +49,12 @@ $
 $
   (partial c_1) / (partial t) &= D_1 nabla^2 c_1 - k_1c_1c_2 - k_2c_1c_3 - k_3c_1c_4\
   (partial c_2) / (partial t) &= D_2 nabla^2 c_2 - 2k_1c_1c_2\
-  (partial c_3) / (partial t) &= D_3 nabla^2 c_3 + k_1c_1c_2 - k_2c_1c_3\
+  (partial c_3) / (partial t) &= D_3 nabla^2 c_3 + k_1c_1c_2 - k_2c_1c_3, quad (bold(x), t) in Omega times [0, T]\
   (partial c_4) / (partial t) &= D_4 nabla^2 c_4 + 4k_2c_1c_3 - 3k_3c_1c_4\
   (partial c_5) / (partial t) &= D_5 nabla^2 c_5 + k_3c_1c_4
 $
 
-Čia $D_i$ -- medžiagų difuzijos konstantos, o $k_i$ -- reakcijos greičio konstantos. Sistemą galima užrašyti ir glaustesniu formatu:
+Čia $D_i$ -- medžiagų difuzijos konstantos, $k_i$ -- reakcijos greičio konstantos, $Omega$ -- sritis, kurioje modeliuojame reakciją, o $T$ -- proceso trukmė. Sistemą galima užrašyti ir glaustesniu formatu:
 
 $
   (partial bold(c)) / (partial t) &= bold(D) dot.o nabla^2 bold(c) + bold(S) dot bold(phi)(bold(c)), quad bold(S) = mat(-1, -1, -1; -2, 0, 0; 1, -1, 0; 0, 4, -3;0, 0, 1), quad  bold(phi)(bold(c)) = vec(k_1 c_1 c_2, k_2 c_1 c_3, k_3 c_1 c_4)
@@ -70,7 +64,7 @@ kur $bold(D) = (D_1, D_2, D_3, D_4, D_5)$.
 
 == Pradinė ir kraštinė sąlygos
 
-Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a darysime prielaidą, kad reagentų dalelės yra vienodai pasiskirsčiusios po erdvę ir yra apytiksliai kvadrato formos, dėl šios priežasties autoriai teigia, kad užtenka modeliuoti erdvės sritį, kuri yra 1 $mu m^3$ dydžio. Reikia pastebėti, kad tyrimų autoriai modeliuodami reakciją daro prielaidą, kad abiejų medžiagų dalelės yra vienodo dydžio -- $1 mu m^3$, tokias prielaidas darysime ir mes.
+Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a darysime prielaidą, kad reagentų dalelės yra vienodai pasiskirsčiusios po erdvę ir yra apytiksliai kvadrato formos, dėl šios priežasties autoriai teigia, kad užtenka modeliuoti erdvės sritį, kuri yra 1 $mu m^3$ dydžio. Reikia pastebėti, kad tyrimų autoriai modeliuodami reakciją daro prielaidą, kad abiejų medžiagų dalelės yra vienodo dydžio -- $1 mu m^3$, tokias prielaidas darysime ir mes, kaip parodyta @initial-condition
 
 #let mixture-pefect() = {
 
@@ -84,7 +78,7 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
   // 
   // for x in range(n) {
   let n = 3
-  let cell = 1.5
+  let cell = 1.25
   for x in range(n) {
     for y in range(n) {
 
@@ -98,14 +92,14 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
         (x * cell, y * cell),
         ((x + 1) * cell, (y + 1) * cell),
         fill: color,
-        stroke: 2pt,
+        stroke: 1pt,
       )
     }
   }
 
   draw.rect(
-    (1.5/2, 1.5/2),
-    (1.5 * 1.5 , 1.5 * 1.5),
+    (1.25/2, 1.25/2),
+    (1.5 * 1.25 , 1.5 * 1.25),
     stroke: (dash: "dashed")
   )
 }
@@ -115,25 +109,127 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
   image("../assets/logos/diagrams/mixture-rough.svg"),
   v(60pt) +
   canvas({
-    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 2pt)
+    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 1pt)
   }),
   canvas({
     mixture-pefect()
   }),
   v(60pt) +
   canvas({
-    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 2pt)
+    draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 1pt)
   }),
   canvas({
 
     let color = rgb("dededeff")
 
-    draw.rect((0, 0), (2, 2), stroke: 2pt)
-    draw.rect((0, 2), (2, 4), stroke: 2pt, fill: color)
-    draw.rect((2, 0), (4, 2), stroke: 2pt, fill: color)
-    draw.rect((2, 2), (4, 4), stroke: 2pt)
+    draw.rect((0, 0), (2, 2), stroke: 1pt)
+    draw.rect((0, 2), (2, 4), stroke: 1pt, fill: color)
+    draw.rect((2, 0), (4, 2), stroke: 1pt, fill: color)
+    draw.rect((2, 2), (4, 4), stroke: 1pt)
+    draw.content((1, 1), $c_1$)
+    draw.content((3, 3), $c_1$)
+    draw.content((1, 3), $c_2$)
+    draw.content((3, 1), $c_2$)
+
+    draw.content((2, -0.5), $1 mu m$)
+    draw.content((-0.5, 2), $1 mu m$)
   })
-  )
-)
+  ),
+  caption: [Kairėje -- oksidų mišinio iliustracija, dalelės pasiskirsčiusios vienodai ir tolygiai. Centre -- idealiuotas mišinio modelis, dalelės yra kvadrato formos ir vienodo dydžio. Dešinėje -- idealizuoto modelio dalis iš vidurinės iliustracijos, kurią modeliuojame. Tamsesnis plotas žymi aliuminio oksido daleles, o šviesesnis -- itrio oksido daleles.]
+) <initial-condition>
+
+Sukonstruotam matematiniam modeliui taikysime Neumano kraštinę sąlygą matomą @math-boundary-cond[lygt.], kuri apibrėžia medžiagų nepratekėjimą srities paviršiaus normalių kryptimi. Šios kraštinės vizualizacija pateikta @boundary-condition
+
+$
+nabla c_i (bold(x), t) dot harpoon(n) = 0, quad (bold(x), t) in partial Omega times [0, T]
+$ <math-boundary-cond>
+
+#figure(
+  canvas({
+    let color = rgb("dededeff")
+
+    let cell = 1.25
+    let arrow_pad = 0.5
+    let arrow_length = 1
+
+    draw.rect((0, 0), (cell, cell), stroke: 1pt)
+    draw.rect((0, cell), (cell, 2 * cell), stroke: 1pt, fill: color)
+    draw.rect((cell, 0), (2 * cell, cell), stroke: 1pt, fill: color)
+    draw.rect((cell, cell), (2 * cell, 2 * cell), stroke: 1pt)
+
+    
+    draw.line(
+      (-arrow_pad, cell), 
+      (-arrow_pad -arrow_length, cell), 
+      mark: (end: ">>"), 
+      stroke: 1pt, 
+      name: "west-arrow"
+    )
+    draw.content(
+      ("west-arrow.end"),
+      anchor: "south",
+      padding: (0.3, 0),
+      $partial/ (partial x) c_i = 0$
+    )
+    
+    draw.line(
+      (2*cell + arrow_pad, cell), 
+      (2*cell + arrow_pad + arrow_length, cell), 
+      mark: (end: ">>"), 
+      stroke: 1pt, 
+      name: "east-arrow"
+    )
+    draw.content(
+      ("east-arrow.end"),
+      anchor: "south",
+      padding: (0.3, 0),
+      $partial/ (partial x) c_i = 0$
+    )
+
+    draw.line(
+      (cell, -arrow_pad), 
+      (cell, -arrow_pad -arrow_length), 
+      mark: (end: ">>"), 
+      stroke: 1pt, 
+      name: "south-arrow"
+    )
+    draw.content(
+      ("south-arrow.end"),
+      anchor: "south-east",
+      padding: (0.3, 0.3),
+      $partial/ (partial x) c_i = 0$
+    )
+    
+    draw.line(
+      (cell, 2*cell + arrow_pad), 
+      (cell, 2*cell + arrow_pad + arrow_length), 
+      mark: (end: ">>"), 
+      stroke: 1pt, 
+      name: "north-arrow"
+    )
+    draw.content(
+      ("north-arrow.end"),
+      anchor: "north-east",
+      padding: (0.3, 0.3),
+      $partial/ (partial x) c_i = 0$
+    )
+    draw.content((8, cell), $$)
+
+    // draw.content(anchor: "east-arrow", $partial/ (partial x) c_i = 0$)
+    // draw.line(
+    //   (2*cell + arrow_pad, 2*cell + arrow_pad + arrow_length), 
+    //   mark: (end: ">>"), 
+    //   stroke: 1pt, 
+    //   name: "east-arrow"
+    // )
+
+    // draw.content(anchor: "south-arrow", $partial/ (partial y) c_i = 0$)
+    // draw.line((cell, -arrow_pad), (cell, -arrow_pad - arrow_length), mark: (end: ">>"), stroke: 1pt, name: "south-arrow")
+
+    // draw.content((3.2, 5), $partial/ (partial y) c_i = 0$)
+    // draw.line((cell, 2*cell + arrow_pad), (cell, 2*cell + arrow_pad + arrow_length), mark: (end: ">>"), stroke: 1pt)
+  }),
+  caption: [Modeliuojamai kvadratinei sričiai pritaikyta Neumano kraštinė sąlyga.],
+) <boundary-condition>
 
 

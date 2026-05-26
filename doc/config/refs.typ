@@ -23,7 +23,7 @@
       link(
         el.location(), 
         numbering(
-          el.numbering, ..counter(figure).at(el.location())
+          el.numbering, ..el.counter.at(el.location())
         ) + " " + el.supplement,
       )
     } else if lang == "en" {

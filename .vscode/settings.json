@@ -15,8 +15,9 @@
     "silico",
     "tridiag",
     "Tridiagonal",
-    "Typst"
-],
+    "Typst",
+    "vizualizacija"
+  ],
   "julia.environmentPath": "/home/arnas/uni/masters-thesis/julia",
   "cmake.sourceDirectory": "/home/arnas/uni/masters-thesis/cpp",
   "python-envs.defaultEnvManager": "ms-python.python:conda",

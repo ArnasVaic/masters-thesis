@@ -1,3 +1,3 @@
 #heading(numbering: none, "Summary")
 
-#lorem(400)
+In this paper, we investigate the computational modelling of the solid-state synthesis reaction of yttrium aluminum garnet (YAG). A mathematical model is developed based on the governing reaction equations together with the corresponding initial and boundary conditions. To solve the resulting system numerically, an alternating direction implicit (ADI) scheme is implemented in C++. Python bindings are provided to facilitate usability and data visualization. The solver results are demonstrated under various simulation settings. The physical model parameters are derived from experimental data collected by researchers at the Vilnius University Faculty of Chemistry and Geosciences
