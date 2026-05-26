@@ -70,13 +70,16 @@ def build_cfg(mp: ym.ModelParameters):
     ic = ym.build_checkerboard_initial_condition(disc, 5e-6, 3e-6)
     # q0 = ym.reagent_quantity(ic, disc)
     # ts = ym.ClampedGeometricReagentQuantityThresholdStep(1000, 0.0001, 2.0, 0.01, 0.0001, 0.03, q0, disc)
-    ts = ym.FixedTimeStep(0.01)
+    ts = ym.FixedTimeStep(0.1)
     # Fitting to 6hrs so need to continue further
     br = ym.TimeBrake(6 * 60 * 60)
-    cpt = ym.LastFrameCaptureTrigger(br)
-    cp = ym.QuantityCapture(2, disc)
+    #cpt = ym.LastFrameCaptureTrigger(br)
+    cpt = ym.StrideCaptureTrigger(1000)
+    #cp = ym.QuantityCapture(1000, disc)
+    cp = ym.InMemoryFrameCapture(217, disc)
     return [ disc, mp, ts, br, cpt, cp, ic ]
 
+@timer
 def solve(mp, build_cfg):
     cfg = build_cfg(mp)
     ym.solve(*cfg)
@@ -88,19 +91,49 @@ def loss(cfg):
     p_pred = MOLAR_MASSES * q_pred / m_total
     return np.mean((p_pred - P_TRUE) ** 2)
 
-@timer
 def cost(mp, build_cfg):
     cfg = solve(mp, build_cfg)
     return loss(cfg)
 
+def validate_reaction_heuristic(cfg):
+    _, mp, ts, _, _, _, ic = cfg
+    dt = ts.getTimestep()
+
+    c1_max, c2_max = np.max(ic[0]), np.max(ic[1])
+    k1, k2, k3 = mp.K
+
+    h = 1 / (k1 * max(c1_max, c2_max) + k2 * c1_max + k3 * c1_max)
+    print(f'dt = {dt}, h = {h}')
+    assert 100 * dt < h
+
 # %%
 
 mp = ym.ModelParameters(
-    [1e-4, 1e-4, 1e-4, 1e-4, 1e-4], 
+    [1e-6, 1e-6, 1e-6, 1e-6, 1e-6], 
     [100.0, 50.0, 20.0]
 )
 
+cfg = build_cfg(mp)
+
+validate_reaction_heuristic(cfg)
+
+
+# %%
+
 cfg = solve(mp, build_cfg)
 
-L = loss(cfg)
+#L = loss(cfg)
+# %%
+
+r = cfg[-2]
+for i in range(5):
+    #qi = r.q_history[i]
+    qi = [ ym.quantity(r.c_history[i, frame_id, :, :]) for frame_id in range(217) ]
+    plt.plot(qi[:r.size], label=f'$c_{i}$')
+plt.legend()
+# %%
+
+frame = 0
+plt.imshow(r.c_history[30, frame, :, :])
+plt.colorbar()
 # %%

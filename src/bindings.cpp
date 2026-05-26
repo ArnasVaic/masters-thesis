@@ -187,6 +187,10 @@ PYBIND11_MODULE(yag_model, m) {
             std::shared_ptr<yag_model::ICaptureTrigger> captureTrigger,
             std::shared_ptr<yag_model::ICapture> capture,
             yag_model::SolutionState const &ic) {
+
+            // Release the Python GIL
+            py::gil_scoped_release release;
+
             return yag_model::solve(disc,
                 reactionParameters,
                 *timeStep,

@@ -20,9 +20,9 @@ int main() {
         {100.0, 50.0, 20.0});
 
     yag_model::FixedTimeStep step(0.0001);
-    auto brake = std::make_shared<yag_model::TimeBrake>(1.0);
+    auto brake = std::make_shared<yag_model::TimeBrake>(0.001);
     yag_model::LastFrameCaptureTrigger captureTrigger(brake);
-    yag_model::QuantityCapture capture(2, disc);
+    yag_model::QuantityCapture capture(10, disc);
 
     auto ic = yag_model::buildCheckerboardInitialCondition(disc, 3e-6, 5e-6);
 
