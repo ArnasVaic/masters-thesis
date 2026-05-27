@@ -41,8 +41,9 @@
 
 #include "chapters/model.typ"
 
-#include "chapters/numerical.typ"
+#pagebreak(weak:true)
 
+#include "chapters/numerical.typ"
 
 #pagebreak(weak:true)
 
