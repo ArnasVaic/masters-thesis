@@ -4,6 +4,7 @@
 #include "Brakes/FixedStepBrake.h"
 #include "Brakes/TimeBrake.h"
 #include "CaptureTrigger/LastFrameCaptureTrigger.h"
+#include "CaptureTrigger/StrideCaptureTrigger.h"
 #include "Captures/QuantityCapture.h"
 #include "Config/Discretization.h"
 #include "Config/ModelParameters.h"
@@ -15,13 +16,13 @@
 int main() {
     yag_model::Discretization const disc(2.1544, 2.1544, 40, 40);
 
-    yag_model::ModelParameters const params({1e-5, 1e-5, 1e-5, 1e-5, 1e-5},
+    yag_model::ModelParameters const params({1e-6, 1e-6, 1e-6, 1e-6, 1e-5},
         // Nothing reacts, only diffuses
         {100.0, 50.0, 20.0});
 
     yag_model::FixedTimeStep step(0.0001);
-    auto brake = std::make_shared<yag_model::TimeBrake>(0.001);
-    yag_model::LastFrameCaptureTrigger captureTrigger(brake);
+    auto brake = std::make_shared<yag_model::TimeBrake>(10);
+    yag_model::StrideCaptureTrigger captureTrigger(1);
     yag_model::QuantityCapture capture(10, disc);
 
     auto ic = yag_model::buildCheckerboardInitialCondition(disc, 3e-6, 5e-6);
