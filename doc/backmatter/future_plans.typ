@@ -2,4 +2,4 @@
 
 Ateityje šis tyrimas galėtų būti vystomas įvairiomis kryptimis, viena iš jų -- tikslesnio matematinio modelio kūrimas. Yra žinoma, kad tarpiniai produktai bei pats YAG yra kristalinės medžiagos, pro kurias reagentų difuzija vyksta daug lėčiau, tačiau šiame tyrime nagrinėjamas modelis į tai neatsižvelgia. Taip pat šiame ir susijusiuose tyrimuose nagrinėjama pradinė sąlyga yra stipriai idealizuota, todėl gali riboti modelio tikslumą. Ruošiant eksperimentą reagentų dalelės gali būti skirtingų dydžių ir būti išsidėsčiusios įvairiais būdais.  Tokie patobulinimai galėtų pagerinti modelio tikslumą ir potencialiai pagerinti modelio galimybę prisitaikyti prie eksperimentinių duomenų.
 
-Tyrimas taip pat galėtų būti tęsiamas su didesniu eksperimentinių duomenų kiekiu
+Tyrimas taip pat galėtų būti tęsiamas su didesniu eksperimentinių duomenų kiekiu, kas leistų vienareikšmiškai nustatyti ar dabartinio modelio sudėtingumas yra pakankamas norint modeliuoti 
