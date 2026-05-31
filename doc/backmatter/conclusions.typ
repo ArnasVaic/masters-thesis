@@ -1,1 +1,7 @@
-#heading(numbering: none, "Išvados ir rekomendacijos")
+#heading(numbering: none, "Išvados, rezultatai ir rekomendacijos")
+
+== Rezultatai
+
+== Išvados
+
+== Rekomendacijos

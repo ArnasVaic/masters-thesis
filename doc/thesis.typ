@@ -47,6 +47,10 @@
 
 #pagebreak(weak:true)
 
+#include "chapters/results.typ"
+
+#pagebreak(weak:true)
+
 #include "backmatter/conclusions.typ"
 
 #pagebreak(weak:true)
@@ -57,6 +61,6 @@
 
 #bibliography("references.bib")
 
-#pagebreak(weak:true)
+// #pagebreak(weak:true)
 
-#include "backmatter/appendices.typ"
+// #include "backmatter/appendices.typ"
