@@ -55,14 +55,13 @@ void ADISolverCache::initializeSweepMat(TridiagonalLU &tri, double const mu) {
     // std::ranges::fill(tri.du, -mu);
     // tri.du.front() = -2.0 * mu;
 
-    // Old tridiagonal structure with bad boundary
+    // Old tridiagonal structure
     std::ranges::fill(tri.dl, -mu);
-
+    std::ranges::fill(tri.d, 1 + 2 * mu);
+    std::ranges::fill(tri.du, -mu);
+        
     tri.d.front() = 1 + mu;
     tri.d.back() = 1 + mu;
-    std::ranges::fill(tri.d, 1 + 2 * mu);
-
-    std::ranges::fill(tri.du, -mu);
 }
 
 void ADISolverCache::initializeSweepMats(double const dt,
