@@ -35,7 +35,7 @@ https://arnasvaic.github.io/masters-thesis/
 
 ## Development
 
-WSL is used as a development environment.
+Following instructions assume use of WSl.
 
 ### Prerequisites
 
@@ -92,11 +92,13 @@ In CLion you should now be able to succesfully reload CMake project.
 
 ## Workflow
 
-Build `yag_model` target, this will create a `.so` file in `cmake-wsl-debug` folder which is the built python bindings that can be directly imported in python using (note that this requires the `.so` file to be in the same directory as the python file):
+You can either build the `yag_model` target with CMake via CLion or terminal, which will create a `.so` file in `cmake-wsl-debug` folder which contains  python bindings that can be directly imported in python using (note that this requires the `.so` file to be in the same directory as the python file):
 
 ```python
 import yag_model
 ```
+
+All methods and classes are placed under the namespace `yag_model`. To see how to use, check `py/solver_test.py`.
 
 If you don't want to copy around the `.so` file, you can install the bindings as a package, this will build bindings (note that `yag_model` environment needs to be active in your shell):
 
