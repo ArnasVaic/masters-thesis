@@ -16,7 +16,7 @@ version = "0.1.0"
 [tool.scikit-build]
 cmake.build-type = "Release"
 # if profiling for profiling:
-[tool.scikit-build]
-cmake.build-type = "RelWithDebInfo"
+# [tool.scikit-build]
+# cmake.build-type = "RelWithDebInfo"
 
 build-dir = "build/{wheel_tag}"
