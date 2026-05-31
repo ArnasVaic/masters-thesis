@@ -98,7 +98,7 @@ Build `yag_model` target, this will create a `.so` file in `cmake-wsl-debug` fol
 import yag_model
 ```
 
-If you don't want to copy around the `.so` file, you can install the bindings as a package, this will build bindings:
+If you don't want to copy around the `.so` file, you can install the bindings as a package, this will build bindings (note that `yag_model` environment needs to be active in your shell):
 
 ```bash
 pip install -e . --no-build-isolation
