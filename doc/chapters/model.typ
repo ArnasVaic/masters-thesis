@@ -106,7 +106,7 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
 
 #figure(
   grid(columns: 5, gutter: 20pt,
-  image("../assets/logos/diagrams/mixture-rough.svg"),
+  image("../assets/diagrams/mixture-rough.svg"),
   v(60pt) +
   canvas({
     draw.line((0, 0), (1, 0), mark: (end: ">>"), stroke: 1pt)
