@@ -3,7 +3,9 @@
 import time
 import numpy as np
 import yag_model as ym
+
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 # %%
 
@@ -33,21 +35,63 @@ def solve(mp, build_cfg):
 
 mp = ym.ModelParameters(
     [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
-    [10.0, 5.0, 2.0]
+    [10.0, 5.0, 1.0]
 )
 
-_, _, _, _, _, cpt, _ = solve(mp, build_cfg)
+disc, _, _, _, _, cpt, ic = solve(mp, build_cfg)
 
 # %%
+
+plt.style.use('fivethirtyeight')  # try: 'ggplot', 'bmh', 'fivethirtyeight'
+
+mpl.rcParams.update({
+    "font.family": "Libertinus Serif",
+
+    # Figure
+    "figure.figsize": (6, 4),
+    "figure.dpi": 150,
+
+    # Text
+    "font.size": 11,
+    "axes.labelsize": 12,
+    "axes.titlesize": 13,
+    "legend.fontsize": 10,
+
+    # Lines
+    "lines.linewidth": 2,
+
+    # Axes
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+
+    # Grid
+    "grid.alpha": 0.3,
+
+    # Legend
+    "legend.frameon": False,
+})
+
+mpl.rcParams["font.family"] = "Libertinus Serif"
+
+m0 = \
+    MOLAR_MASSES[0] * ym.quantity(ic[0], disc) + \
+    MOLAR_MASSES[1] * ym.quantity(ic[1], disc)
+
+ELEMENT_NAME_STRINGS = [
+    '$Al_2O_3$','$Y_2O_3$','$YAM$','$YAP$','$YAG$'
+]
 
 m_sum = np.zeros_like(cpt.q_history[0])
 for i in range(5):
     m = cpt.q_history[i] * MOLAR_MASSES[i]
     m_sum += m
-    plt.plot(cpt.t_history, m, label =f'$c_{i+1}$')
+    plt.plot(cpt.t_history, 100 * m / m0, label=ELEMENT_NAME_STRINGS[i])
 
-plt.plot(cpt.t_history, m_sum, label='sum')
+plt.plot(cpt.t_history, 100 * m_sum / m0, label='$\\Sigma$')
+plt.xlabel('Reakcijos laikas (s)')
+plt.ylabel('Medžiagų masės dalys (%)')
 plt.legend()
+plt.savefig('../../doc/assets/diagrams/const-mass.png', dpi=300)
 
 # %%
 
