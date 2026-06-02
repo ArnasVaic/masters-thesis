@@ -14,7 +14,7 @@ Tyrimai, kuriuose yra matematiškai modeliuojama kietafazė YAG sintezė @mackev
 
 $
   3#it-ox + 5#al-ox arrow.r.long 2#yag ("YAG")
-$
+$ <short-chem>
 
 Tačiau yra žinoma, kad sintezės metu vyksta kelios reakcijos, kurių metu formuojasi tarpiniai produktai #yap (YAP) ir #yam (YAM):
 
@@ -22,7 +22,7 @@ $
   #al-ox + 2#it-ox  &arrow.r.long "YAM" #<reaction:1> \
   #al-ox + "YAM" &arrow.r.long 4"YAP" #<reaction:2> \
   #al-ox + 3"YAP" &arrow.r.long "YAG" #<reaction:3>
-$ 
+$ <long-chem>
 
 Remiantis masės veikimo dėsniu (_angl. mass action law_) ir cheminėmis reakcijomis @reaction:1 @reaction:2 @reaction:3 galime sudaryti diferencialines lygtis, kurios nusako kaip molinis medžiagų kiekis kinta su laiku. Molinę medžiagų masę laiko momentu $t$ žymėsime taip: $q_1 (#al-ox)$, $q_2 (#it-ox)$, $q_3 ("YAM")$, $q_4 ("YAP")$, $q_5 ("YAG")$, čia $q_i = q_i (t)$. Analogiškai žymėsime molinį medžiagų konkrentracijos pasiskirstymą erdvėje $c_i = c_i (bold(x), t)$. Iš @reaction:1 gauname:
 #let partial-t = var => $ (partial var) / (partial t) $
@@ -140,16 +140,16 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
     draw.rect((2, 0), (4, 2), stroke: 1pt, fill: color)
     draw.rect((2, 2), (4, 4), stroke: 1pt)
 
-    // draw.content((1, 1), $c_1$)
-    // draw.content((3, 3), $c_1$)
-    // draw.content((1, 3), $c_2$)
-    // draw.content((3, 1), $c_2$)
+    draw.content((1, 1), $c^0_1$)
+    draw.content((3, 3), $c^0_1$)
+    draw.content((1, 3), $c^0_2$)
+    draw.content((3, 1), $c^0_2$)
 
     draw.content((2, -0.5), $1 mu m$)
     draw.content((-0.5, 2), $1 mu m$)
   })
   ),
-  caption: [Kairėje -- oksidų mišinio iliustracija, dalelės pasiskirsčiusios vienodai ir tolygiai. Centre -- idealiuotas mišinio modelis, dalelės yra kvadrato formos ir vienodo dydžio. Dešinėje -- idealizuoto modelio dalis $Omega$ iš vidurinės iliustracijos, kurią modeliuojame. Tamsesnis plotas žymi aliuminio oksido daleles, o šviesesnis -- itrio oksido daleles.]
+  caption: [Kairėje -- oksidų mišinio iliustracija, dalelės pasiskirsčiusios vienodai ir tolygiai. Centre -- idealiuotas mišinio modelis, dalelės yra kvadrato formos ir vienodo dydžio. Dešinėje -- idealizuoto modelio dalis $Omega$ iš vidurinės iliustracijos, kurią modeliuojame. Tamsesnis plotas žymi aliuminio oksido daleles, o šviesesnis -- itrio oksido daleles. Pradinių reagentų molinę koncentracija pradiniu laiko momentu atitinkamai žymėsime $c^0_1$ (#al-ox) ir $c^0_2$ (#it-ox)]
 ) <initial-condition>
 
 Sukonstruotam matematiniam modeliui taikysime Neumano kraštinę sąlygą matomą @math-boundary-cond[lygt.], kuri apibrėžia medžiagų nepratekėjimą srities paviršiaus normalių kryptimi. Šios kraštinės vizualizacija pateikta @boundary-condition
@@ -230,6 +230,11 @@ $ <math-boundary-cond>
       $partial/ (partial x) c_i = 0$
     )
 
+    draw.content((1.25/2, 1.25/2), $c^0_1$)
+    draw.content((3*1.25/2, 3*1.25/2), $c^0_1$)
+    draw.content((1.25/2, 3*1.25/2), $c^0_2$)
+    draw.content((3*1.25/2, 1.25/2), $c^0_2$)
+
     // draw.content(anchor: "east-arrow", $partial/ (partial x) c_i = 0$)
     // draw.line(
     //   (2*cell + arrow_pad, 2*cell + arrow_pad + arrow_length), 
@@ -247,4 +252,14 @@ $ <math-boundary-cond>
   caption: [Modeliuojamai kvadratinei sričiai pritaikyta Neumano kraštinė sąlyga.],
 ) <boundary-condition>
 
+Verta paminėti, kad pradinėje sąlygoje naudojamos pradinių medžiagų molinės koncentracijos $c^0_1$ ir $c^0_2$ atitinka stoichiometrinę sąlygą -- šių medžiagų santykis toks, kad reakcijos eigoje abi medžiagos pilnai sureaguotų. Šis santykis yra $5 : 3$, jis gali būti išvestas iš supaprastintos cheminės reakcijos @short-chem[lygt.] arba iš pilnų cheminių lygčių @long-chem[]. Konkrečias $c^0_1$ ir $c^0_2$ reikšmes galime pasirinkti pagal fizinių medžiagų tankius ir molines mases:
+
+$
+  // (3.987 times 10^(-12) "g "mu"m"^(-3)) / (101.96 " g mol"^(-1))
+  c^0_1 = c_(#al-ox) = rho_(#al-ox) / M_(#al-ox) = (3.987 " g cm"^(-3)) / (101.96 " g mol"^(-1)) = 3.91 times 10^(-14) "mol" / (mu"m"^3)\
+
+  // c_(#it-ox) = (5.01 " g cm"^(-3)) / (225.81 " g mol"^(-1)) = (5.01 times 10^(-12) "g "mu"m"^(-3)) / (225.81 " g mol"^(-1)) = 2.218 times 10^(-14) "mol" / (mu"m"^3)
+$
+
+Kadangi $c_(#al-ox)$ reikšmė yra maža ir dėl jos gali atsirasti slankaus kablelio klaidų (_angl. floating-point errors_), dėl to skaitiškai modeliuodami reakciją naudosime bedimensę koncentraciją medžiagoms $tilde(c)_1, dots, tilde(c)_5 tilde O(1)$, kur $tilde(c)_i=c_i\/C_0$, čia $C_0$ yra konvertavimo konstanta norint paversti bedimensę koncentraciją $tilde(c)_i$ į fizinę reikšmę turinčią $c_0$
 

@@ -27,5 +27,19 @@ $
 
 #figure(
   image("../assets/diagrams/frame_example.png"),
-  caption: [Medžiagų molinės koncentracijos pasiskirstymas erdvėje įvairiais laiko momentais.]
-)
+  caption: [Medžiagų molinės koncentracijos pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parametrai tokie patys kaip pastovios masės demonstracijoje @const-mass išskyrus reakcijos koeficientus. Čia $k_1 = 60.0, k_2 = 30.0, k_3 = 15.0$.]
+) <frame-example>
+
+@frame-example matome kaip atrodo neagreguoti kompiuterinio modelio rezultatai -- modelio produktas yra visų penkių reakcijoje dalyvaujančių medžiagų pasiskirstymai erdvėje diskrečiais laiko momentais, tuo tarpu @const-mass pavaizduoti rezultatai buvo gauti apdorojant šiuos duomenis iš jų išgaunant medžiagų masės kiekius sistemoje.
+
+Modelio parametrai pavyzdžiui @frame-example yra parinkti atsitiktinai norint pademonstruoti modelio rezultatus ir modeliuojamą reakcijos procesą. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirmas stulpelis), 2-3 medžiagų koncentracijų nėra todėl, kad sistemoje yra tik reagentai, kurių pradinę sąlygą jau aptarėme modelio sekcijoje. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik sandūroje, panašų procesą galime įsivaizduoti ir cheminėje reakcijoje, kada medžiagų dalelės pradeda tirpti aukštoje temperatūroje, kas leidžia jom reaguoti ir sanduroje sudaryti produktą YAG. Kompiuterinio modelio rezultatuose galima pastebėti subtilų tarpinių produktų nesimetriškumą $x$ ir $y$ ašimis. Šį polinkį galėtų lemti faktas, kad skirtingų medžiagų poros reaguoja skirtingu greičiu.
+
+= Modelio parametro optimizavimas
+
+Sukonstruotas 
+
+// Dalykai kuriuos reiketu aprasyti prie modelio parametru optimizavimo:
+// Kokiu metodu rasti, kodel butent toks pasirinktas
+// Actual optimalus parametrai ir palyginimas su eksperimentiniais duomenimis
+// Eksperimentiniai duomenys!!!
+// Related performance/stats, pamineti HPC involvement
