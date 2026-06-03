@@ -6,7 +6,7 @@
 // Req. R6
 
 #title_page(
-  "Kompiuterinio modeliavimo antro kurso magistro baigiamasis darbas",
+  "Kompiuterinio modeliavimo pirmo kurso mokslo tiriamojo darbo projektas",
   [ 
     Kietafazės YAG sintezės reakcijos parametrų nustatymas kompiuteriniais modeliais \ 
     #text(size: 10pt)[Determination of reaction parameters for solid-phase YAG synthesis using computer models] 

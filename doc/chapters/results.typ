@@ -36,7 +36,28 @@ Modelio parametrai pavyzdžiui @frame-example yra parinkti atsitiktinai norint p
 
 = Modelio parametro optimizavimas
 
-Sukonstruotas 
+#figure(
+  table(
+    columns: 7,
+    [Temperatūra], [Praėjęs laikas], [#al-ox, masės %, $p_1$], [#it-ox, masės %, $p_2$], [#yam (YAM), masės %, $p_3$], [#yap (YAP), masės %, $p_4$], [#yag (YAG), masės %, $p_5$],
+    [1300 $degree$C],[24 val.],[29.26],[18.27],[15.10],[30.76],[6.61],
+
+    [1400 $degree$C],[6 val.],[29.48],[19.32],[14.84],[24.30],[12.05],
+
+    [1600 $degree$C],[19 val.],[29.21],[19.37],[15.08],[24.06],[12.27]
+  ),
+  caption: [
+    Eksperimentiniai duomenys, kuriuos paruošė Vilniaus Universiteto Chemijos ir Geomokslų fakulteto mokslininkai atlikdami YAG sintezės reakciją laboratorijoje. Lentelėje pateiktos skirtingų medžiagų procentinės masės dalys $p_i$ praėjus tam tikram laikui nuo reakcijos pradžios, kai reakcija vykdomą prie įvairių temperatūrų.
+  ]
+) <experimental-data>
+
+@experimental-data vaizduoja eksperimentinius duomenis, kuriais vadovaudamiesi bandysime rasti optimalius modelio parametrus, t. y. bandysime rasti tokius modelio parametrus, kurie minimizuoja vidutinės kvadratinės paklaidos (_angl. mean squared error_) kainos funkciją:
+
+$
+  cal(L)(bold(p), hat(bold(p))) = sum_(i=1)^5 (p_i-hat(p)_i)^2
+$
+
+Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalbą galėsime leisti daugelį eksperimentu paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint rasti parametrų reikšmes, kurios būdu pakankamai geros praktiniam panaudojimui.
 
 // Dalykai kuriuos reiketu aprasyti prie modelio parametru optimizavimo:
 // Kokiu metodu rasti, kodel butent toks pasirinktas
