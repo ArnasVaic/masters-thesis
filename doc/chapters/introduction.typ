@@ -12,16 +12,16 @@ Atlikti šią reakciją laboratorijoje reikalauja daug laiko ir energijos, tači
 
 Šiam tikslui pasiekti buvo iškelti šie uždaviniai: 
 
-- Sukonstruoti matematinį YAG sintezės modelį remiantis cheminėmis reakcijomis
+- Sukonstruoti matematinį ir skaitinį modelius remiantis pilnomis YAG sintezės cheminėmis reakcijomis
 
-- Sukurti kompiuterį YAG sintezės modelį naujant C++ kalbą
+- Įgyvendinti skaitinį YAG sintezės modelį naudojant C++ kalbą (kompiuterinis modelis)
 
-- Sukurti kompiuterinio modelio sąsajas (_angl. bindings_) Pytohn kalbai
+- Sukurti kompiuterinio modelio sąsajas (_angl. bindings_) Python kalbai
 
-- Verifikuoti kompiuterinio modelio rezultatus
+- Užtikrinti, kad įgyvendintas skaitinis YAG sintezės modelis tenkina masės tvermės dėsnį
 
-- Pritaikyti kompiuterinį modelį MIF superkompiuterio infrastruktūrai
+// - Pritaikyti kompiuterinį modelį MIF superkompiuterio infrastruktūrai
 
-- Įgyvendinti programinį karkasą, kuris leistu atlikti modelio parametrų paiešką lygiagretinant skaičiavimus tarp daugelio superkompiuterio skaičiavimo mazgų.
+// - Įgyvendinti programinį karkasą, kuris leistu atlikti modelio parametrų paiešką lygiagretinant skaičiavimus tarp daugelio superkompiuterio skaičiavimo mazgų.
 
-- Naudojantis sukurta programine įranga optimalius modelio parametrus
+- Naudojantis VU MIF HPC infrastruktūra ir sukurta programine įranga, identifikuoti modelio parametrų rinkinį, užtikrinantį gerą modelio rezultatų atitiktį eksperimentiniams duomenims praktiniam taikymui priimtinos paklaidos ribose.
