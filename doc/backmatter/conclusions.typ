@@ -1,4 +1,4 @@
-#heading(numbering: none, "Išvados, rezultatai ir rekomendacijos")
+#heading(numbering: none, "Išvados ir rezultatai")
 
 == Rezultatai
 
@@ -12,6 +12,6 @@
 
 == Išvados
 
-- Tyrimo metu sukurtas ir įgyvendintas YAG sintezės modelis
+- Tyrimo metu sukurtas ir įgyvendintas YAG sintezės modelis yra pakankamai sudėtingas, kad optimizuojant modelio parametrus galima būtų išgauti rezultatus atitinkančius eksperimentinius duomenis
 
-== Rekomendacijos
+- Sukurtas modelis ir rastas parametrų rinkinys praktinėms reikmėms tiksliai atspindi eksperimentinius rezultatus, todėl gali būti panaudotas realaus eksperimento rezultatų prognozei
