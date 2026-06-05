@@ -258,8 +258,10 @@ $
   // (3.987 times 10^(-12) "g "mu"m"^(-3)) / (101.96 " g mol"^(-1))
   c^0_1 = c_(#al-ox) = rho_(#al-ox) / M_(#al-ox) = (3.987 " g cm"^(-3)) / (101.96 " g mol"^(-1)) = 3.91 times 10^(-14) "mol" / (mu"m"^3)\
 
+  c^0_2 = 3/5 c^0_1
+
   // c_(#it-ox) = (5.01 " g cm"^(-3)) / (225.81 " g mol"^(-1)) = (5.01 times 10^(-12) "g "mu"m"^(-3)) / (225.81 " g mol"^(-1)) = 2.218 times 10^(-14) "mol" / (mu"m"^3)
 $
 
-Kadangi $c_(#al-ox)$ reikšmė yra maža ir dėl jos gali atsirasti slankaus kablelio klaidų (_angl. floating-point errors_), dėl to skaitiškai modeliuodami reakciją naudosime bedimensę koncentraciją medžiagoms $tilde(c)_1, dots, tilde(c)_5 tilde O(1)$, kur $tilde(c)_i=c_i\/C_0$, čia $C_0$ yra konvertavimo konstanta norint paversti bedimensę koncentraciją $tilde(c)_i$ į fizinę reikšmę turinčią $c_0$
+// Kadangi $c_(#al-ox)$ reikšmė yra maža ir dėl jos gali atsirasti slankaus kablelio klaidų (_angl. floating-point errors_), dėl to skaitiškai modeliuodami reakciją naudosime bedimensę koncentraciją medžiagoms $tilde(c)_1, dots, tilde(c)_5 tilde O(1)$, kur $tilde(c)_i=c_i\/C_0$, čia $C_0$ yra konvertavimo konstanta norint paversti bedimensę koncentraciją $tilde(c)_i$ į fizinę reikšmę turinčią $c_0$
 
