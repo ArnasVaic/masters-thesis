@@ -1,77 +1,36 @@
 # %%
 import numpy as np
 import yag_model as ym
-from core import solve, MOLAR_MASSES
+from core import solve, MOLAR_MASSES, build_optimization_config
 import matplotlib.pyplot as plt
 
-# Solver configuration for optimization
-# - Hardcoded timestep
-# - Rescaled model parameters
-# - Only save quantity before brake
-# - Parameters for 1400C at 6hrs
 def build_config(mp: ym.ModelParameters):
-
-    # Diffusion scaling for numerical stability
-    D_ref = 1e-4
-
-    # um (other constants are already in terms of um)
-    L0 = 1.0
-    # um^2 / (um^2 / s) ~ s
-    T0 = L0**2 / D_ref
-    # mol / um^3
-    C0 = 3.91e-14
-
-    # Dimensionless model parameters
-    mp_nd = ym.ModelParameters(
-        [D / D_ref for D in mp.D],
-        [k * C0 * T0 for k in mp.K]
-    )
-
-    # Dimensionless discretization, better for numerics, we define L0 which is a
-    # micrometer constants
-    disc = ym.Discretization(1.0 / L0, 1.0 / L0, 40, 40)
-
-    # Dimensionless concentration is preferred for numerical stability,
-    # account for this by scaling reaction coefficients. Resulting mass
-    # parts would be scaled by the same constant so when optimizing 
-    # parameters this doesn't matter much.
-    ic = ym.build_checkerboard_initial_condition(
-        disc, 
-        3.91e-14 / C0, 
-        3/5 * 3.91e-14 / C0
-    )
-    
-    # We know the rough order of parameters so we can hardcode the timestep
-    # because the simulation remains stable if this is used. Alternatively
-    # time step could be chosen as a ratio dx^2 / D which would ensure comfortable
-    # ADI solver cache constants and avoid numerical instabilities.
-    time_step = 6.0 / T0 # scaled
-    ts = ym.FixedTimeStep(time_step)
-
-    # Concrete experiment time we're optimizing for is 6 hours
-    t_end = 6 * 60 * 60 / T0
-    br = ym.TimeBrake(t_end)
-    
-    # This run is only used for parameter search so we do not need to
-    # capture any data other than the last quantity before braking at 6 hrs.
-    # cpt = ym.LastFrameCaptureTrigger(br)
+    disc, mp_nd, ts, br, _, _, ic = build_optimization_config(mp)
     cpt = ym.StrideCaptureTrigger(10)
-
-    # For storage we only need 1 time step
-    # cp = ym.QuantityCapture(1, disc)
     cp = ym.InMemoryFrameCapture(500, disc)
-
-    cfg = [ disc, mp_nd, ts, br, cpt, cp, ic ]
-    return cfg
+    return [disc, mp_nd, ts, br, cpt, cp, ic]
 # %%
 
-disc, _, _, _, _, cpt, ic = solve(
-    ym.ModelParameters(
-        [1e-6, 1e-6, 1e-6, 1e-6, 1e-6], 
-        [1e10, 1e10, 1e10]
-    ), 
-    build_config
+logD = [
+    -5.951425472226097,
+    -6.381854122397745,
+    -6.796653711570672,
+    -6.378758235770181,
+    -5.190091649510689
+]
+
+logK = [
+    10.990986955550355,
+    10.483942406247088,
+    9.04041247830719
+]
+
+mp = ym.ModelParameters(
+    [ 10**d for d in logD ],
+    [ 10**k for k in logK ]
 )
+
+disc, _, _, _, _, cpt, ic = solve(mp, build_config)
 
 # %%
 
@@ -100,7 +59,7 @@ plt.tight_layout()
 
 frame = 360
 assert frame < cpt.size
-species = 4
+species = 0
 plt.title(f"$c_{1+species}(t={cpt.t_history[frame]})$")
 
 print(f"min = {np.min(cpt.c_history)}, max = {np.max(cpt.c_history)}")
