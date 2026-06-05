@@ -1,47 +1,9 @@
 # %%
+import math
 import time
 import numpy as np
 import yag_model as ym
 import matplotlib.pyplot as plt
-
-# disc = ym.Discretization(0.5, 0.3, 40, 40)
-
-# ic = ym.build_checkerboard_initial_condition(disc, 1.0, 1.0)
-
-# q0 = ym.reagent_quantity(ic, disc)
-
-# mp = ym.ModelParameters(
-#     [1e-4, 1e-4, 1e-4, 1e-4, 1e-4],
-#     [100.0, 50.0, 20.0]
-# )
-
-# ts = ym.ClampedGeometricReagentQuantityThresholdStep(
-#     1000,
-#     0.0001,
-#     2.0,
-#     0.01,
-#     0.0001,
-#     0.03,
-#     q0,
-#     disc,
-# )
-
-# br = ym.FixedStepBrake(10000)
-# cpt = ym.StrideCaptureTrigger(1)
-# # cp = ym.QuantityCapture(10000, disc)
-# cp = ym.InMemoryFrameCapture(10000, disc)
-
-# # %%
-# ym.solve(disc, mp, ts, br, cpt, cp, ic)
-
-# # %%
-# plt.plot(np.diff(cp.t_history))
-
-# # %%
-# plt.imshow(cp.c_history[4, 9000, :, :])
-# plt.colorbar()
-
-# %%
 
 def timer(func):
     def wrapper(*args, **kwargs):
@@ -65,19 +27,48 @@ def calculate_m_total(state: ym.SolutionState, disc: ym.Discretization) -> float
         m_total += M * q
     return m_total
 
+def scale_parameters(mp, L0, T0, C0):
+    return ym.ModelParameters(
+        [D * T0 / (L0**2) for D in mp.D],
+        [k * C0 * T0 for k in mp.K] 
+    )
+
 def build_cfg(mp: ym.ModelParameters):
-    disc = ym.Discretization(5e-6, 3e-6, 40, 40)
-    ic = ym.build_checkerboard_initial_condition(disc, 5e-6, 3e-6)
-    # q0 = ym.reagent_quantity(ic, disc)
-    # ts = ym.ClampedGeometricReagentQuantityThresholdStep(1000, 0.0001, 2.0, 0.01, 0.0001, 0.03, q0, disc)
-    ts = ym.FixedTimeStep(0.1)
-    # Fitting to 6hrs so need to continue further
-    br = ym.TimeBrake(6 * 60 * 60)
-    #cpt = ym.LastFrameCaptureTrigger(br)
-    cpt = ym.StrideCaptureTrigger(1000)
-    #cp = ym.QuantityCapture(1000, disc)
-    cp = ym.InMemoryFrameCapture(217, disc)
-    return [ disc, mp, ts, br, cpt, cp, ic ]
+    L0 = 1e-6
+    T0 = L0**2 / mp.D[0]
+    C0 = 3.91e-14
+    # mp_nd = scale_parameters(mp, L0, T0, C0)
+
+    mp_nd = ym.ModelParameters(
+        [D for D in mp.D],
+        [k * C0 * T0 for k in mp.K]
+    )
+
+    disc = ym.Discretization(1e-6, 1e-6, 40, 40) #
+    # ic = ym.build_checkerboard_initial_condition(disc, 3.91e-14, 3/5 * 3.91e-14)
+    # Written in terms of scale but in reality should be 1.0 and 3/5
+    ic = ym.build_checkerboard_initial_condition(disc, 3.91e-14 / C0, 3/5 * 3.91e-14 / C0)
+    ts = ym.FixedTimeStep(0.01 * disc.dx * disc.dx / mp.D[0])
+    print("dt = ", ts.dt)
+
+    t_end = 6 * 60 * 60
+    br = ym.TimeBrake(t_end)
+    
+    # cpt = ym.LastFrameCaptureTrigger(br)
+
+    target_frames = 1000
+    frm_stride = math.ceil(t_end / (ts.dt * target_frames))
+
+    cpt = ym.StrideCaptureTrigger(frm_stride)
+
+    # cp = ym.QuantityCapture(1, disc)
+    # cp = ym.QuantityCapture(10000, disc)
+
+    # we want like at max a 1000 time steps
+
+    cp = ym.InMemoryFrameCapture(1000, disc)
+
+    return [ disc, mp_nd, ts, br, cpt, cp, ic ]
 
 @timer
 def solve(mp, build_cfg):
@@ -95,45 +86,58 @@ def cost(mp, build_cfg):
     cfg = solve(mp, build_cfg)
     return loss(cfg)
 
-def validate_reaction_heuristic(cfg):
-    _, mp, ts, _, _, _, ic = cfg
-    dt = ts.getTimestep()
-
-    c1_max, c2_max = np.max(ic[0]), np.max(ic[1])
-    k1, k2, k3 = mp.K
-
-    h = 1 / (k1 * max(c1_max, c2_max) + k2 * c1_max + k3 * c1_max)
-    print(f'dt = {dt}, h = {h}')
-    assert 100 * dt < h
-
 # %%
 
-mp = ym.ModelParameters(
-    [1e-6, 1e-6, 1e-6, 1e-6, 1e-6], 
-    [100.0, 50.0, 20.0]
+disc, _, _, _, _, cpt, ic = solve(
+    ym.ModelParameters(
+        [1e-18, 1e-18, 1e-18, 1e-18, 1e-18], 
+        [5e4, 2.5e4, 1e4]
+    ), 
+    build_cfg
 )
 
-cfg = build_cfg(mp)
-
-validate_reaction_heuristic(cfg)
-
-
 # %%
 
-cfg = solve(mp, build_cfg)
+m0 = \
+    MOLAR_MASSES[0] * ym.quantity(ic[0], disc) + \
+    MOLAR_MASSES[1] * ym.quantity(ic[1], disc)
 
-#L = loss(cfg)
-# %%
+ELEMENT_NAME_STRINGS = [
+    '$Al_2O_3$','$Y_2O_3$','$YAM$','$YAP$','$YAG$'
+]
 
-r = cfg[-2]
+m_sum = np.zeros((cpt.size))
 for i in range(5):
-    #qi = r.q_history[i]
-    qi = [ ym.quantity(r.c_history[i, frame_id, :, :]) for frame_id in range(217) ]
-    plt.plot(qi[:r.size], label=f'$c_{i}$')
+    qi = np.array([ ym.quantity(cpt.c_history[i, f, :, :], disc) for f in range(cpt.size) ])
+    m = qi * MOLAR_MASSES[i]
+    m_sum += m
+    plt.plot(cpt.t_history[:cpt.size], 100 * m / m0, label=ELEMENT_NAME_STRINGS[i])
+
+plt.plot(cpt.t_history[:cpt.size], 100 * m_sum / m0, label='$\\Sigma$')
+plt.xlabel('Reakcijos laikas (s)')
+plt.ylabel('Medžiagų masės dalys (%)')
 plt.legend()
+plt.tight_layout()
+
+# disc = cfg[0]
+# for i in range(5):
+#     #qi = r.q_history[i]
+#     qi = [ ym.quantity(r.c_history[i, frame_id, :, :], disc) for frame_id in range(r.c_history.shape[1]) ]
+    
+#     plt.plot(qi[:r.size], label=f'$c_{1+i}$')
+# plt.legend()
 # %%
 
-frame = 0
-plt.imshow(r.c_history[30, frame, :, :])
+frame = 800
+assert frame < cpt.size
+species = 4
+plt.title(f"$c_{1+species}(t={cpt.t_history[frame]})$")
+
+print(f"min = {np.min(cpt.c_history)}, max = {np.max(cpt.c_history)}")
+mx = np.max(cpt.c_history)
+
+plt.imshow(cpt.c_history[species, frame, :, :], vmin=0.0, vmax=mx)
+#plt.imshow(cpt.c_history[species, frame, :, :])
+
 plt.colorbar()
 # %%
