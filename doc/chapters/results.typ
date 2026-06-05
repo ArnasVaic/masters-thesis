@@ -57,7 +57,9 @@ $
   cal(L)(bold(p), hat(bold(p))) = sum_(i=1)^5 (p_i-hat(p)_i)^2
 $
 
-Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų masės dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalbą galėsime leisti daugelį eksperimentu paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint rasti parametrų reikšmes, kurios būdu pakankamai geros praktiniam panaudojimui.
+Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų masės dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalbą galėsime leisti daugelį eksperimentu paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint optimizuoti modelio parametrus. Modelių optimizavimui naudosime Optuna @akiba2019optuna -- atviro kodo hiperparametrų optimizavimo karkasas skirtas Python kalbai.
+
+
 
 // Dalykai kuriuos reiketu aprasyti prie modelio parametru optimizavimo:
 // Kokiu metodu rasti, kodel butent toks pasirinktas
