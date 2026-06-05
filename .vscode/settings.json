@@ -18,8 +18,6 @@
     "Typst",
     "vizualizacija"
   ],
-  "julia.environmentPath": "/home/arnas/uni/masters-thesis/julia",
-  "cmake.sourceDirectory": "/home/arnas/uni/masters-thesis/cpp",
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
   "remote.autoForwardPortsFallback": 0
