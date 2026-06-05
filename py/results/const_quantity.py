@@ -2,7 +2,7 @@
 
 import numpy as np
 import yag_model as ym
-import yag_utils as yu
+from py.core import solve, MOLAR_MASSES
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -23,7 +23,7 @@ mp = ym.ModelParameters(
     [10.0, 5.0, 1.0]
 )
 
-disc, _, _, _, _, cpt, ic = yu.solve(mp, build_cfg)
+disc, _, _, _, _, cpt, ic = solve(mp, build_cfg)
 
 # %%
 

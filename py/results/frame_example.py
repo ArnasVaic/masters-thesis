@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import yag_model as ym
-from yag_utils import MOLAR_MASSES, solve
+from py.core import MOLAR_MASSES, solve
 
 # %%
 def build_cfg(mp: ym.ModelParameters):

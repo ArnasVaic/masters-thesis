@@ -1,18 +1,50 @@
-# %%
-import numpy as np
 import yag_model as ym
-from core import solve, MOLAR_MASSES
-import matplotlib.pyplot as plt
+import numpy as np
+
+# Experimental data, element percentage by mass after 6hrs at 1400C
+P_TRUE = np.array([ 29.21, 19.37, 15.08, 24.06, 12.27])
+
+# Molar masses of elements within synthesis
+MOLAR_MASSES = np.array([ 102.0, 225.8, 553.58, 163.89, 593.62 ])
+
+def last_frame_mass_from_q(cpt: ym.QuantityCapture):
+    q_pred = np.array(cpt.q_history[:, 0])
+    return MOLAR_MASSES * q_pred
+
+def mass(state: ym.SolutionState, speciesIdx: int, disc: ym.Discretization):
+    M = MOLAR_MASSES[speciesIdx]
+    q = ym.quantity(state[speciesIdx], disc)
+    return M * q
+
+def total_mass(state: ym.SolutionState, disc: ym.Discretization) -> float:
+    return sum([ mass(state, i, disc) for i in range(5) ])
+
+def get_p_pred(ic, disc, cpt):
+    m0 = total_mass(ic, disc)
+    q_pred = last_frame_mass_from_q(cpt)
+    return 100 * q_pred / m0
+
+def loss(ic, disc, cpt):
+    p_pred = get_p_pred(ic, disc, cpt)
+    return np.mean((p_pred - P_TRUE) ** 2)
+
+def solve(mp, build_cfg):
+    cfg = build_cfg(mp)
+    ym.solve(*cfg)
+    return cfg
+
+def config_info(cfg):
+    print('')
 
 # Solver configuration for optimization
 # - Hardcoded timestep
 # - Rescaled model parameters
 # - Only save quantity before brake
 # - Parameters for 1400C at 6hrs
-def build_config(mp: ym.ModelParameters):
+def build_optimization_config(mp: ym.ModelParameters):
 
     # Diffusion scaling for numerical stability
-    D_ref = 1e-4
+    D_ref = 1e4
 
     # um (other constants are already in terms of um)
     L0 = 1.0
@@ -37,8 +69,8 @@ def build_config(mp: ym.ModelParameters):
     # parameters this doesn't matter much.
     ic = ym.build_checkerboard_initial_condition(
         disc, 
-        3.91e-14 / C0, 
-        3/5 * 3.91e-14 / C0
+        1.0, 
+        3/5
     )
     
     # We know the rough order of parameters so we can hardcode the timestep
@@ -54,60 +86,11 @@ def build_config(mp: ym.ModelParameters):
     
     # This run is only used for parameter search so we do not need to
     # capture any data other than the last quantity before braking at 6 hrs.
-    # cpt = ym.LastFrameCaptureTrigger(br)
-    cpt = ym.StrideCaptureTrigger(10)
+    cpt = ym.LastFrameCaptureTrigger(br)
 
     # For storage we only need 1 time step
-    # cp = ym.QuantityCapture(1, disc)
-    cp = ym.InMemoryFrameCapture(500, disc)
+    cp = ym.QuantityCapture(1, disc)
 
     cfg = [ disc, mp_nd, ts, br, cpt, cp, ic ]
+    config_info(cfg)
     return cfg
-# %%
-
-disc, _, _, _, _, cpt, ic = solve(
-    ym.ModelParameters(
-        [1e-6, 1e-6, 1e-6, 1e-6, 1e-6], 
-        [1e10, 1e10, 1e10]
-    ), 
-    build_config
-)
-
-# %%
-
-m0 = \
-    MOLAR_MASSES[0] * ym.quantity(ic[0], disc) + \
-    MOLAR_MASSES[1] * ym.quantity(ic[1], disc)
-
-ELEMENT_NAME_STRINGS = [
-    '$Al_2O_3$','$Y_2O_3$','$YAM$','$YAP$','$YAG$'
-]
-
-m_sum = np.zeros((cpt.size))
-for i in range(5):
-    qi = np.array([ ym.quantity(cpt.c_history[i, f, :, :], disc) for f in range(cpt.size) ])
-    m = qi * MOLAR_MASSES[i]
-    m_sum += m
-    plt.plot(cpt.t_history[:cpt.size], 100 * m / m0, label=ELEMENT_NAME_STRINGS[i])
-
-plt.plot(cpt.t_history[:cpt.size], 100 * m_sum / m0, label='$\\Sigma$')
-plt.xlabel('Reakcijos laikas (s)')
-plt.ylabel('Medžiagų masės dalys (%)')
-plt.legend()
-plt.tight_layout()
-
-# %%
-
-frame = 360
-assert frame < cpt.size
-species = 4
-plt.title(f"$c_{1+species}(t={cpt.t_history[frame]})$")
-
-print(f"min = {np.min(cpt.c_history)}, max = {np.max(cpt.c_history)}")
-mx = np.max(cpt.c_history)
-
-plt.imshow(cpt.c_history[species, frame, :, :], vmin=0.0, vmax=mx)
-#plt.imshow(cpt.c_history[species, frame, :, :])
-
-plt.colorbar()
-# %%
