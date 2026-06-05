@@ -19,6 +19,8 @@ dependencies:
   - matplotlib
   - ipykernel
   - pip
+  - optuna
+  - optuna-dashboard
 
   # c++ libs
   - pybind11
