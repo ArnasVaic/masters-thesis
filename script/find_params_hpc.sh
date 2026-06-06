@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -p main
-#SBATCH -n 32
+#SBATCH -n 2
 
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate yag
+conda activate yag_model
 
-srun -n 32 python py/find_params_hpc.py
+srun -n 2 python py/find_params_hpc.py
