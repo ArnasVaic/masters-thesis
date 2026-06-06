@@ -60,6 +60,14 @@ $
 Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų masės dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalbą galėsime leisti daugelį eksperimentu paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint optimizuoti modelio parametrus. Modelių optimizavimui naudosime Optuna @akiba2019optuna -- atviro kodo hiperparametrų optimizavimo karkasas skirtas Python kalbai.
 
 
+#figure(
+  table(
+    columns: 2,
+    [*Parameteras*], [*Reikšmė*], 
+    [$D_1$], []
+  )
+)
+
 
 // Dalykai kuriuos reiketu aprasyti prie modelio parametru optimizavimo:
 // Kokiu metodu rasti, kodel butent toks pasirinktas
