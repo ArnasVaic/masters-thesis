@@ -27,8 +27,8 @@ def run_optimization(_):
         storage=JournalStorage(JournalFileBackend(file_path="./journal.log")),
         load_if_exists=True, # Useful for multi-process or multi-node optimization.
     )
-    study.optimize(objective, n_trials=3)
+    study.optimize(objective, n_trials=100)
 
-with Pool(processes=4) as pool:
-    pool.map(run_optimization, range(2))
+with Pool(processes=16) as pool:
+    pool.map(run_optimization, range(16))
 # %%

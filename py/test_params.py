@@ -2,9 +2,9 @@
 
 import numpy as np
 import yag_model as ym
-from core import P_TRUE, Scales, build_optimization_config, solve, get_p_pred
+from core import P_TRUE, Scales, build_optimization_config, loss, solve, get_p_pred
 
-scales = Scales(L0=1e-6, C0 = 3.91e4, D_ref=1e-12)
+scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
 
 def info(p_pred, mp):
     print(f"{'channel':<8} {'mass % (pred)':<16} {'mass % (true)':<16} {'rel. err. %':<16} ")
@@ -32,15 +32,17 @@ def info(p_pred, mp):
     print("-" * 30)
 
 logD = [
-    -18.705183683895132,
-    -17.98902755136912,
-    -18.99733614615828
-    ,-17.91290362917506,
-    -17.214973064752815
+    -15.520843103369195,
+    -14.962864487926721,
+    -14.08355774833853,
+    -15.939166775886509,
+    -15.064413562884312
 ]
 
 logK = [
-    -6.125272554342815,-7.900833099916853,-7.856737838978788
+    -8.81287507930491,
+    -8.171172197361324,
+    -8.998608159571566
 ]
 
 mp = ym.ModelParameters(
@@ -49,6 +51,10 @@ mp = ym.ModelParameters(
 )
 
 disc, _, _, _, _, cpt, ic = solve(mp, build_optimization_config, scales)
+
+l = loss(ic, disc, cpt)
+print(f'loss: {l}')
+
 p_pred = get_p_pred(ic, disc, cpt)
 info(p_pred, mp)
 # %%

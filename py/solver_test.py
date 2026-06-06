@@ -17,21 +17,25 @@ def build_config(mp: ym.ModelParameters, scales):
 # %% Solver config
 
 scales = Scales(L0=1e-6, C0 = 3.91e4, D_ref=1e-7)
-# logD = [
-#     -18.705183683895132,
-#     -17.98902755136912,
-#     -18.99733614615828
-#     ,-17.91290362917506,
-#     -17.214973064752815
-# ]
+logD = [
+    -15.520843103369195,
+    -14.962864487926721,
+    -14.08355774833853,
+    -15.939166775886509,
+    -15.064413562884312
+]
 
-# logK = [
-#     -6.125272554342815,-7.900833099916853,-7.856737838978788
-# ]
+logK = [
+    -8.81287507930491,
+    -8.171172197361324,
+    -8.998608159571566
+]
 
 mp = ym.ModelParameters(
-    [ 1e-15 ] * 5,
-    [ 1e-8 ] * 3
+    # [ 1e-15 ] * 5,
+    # [ 1e-8 ] * 3
+    [10**d for d in logD],
+    [10**k for k in logK]
 )
 
 cfg = build_config(mp, scales)
@@ -67,9 +71,9 @@ plt.tight_layout()
 
 # %%
 
-frame = 100
+frame = 1
 assert frame < cp.size
-species = 4
+species = 1
 plt.title(f"$c_{1+species}(t={cp.t_history[frame]})$")
 
 print(f"min = {np.min(cp.c_history)}, max = {np.max(cp.c_history)}")
