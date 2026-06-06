@@ -8,10 +8,11 @@
 - Naudojantis C++ kalba įgyvendintas kompiuterinis YAG sintezės modelis
 - Sukurtos kompiuterinio modelio sąsajos Python kalbai
 - Užtikrinta, kad YAG sintezės modelis tenkina masės tvermės dėsnį
-- Naudojant VU MIF HPC infrastruktūrą buvo rastas modelio parametrų rinkinys, kuris užtikrina modelio rezultatų atitiktį eksperimentiniams rezultatams praktiniam taikymui priimtinos paklaidos ribose
+- Naudojant VU MIF HPC infrastruktūrą buvo rastas modelio parametrų rinkinys
 
 == Išvados
 
-- Tyrimo metu sukurtas ir įgyvendintas YAG sintezės modelis yra pakankamai sudėtingas, kad optimizuojant modelio parametrus galima būtų išgauti rezultatus atitinkančius eksperimentinius duomenis
+- Sukurtas modelis ir rastas parametrų rinkinys sugeba atkartoti bendrą reakcijos eigą ir medžiagų masės dalių pasiskirstymą pastebimą eksperimento metu, tačiau skirtumai nėra nepastebimi, modelio apskaičiuotos medžiagų masės dalys gali svyruoti iki 3% nuo tikrųjų reikšmių.
 
-- Sukurtas modelis ir rastas parametrų rinkinys praktinėms reikmėms tiksliai atspindi eksperimentinius rezultatus, todėl gali būti panaudotas realaus eksperimento rezultatų prognozei
+- Sukurtas modelis yra pritaikytas tik galutinių medžiagų masės dalims nuspėti todėl, kad duomenis apie medžiagų masės dalis reakcijos eigoje nėra prieinami.
+
