@@ -3,11 +3,6 @@
 #SBATCH -n 32
 
 source ~/miniconda3/etc/profile.d/conda.sh
-conda activate yag_model
+conda activate yag
 
-for i in $(seq 1 32)
-do
-    python py/find_params_hpc.py &
-done
-
-wait
+srun -n 32 python py/find_params_hpc.py
