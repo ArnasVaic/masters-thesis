@@ -59,6 +59,10 @@
 
 #pagebreak(weak:true)
 
+#include "backmatter/ai-use.typ"
+
+#pagebreak(weak:true)
+
 #bibliography("references.bib")
 
 // #pagebreak(weak:true)
