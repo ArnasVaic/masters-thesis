@@ -13,15 +13,15 @@
 #let yam = $"Y"_4"Al"_2"O"_9$
 #let yag = $"Y"_3"Al"_5"O"_12$
 
-@const-mass pavaizduoti skaitinio modelio rezultatai, matome kaip laikui bėgant sistemoje keičiasi skirtingų medžiagų procentinės masės dalys. Reakcijos pradžioje 100% masės sudaro reagentai #al-ox ir #it-ox, tačiau laikui bėgant šios medžiagos reaguoja ir sudaro tarpinius junginius YAM ir YAP bei produktą YAG. Reakcijos metu naujų reagentų į sistemą nėra pridedama, todėl naturalu, kad jų kiekis sistemoje griežtai mažėja. YAP ir YAM junginiai reakcijoje yra pagaminami, tačiau ir suvartojami, todėl jų kiekis sistemoje reakcijos pradžioje išauga, o po to, lėtai nyksta.
+@const-mass pavaizduoti skaitinio modelio rezultatai, matome kaip laikui bėgant sistemoje keičiasi skirtingų medžiagų procentinės masės dalys. Reakcijos pradžioje 100% masės sudaro reagentai #al-ox ir #it-ox, tačiau laikui bėgant šios medžiagos reaguoja ir sudaro tarpinius junginius YAM ir YAP bei produktą YAG. Reakcijos metu naujų reagentų į sistemą nėpridedama, todėl jų kiekis sistemoje nedidėja. YAP ir YAM junginiai reakcijoje yra pagaminami, tačiau ir suvartojami, todėl jų kiekis sistemoje reakcijos pradžioje išauga, o po to, lėtai nyksta.
 
-Vienas iš svarbiausių @const-mass matomų rezultatų yra žalsva linija $Sigma$, kuri žymi visų medžiagų masės sumos santyki su pradine reagentų sumą:
+Vienas iš svarbiausių @const-mass matomų rezultatų yra žalsva linija $Sigma$, kuri žymi visų medžiagų masės sumos santykį su pradine reagentų sumą:
 // integral_Omega c_i (x,y,t)d V
 $
   Sigma(t_n) = 1/m_0 sum_(i=1)^5 q_i (t_n) M_i
 $
 
-Čia $q_i$ yra medžiagų molinis kiekis diskrečiu laiko momentu $t_n$, $M_i$ yra medžiagos molinės masės, o $m_0$ pradinių medžiagų masė prieš reakcijai prasidedant. Svarbu atkreipti dėmesį į tai, kad šis dydis laikui bėgant išlieka toks pat, tai reiškia, kad sprendžiant sistemą skaitiniais metodais, per $10^5$ diskrečių laiko žingsnių neatsirado skaičiavimo paklaidų dėl kurių bendra sistemos masė galėtų pakisti.
+Čia $q_i$ yra medžiagų molinis kiekis diskrečiu laiko momentu $t_n$, $M_i$ yra medžiagos molinės masės, o $m_0$ pradinių medžiagų masė prieš reakciją. Svarbu atkreipti dėmesį į tai, kad šis dydis laikui bėgant išlieka toks pat, tai reiškia, kad sprendžiant sistemą skaitiniais metodais, per $10^5$ diskrečių laiko žingsnių neatsirado skaičiavimo paklaidų, dėl kurių bendra sistemos masė galėtų pakisti.
 
 #pagebreak(weak: true)
 
@@ -30,9 +30,9 @@ $
   caption: [Medžiagų molinės koncentracijos pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parametrai tokie patys kaip pastovios masės demonstracijoje @const-mass išskyrus reakcijos koeficientus. Čia $k_1 = 60.0, k_2 = 30.0, k_3 = 15.0$.]
 ) <frame-example>
 
-@frame-example matome kaip atrodo neagreguoti kompiuterinio modelio rezultatai -- modelio produktas yra visų penkių reakcijoje dalyvaujančių medžiagų pasiskirstymai erdvėje diskrečiais laiko momentais, tuo tarpu @const-mass pavaizduoti rezultatai buvo gauti apdorojant šiuos duomenis iš jų išgaunant medžiagų masės kiekius sistemoje.
+@frame-example matome, kaip atrodo neagreguoti kompiuterinio modelio rezultatai -- modelio produktas yra visų penkių reakcijoje dalyvaujančių medžiagų pasiskirstymai erdvėje diskrečiais laiko momentais, tuo tarpu @const-mass pavaizduoti rezultatai buvo gauti apdorojant šiuos duomenis iš jų išgaunant medžiagų masės kiekius sistemoje.
 
-Modelio parametrai pavyzdžiui @frame-example yra parinkti atsitiktinai norint pademonstruoti modelio rezultatus ir modeliuojamą reakcijos procesą. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirmas stulpelis), 2-3 medžiagų koncentracijų nėra todėl, kad sistemoje yra tik reagentai, kurių pradinę sąlygą jau aptarėme modelio sekcijoje. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik sandūroje, panašų procesą galime įsivaizduoti ir cheminėje reakcijoje, kada medžiagų dalelės pradeda tirpti aukštoje temperatūroje, kas leidžia jom reaguoti ir sanduroje sudaryti produktą YAG. Kompiuterinio modelio rezultatuose galima pastebėti subtilų tarpinių produktų nesimetriškumą $x$ ir $y$ ašimis. Šį polinkį galėtų lemti faktas, kad skirtingų medžiagų poros reaguoja skirtingu greičiu.
+Modelio parametrai @frame-example yra parinkti atsitiktinai norint pademonstruoti modelio rezultatus ir modeliuojamą reakcijos procesą. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirmas stulpelis), 2-3 medžiagų koncentracijų nėra, nes sistemoje yra tik reagentai, kurių pradinę sąlygą jau aptarėme modelio sekcijoje. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik sandūroje, panašų procesą galime įsivaizduoti ir cheminėje reakcijoje, kada medžiagų dalelės pradeda tirpti aukštoje temperatūroje, kas leidžia joms reaguoti ir sandūroje sudaryti produktą YAG. Kompiuterinio modelio rezultatuose galima pastebėti subtilų tarpinių produktų nesimetriškumą $x$ ir $y$ ašimis. Šį polinkį galėtų lemti faktas, kad skirtingų medžiagų poros reaguoja skirtingu greičiu.
 
 = Modelio parametro optimizavimas
 
@@ -47,7 +47,7 @@ Modelio parametrai pavyzdžiui @frame-example yra parinkti atsitiktinai norint p
     [1600 $degree$C],[19 val.],[29.21],[19.37],[15.08],[24.06],[12.27]
   ),
   caption: [
-    Eksperimentiniai duomenys, kuriuos paruošė Vilniaus Universiteto Chemijos ir Geomokslų fakulteto mokslininkai atlikdami YAG sintezės reakciją laboratorijoje. Lentelėje pateiktos skirtingų medžiagų procentinės masės dalys $p_i$ praėjus tam tikram laikui nuo reakcijos pradžios, kai reakcija vykdomą prie įvairių temperatūrų.
+    Eksperimentiniai duomenys, kuriuos paruošė Vilniaus Universiteto Chemijos ir Geomokslų fakulteto mokslininkai atlikdami YAG sintezės reakciją laboratorijoje. Lentelėje pateiktos skirtingų medžiagų procentinės masės dalys $p_i$ praėjus tam tikram laikui nuo reakcijos pradžios, kai reakcija vykdoma prie įvairių temperatūrų.
   ]
 ) <experimental-data>
 
@@ -57,7 +57,7 @@ $
   cal(L)(bold(p), hat(bold(p))) = sum_(i=1)^5 (p_i-hat(p)_i)^2
 $
 
-Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų masės dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalbą galėsime leisti daugelį eksperimentu paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint optimizuoti modelio parametrus. Modelių optimizavimui naudosime Optuna @akiba2019optuna -- atviro kodo hiperparametrų optimizavimo karkasas skirtas Python kalbai.
+Čia $hat(bold(p))$ yra modelio prognozuojamos medžiagų masės dalys. Šiam tikslui pasiekti pasinaudosime VU MIF HPC infrastruktūra, kurios pagalba galėsime leisti daugelį skaičiavimo eksperimentų paraleliai, tokiu būdu sutrumpinant laiką, kurio reikia norint optimizuoti modelio parametrus. Modelių optimizavimui naudosime Optuna @akiba2019optuna -- tai atviro kodo hiperparametrų optimizavimo karkasas skirtas Python kalbai.
 
 #let Dunit = $mu m^2 dot h^(-1)$
 #let Kunit = $mu "m"^3 \/ ("mol h")$
@@ -78,7 +78,7 @@ $
   caption: [ Modelio parametrų optimizavimo rezultatai. Parametrų paieška vykdyta VU MIF HPC. Paieškai buvo naudota 16 paraleliai veikiančių darbininkų (_angl. worker_), kiekvienas kurių atliko $100$ bandymų. Parametrų paieška užtruko 13 min 35s. ]
 ) <optim-results>
 
-@optim-results vaizduoja rastą parametrų rinkinį, su kuriais kainos funkciją pasiekė mažiausią reikšmę -- 1.9634. Galime palyginti medžiagų masės dalis tarpusavyje:
+@optim-results vaizduoja rastą parametrų rinkinį, su kuriais kainos funkcija pasiekė mažiausią reikšmę -- 1.9634. Galime palyginti medžiagų masės dalis tarpusavyje:
 
 #figure(
   table(
@@ -91,7 +91,7 @@ $
   caption: [Eksperimento ir modelio rezultatų palyginimas. Medžiagų masės dalys, kai reakcija vyksta 1400 $degree$C temperatūroje 6 val. Paskutinėje eilutėje žymi skirtumą tarp modelio ir eksperimento masės dalių.]
 ) <percentage-compare>
 
-@percentage-compare matome, kad skirtumai tikrųjų masės dalių procentų nėra dideli, tačiau praktiniam panaudojimui išlieka reikšmingi, ypatingai, produkto YAG ir #al-ox masės dalies procentai. Tai galėtų lemti keletas priežasčių -- modelis yra per paprastas ir neapima reikšmingų cheminių arba fizinių procesų vykstančių reakcijos metu, taip pat ieškant parametrų galėjo būti atliekama daugiau bandymų.
+@percentage-compare matome, kad tarp tikrųjų ir modelio prognozuojamų masės dalių nėra dideli, tačiau praktiniam panaudojimui išlieka reikšmingi, ypač produkto YAG ir #al-ox masės dalies procentai. Tai galėtų lemti keletas priežasčių -- modelis yra per paprastas ir neapima reikšmingų cheminių arba fizinių procesų, vykstančių reakcijos metu, taip pat ieškant parametrų galėjo būti atliekama daugiau bandymų.
 
 
 // Dalykai kuriuos reiketu aprasyti prie modelio parametru optimizavimo:
