@@ -1,6 +1,6 @@
 = Skaitinis modelis
 
-Sudarytą matematinį modelį spręsime naudodami ADI schemą. Naudodamiesi šiuo metodu padalinsime sprendinio paieškos sekančiu laiko žingsniu problemą į dvi dalis. Vietoje, to, kad spręstume lygtį tiesiogiai ieškodami sprendinio reikšmės sekančiu laiko momentu $bold(c)^(n+1)$, pirmiausia rasime tarpinį sprendinį $bold(c)^*$. 
+Sudarytą matematinį modelį spręsime naudodami ADI schemą. Naudodamiesi šiuo metodu padalinsime sprendinio paieškos kitame laiko žingsnyje problemą į dvi dalis. Vietoje to, kad spręstume lygtį tiesiogiai ieškodami sprendinio reikšmės sekančiu laiko momentu $bold(c)^(n+1)$, pirmiausia ra  sime tarpinį sprendinį $bold(c)^*$. 
 
 #let diff_part(var, sup) = $(delta_#var^2[bold(c)^#sup])/(Delta #var^2)$
 
@@ -20,7 +20,7 @@ $
   (bold(c)^(n+1)-bold(c)^*)/(1/2 Delta t)=bold(D) dot.o (#diff_part($x$, $*$)+#diff_part($y$, $n+1$))+bold(S) bold(phi)(bold(c^*))
 $
 
-Abi lygtis pertvarkius taip, kad to pačio laiko žingsnio komponentės būtų atitinkamose lygybės pusėse gauname lygtis:
+Abi lygtis pertvarkius taip, kad to paties laiko žingsnio komponentės būtų atitinkamose lygybės pusėse gauname lygtis:
 
 $
   bold(c)^* -&underbrace((Delta t)/(2 Delta x^2) bold(D), bold(mu)_x) dot.o delta_x^2[bold(c)^*]=& bold(c)^n + underbrace((Delta t)/(2 Delta y^2) bold(D), bold(mu)_y) dot.o delta_y^2[bold(c)^n] + (Delta t)/2 bold(S) bold(phi) (bold(c^n)) \
@@ -36,7 +36,7 @@ $
   (bold(I)-mu_(y,m)bold(L)_H)c_(m,:,j)^(n+1)&=c^*_(m,:,j)+mu_(x,m)delta_x^2[c^*_(m,:,j)]+(Delta t)/2 bold(S)_(m,:) bold(phi)(bold(c)^*_(:,j)) 
 $ <tridiag-eqs>
 
-Čia $m=1,dots,5$ -- medžiagos indeksas, $i=1,dots,H$ -- eilutės indeksas, $j=1,dots,W$ -- stulpelio indeksas, $a_(i,:)$ -- $i$-tąją eilutę, o $a_(:,j)$ -- $j$-ąjį stulpelį ir $bold(mu_x) = (mu_(x,1), dots, mu_(x,5))$, o $bold(mu_y) = (mu_(y,1), dots, mu_(y,5))$. Verta paminėti, kad $i=0$, $i=H$, $j=0$ ir $j=W$ yra kraštiniai atvejai, kada diskretaus laplaso operatoriaus veiksmas nebūtų apibrėžtas, nes operatorius reikalautų reikšmių eilutės arba stulpelio, kurie nėra diskrečiame tinklelyje, todėl šiem kraštutinumams galioja kitokios lygtus, kurios bus apibendrintos išskleistose formulėse @expanded-tridiagonal-eq[]. $bold(L)_N$ žymi $N times N$ dydžio diskrečią Laplaso matricą, su Neumano kraštinės sąlygos prielaida:
+Čia $m=1,dots,5$ -- medžiagos indeksas, $i=1,dots,H$ -- eilutės indeksas, $j=1,dots,W$ -- stulpelio indeksas, $a_(i,:)$ žymi $i$-tąją eilutę, o $a_(:,j)$ žymi $j$-ąjį stulpelį ir $bold(mu_x) = (mu_(x,1), dots, mu_(x,5))$, o $bold(mu_y) = (mu_(y,1), dots, mu_(y,5))$. Verta paminėti, kad $i=0$, $i=H$, $j=0$ ir $j=W$ yra kraštiniai atvejai, kada diskretaus Laplaso operatoriaus veiksmas nebūtų apibrėžtas, nes operatorius reikalautų reikšmių eilutės arba stulpelio, kurie nėra diskrečiame tinklelyje, todėl šiems kraštutiniams atvejams galioja kitokios lygtys, kurios bus apibendrintos išskleistose formulėse @expanded-tridiagonal-eq[]. $bold(L)_N$ žymi $N times N$ dydžio diskrečią Laplaso matricą, su Neumano kraštinės sąlygos prielaida:
 
 $
   bold(L)_N = underbrace(mat(
@@ -49,7 +49,7 @@ $
     ), N)
 $
 
-$bold(L)_W "ir" bold(L)_H$ atitinkamai žymi kvadratines matricas, kurios turi tiek elementų kiek yra stulpelių arba eilučių diskrečiame tinklelyje. Iškleidus kairėje lygybės pusėje esančias matricas ir supaprastinus diskrečius laplaso operatorius lygtyse @tridiag-eqs[] gauname:
+$bold(L)_W "ir" bold(L)_H$ atitinkamai žymi kvadratines matricas, kurios turi tiek elementų kiek yra stulpelių arba eilučių diskrečiame tinklelyje. Iškleidus kairėje lygybės pusėje esančias matricas ir supaprastinus diskrečiojo Laplaso operatorius lygtyse @tridiag-eqs[] gauname:
 
 
 #let muxm = $mu_(x,m)$
@@ -89,5 +89,4 @@ $
   )
 $ <expanded-tridiagonal-eq>
 
-@expanded-tridiagonal-eq matome dalinai iškleistas tridiagonalines sistemas, kurios turi formą $bold(A) X = bold(B)$ ir gali būti sprendžiamos matematinių bibliotekų pagalba, pvz. kodo bibliotekos `LAPACK` metodu `dgttrs_`.
-
+@expanded-tridiagonal-eq matome iš dalies išskleistas tridiagonalines sistemas, kurios turi formą $bold(A) X = bold(B)$ ir gali būti sprendžiamos naudojant matematines bibliotekas, pavyzdžiui, bibliotekos `LAPACK` metodu `dgttrs_`.
