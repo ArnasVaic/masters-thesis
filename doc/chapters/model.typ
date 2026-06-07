@@ -10,7 +10,7 @@
 #let yam = $"Y"_4"Al"_2"O"_9$
 #let yag = $"Y"_3"Al"_5"O"_12$
 
-Tyrimai, kuriuose yra matematiškai modeliuojama kietafazė YAG sintezė @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a remiasi supaprastina chemine reakcija:
+Tyrimai, kuriuose yra matematiškai modeliuojama kietafazė YAG sintezė @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a remiasi supaprastinta chemine reakcija:
 
 $
   3#it-ox + 5#al-ox arrow.r.long 2#yag ("YAG")
@@ -24,7 +24,7 @@ $
   #al-ox + 3"YAP" &arrow.r.long "YAG" #<reaction:3>
 $ <long-chem>
 
-Remiantis masės veikimo dėsniu (_angl. mass action law_) ir cheminėmis reakcijomis @reaction:1 @reaction:2 @reaction:3 galime sudaryti diferencialines lygtis, kurios nusako kaip molinis medžiagų kiekis kinta su laiku. Molinę medžiagų masę laiko momentu $t$ žymėsime taip: $q_1 (#al-ox)$, $q_2 (#it-ox)$, $q_3 ("YAM")$, $q_4 ("YAP")$, $q_5 ("YAG")$, čia $q_i = q_i (t)$. Analogiškai žymėsime molinį medžiagų konkrentracijos pasiskirstymą erdvėje $c_i = c_i (bold(x), t)$. Iš @reaction:1 gauname:
+Remiantis masės veikimo dėsniu (_angl. mass action law_) ir cheminėmis reakcijomis @reaction:1 @reaction:2 @reaction:3 galime sudaryti diferencialines lygtis, kurios nusako, kaip molinis medžiagų kiekis kinta su laiku. Molinę medžiagų masę laiko momentu $t$ žymėsime taip: $q_1 (#al-ox)$, $q_2 (#it-ox)$, $q_3 ("YAM")$, $q_4 ("YAP")$, $q_5 ("YAG")$, čia $q_i = q_i (t)$. Analogiškai žymėsime molinį medžiagų koncentracijos pasiskirstymą erdvėje $c_i = c_i (bold(x), t)$. Iš @reaction:1 gauname:
 #let partial-t = var => $ (partial var) / (partial t) $
 $
   #partial-t($q_1$) = -k_1q_1q_2 quad
@@ -44,7 +44,7 @@ $
   #partial-t($q_5$) = k_3q_1q_4
 $
 
-Čia $k_i, i = 1, 2, 3$ yra individualių reakcijų greičio konstantos. Gautas lygtis galime apjungti ir sudaryti bendra modelį kartu jį aprašant ne per molinius medžiagų kiekius, o molines koncentracijas papildomai įtraukiant ir difuzijos procesą:
+Čia $k_i, i = 1, 2, 3$ yra individualių reakcijų greičio konstantos. Gautas lygtis galime apjungti ir sudaryti bendrą modelį kartu jį aprašant ne per molinius medžiagų kiekius, o molines koncentracijas papildomai įtraukiant ir difuzijos procesą:
 
 $
   (partial c_1) / (partial t) &= D_1 nabla^2 c_1 - k_1c_1c_2 - k_2c_1c_3 - k_3c_1c_4\
@@ -54,7 +54,7 @@ $
   (partial c_5) / (partial t) &= D_5 nabla^2 c_5 + k_3c_1c_4
 $ <long-sytem-eqs>
 
-Čia $D_i$ -- medžiagų difuzijos konstantos, $k_i$ -- reakcijos greičio konstantos. Sąryšis tarp molino medžiagos kiekio $q_i$ ir molinės medžiagos koncentracijos $c_i$ yra štai toks:
+Čia $D_i$ -- medžiagų difuzijos konstantos, $k_i$ -- reakcijos greičio konstantos. Sąryšis tarp molinio medžiagos kiekio $q_i$ ir molinės medžiagos koncentracijos $c_i$ yra štai toks:
 
 $
   q_i (t) = integral_Omega c_i (x, y,t) d V
@@ -70,7 +70,7 @@ kur $bold(D) = (D_1, D_2, D_3, D_4, D_5)$.
 
 == Pradinė ir kraštinė sąlygos
 
-Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a darysime prielaidą, kad reagentų dalelės yra vienodai pasiskirsčiusios po erdvę ir yra apytiksliai kvadrato formos, dėl šios priežasties autoriai teigia, kad užtenka modeliuoti erdvės sritį, kuri yra 1 $mu m^3$ dydžio. Reikia pastebėti, kad tyrimų autoriai modeliuodami reakciją daro prielaidą, kad abiejų medžiagų dalelės yra vienodo dydžio -- $1 mu m^3$, tokias prielaidas darysime ir mes, kaip parodyta @initial-condition
+Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasComputationalModellingYAG2009 @ivanauskasModellingSolidState2005a darysime prielaidą, kad reagentų dalelės yra vienodai pasiskirsčiusios po erdvę ir yra apytiksliai kvadrato formos, dėl šios priežasties tyrimų autoriai teigia, kad užtenka modeliuoti erdvės sritį, kurios tūris yra 1 $mu m^3$. Reikia pastebėti, kad tyrimų autoriai modeliuodami reakciją daro prielaidą, kad abiejų medžiagų dalelės yra vienodo turio -- $1 mu m^3$, tokias prielaidas darysime ir mes, kaip parodyta @initial-condition
 
 #let mixture-pefect() = {
 
@@ -149,7 +149,7 @@ Kaip ir susijusiuose tyrimuose @mackeviciusCloserLookComputer2012 @ivanauskasCom
     draw.content((-0.5, 2), $1 mu m$)
   })
   ),
-  caption: [Kairėje -- oksidų mišinio iliustracija, dalelės pasiskirsčiusios vienodai ir tolygiai. Centre -- idealiuotas mišinio modelis, dalelės yra kvadrato formos ir vienodo dydžio. Dešinėje -- idealizuoto modelio dalis $Omega$ iš vidurinės iliustracijos, kurią modeliuojame. Tamsesnis plotas žymi aliuminio oksido daleles, o šviesesnis -- itrio oksido daleles. Pradinių reagentų molinę koncentracija pradiniu laiko momentu atitinkamai žymėsime $c^0_1$ (#al-ox) ir $c^0_2$ (#it-ox)]
+  caption: [Kairėje -- oksidų mišinio iliustracija, dalelės pasiskirsčiusios vienodai ir tolygiai. Centre -- idealiuotas mišinio modelis, dalelės yra kvadrato formos ir vienodo dydžio. Dešinėje -- idealizuoto modelio dalis $Omega$ iš vidurinės iliustracijos, kurią modeliuojame. Tamsesnis plotas žymi aliuminio oksido daleles, o šviesesnis -- itrio oksido daleles. Pradinių reagentų molinę koncentraciją pradiniu laiko momentu atitinkamai žymėsime $c^0_1$ (#al-ox) ir $c^0_2$ (#it-ox)]
 ) <initial-condition>
 
 Sukonstruotam matematiniam modeliui taikysime Neumano kraštinę sąlygą matomą @math-boundary-cond[lygt.], kuri apibrėžia medžiagų nepratekėjimą srities paviršiaus normalių kryptimi. Šios kraštinės vizualizacija pateikta @boundary-condition
@@ -234,34 +234,15 @@ $ <math-boundary-cond>
     draw.content((3*1.25/2, 3*1.25/2), $c^0_1$)
     draw.content((1.25/2, 3*1.25/2), $c^0_2$)
     draw.content((3*1.25/2, 1.25/2), $c^0_2$)
-
-    // draw.content(anchor: "east-arrow", $partial/ (partial x) c_i = 0$)
-    // draw.line(
-    //   (2*cell + arrow_pad, 2*cell + arrow_pad + arrow_length), 
-    //   mark: (end: ">>"), 
-    //   stroke: 1pt, 
-    //   name: "east-arrow"
-    // )
-
-    // draw.content(anchor: "south-arrow", $partial/ (partial y) c_i = 0$)
-    // draw.line((cell, -arrow_pad), (cell, -arrow_pad - arrow_length), mark: (end: ">>"), stroke: 1pt, name: "south-arrow")
-
-    // draw.content((3.2, 5), $partial/ (partial y) c_i = 0$)
-    // draw.line((cell, 2*cell + arrow_pad), (cell, 2*cell + arrow_pad + arrow_length), mark: (end: ">>"), stroke: 1pt)
   }),
   caption: [Modeliuojamai kvadratinei sričiai pritaikyta Neumano kraštinė sąlyga.],
 ) <boundary-condition>
 
-Verta paminėti, kad pradinėje sąlygoje naudojamos pradinių medžiagų molinės koncentracijos $c^0_1$ ir $c^0_2$ atitinka stoichiometrinę sąlygą -- šių medžiagų santykis toks, kad reakcijos eigoje abi medžiagos pilnai sureaguotų. Šis santykis yra $5 : 3$, jis gali būti išvestas iš supaprastintos cheminės reakcijos @short-chem[lygt.] arba iš pilnų cheminių lygčių @long-chem[]. Konkrečias $c^0_1$ ir $c^0_2$ reikšmes galime pasirinkti pagal fizinių medžiagų tankius ir molines mases:
+Verta paminėti, kad pradinėje sąlygoje naudojamos pradinių medžiagų molinės koncentracijos $c^0_1$ ir $c^0_2$ atitinka stoichiometrinę sąlygą -- šių medžiagų santykis toks, kad reakcijos eigoje abi medžiagos visiškai sureaguotų. Šis santykis yra $5 : 3$, jis gali būti išvestas iš supaprastintos cheminės reakcijos @short-chem[lygt.] arba iš pilnų cheminių lygčių @long-chem[]. Konkrečias $c^0_1$ ir $c^0_2$ reikšmes galime pasirinkti pagal fizinių medžiagų tankius ir molines mases:
 
 $
-  // (3.987 times 10^(-12) "g "mu"m"^(-3)) / (101.96 " g mol"^(-1))
   c^0_1 = c_(#al-ox) = rho_(#al-ox) / M_(#al-ox) = (3.987 " g cm"^(-3)) / (101.96 " g mol"^(-1)) = 3.91 times 10^(-14) "mol" / (mu"m"^3)\
 
   c^0_2 = 3/5 c^0_1
-
-  // c_(#it-ox) = (5.01 " g cm"^(-3)) / (225.81 " g mol"^(-1)) = (5.01 times 10^(-12) "g "mu"m"^(-3)) / (225.81 " g mol"^(-1)) = 2.218 times 10^(-14) "mol" / (mu"m"^3)
 $
-
-// Kadangi $c_(#al-ox)$ reikšmė yra maža ir dėl jos gali atsirasti slankaus kablelio klaidų (_angl. floating-point errors_), dėl to skaitiškai modeliuodami reakciją naudosime bedimensę koncentraciją medžiagoms $tilde(c)_1, dots, tilde(c)_5 tilde O(1)$, kur $tilde(c)_i=c_i\/C_0$, čia $C_0$ yra konvertavimo konstanta norint paversti bedimensę koncentraciją $tilde(c)_i$ į fizinę reikšmę turinčią $c_0$
 
