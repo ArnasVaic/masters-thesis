@@ -1,14 +1,16 @@
 # %%
-
+# Pirmiausia paleisti main.py, kad 
+# cwd būtų py, o ne py/results, kitaip
+# neveiks from core import ...
 import numpy as np
 import yag_model as ym
-from py.core import solve, MOLAR_MASSES
+from core import solve, MOLAR_MASSES, Scales
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 # %%
-def build_cfg(mp: ym.ModelParameters):
+def build_cfg(mp: ym.ModelParameters, _: Scales):
     disc = ym.Discretization(1.0, 1.0, 40, 40)
     ic = ym.build_checkerboard_initial_condition(disc, 5.0, 3.0)
     ts = ym.FixedTimeStep(0.0001)
@@ -23,10 +25,10 @@ mp = ym.ModelParameters(
     [10.0, 5.0, 1.0]
 )
 
-disc, _, _, _, _, cpt, ic = solve(mp, build_cfg)
+scales = Scales(1.0, 1.0, 1.0)
+disc, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
 
-# %%
-
+# %% Norint sėkmingai paleisti reikia įrašyti Libertinus Serif šriftą.
 plt.style.use('ggplot')  # try: 'ggplot', 'bmh', 'fivethirtyeight'
 
 mpl.rcParams.update({
@@ -77,7 +79,7 @@ plt.xlabel('Reakcijos laikas (s)')
 plt.ylabel('Medžiagų masės dalys (%)')
 plt.legend()
 plt.tight_layout()
-plt.savefig('../../doc/assets/diagrams/const-mass.png', dpi=300)
+#plt.savefig('../../doc/assets/diagrams/const-mass.png', dpi=300)
 
 # %%
 

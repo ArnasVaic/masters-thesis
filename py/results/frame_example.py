@@ -1,10 +1,13 @@
-# %%
+# %% 
+# Pirmiausia paleisti main.py, kad 
+# cwd būtų py, o ne py/results, kitaip
+# neveiks from core import ...
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import yag_model as ym
-from py.core import MOLAR_MASSES, solve
+from core import MOLAR_MASSES, solve
 
 # %%
 def build_cfg(mp: ym.ModelParameters):
