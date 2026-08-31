@@ -5,7 +5,7 @@ Sudarytą matematinį modelį spręsime naudodami ADI schemą. Naudodamiesi šiu
 #let diff_part(var, sup) = $(delta_#var^2[bold(c)^#sup])/(Delta #var^2)$
 
 $
-(bold(c)^*-bold(c)^n)/(1/2 Delta t)=bold(D) dot.o (#diff_part($x$, $*$)+#diff_part($y$, $n$))+bold(S) bold(phi)(bold(c^n))
+(bold(c)^*-bold(c)^n)/(1/2 Delta t)=bold(D) dot.o (#diff_part($x$, $*$)+#diff_part($y$, $n$))+bold(S) "diag"(bold(k)) bold(phi)(bold(c^n))
 $ <adi-1st-part>
 
 Lygtyje @adi-1st-part[], $bold(c)^*$ žymi sprendinį tarpiniu laiko momentu tarp $n$ ir $n+1$. Verta atkreipti dėmesį, kad difuzijos komponentė yra išreikština $y$ ašimi, tačiau neišreikština $x$ ašimi -- tai yra ADI metodo specifika, dėl kurios šis metodas gali būti toks greitas ir tikslus. $delta_x^2$ ir $delta_y^2$ žymi diskrečius difuzijos operatorius, kurie operuoja ant diskretaus tinklelio:
@@ -17,26 +17,26 @@ $
 Gavę tarpinį sprendinį $bold(c)^*$ galime ieškoti $bold(c)^(n+1)$, kuris šiuo atveju gaunamas išsprendus lygtį:
 
 $
-  (bold(c)^(n+1)-bold(c)^*)/(1/2 Delta t)=bold(D) dot.o (#diff_part($x$, $*$)+#diff_part($y$, $n+1$))+bold(S) bold(phi)(bold(c^*))
+  (bold(c)^(n+1)-bold(c)^*)/(1/2 Delta t)=bold(D) dot.o (#diff_part($x$, $*$)+#diff_part($y$, $n+1$))+bold(S) "diag"(bold(k)) bold(phi)(bold(c^*))
 $
 
 Abi lygtis pertvarkius taip, kad to paties laiko žingsnio komponentės būtų atitinkamose lygybės pusėse gauname lygtis:
 
 $
-  bold(c)^* -&underbrace((Delta t)/(2 Delta x^2) bold(D), bold(mu)_x) dot.o delta_x^2[bold(c)^*]=& bold(c)^n + underbrace((Delta t)/(2 Delta y^2) bold(D), bold(mu)_y) dot.o delta_y^2[bold(c)^n] + (Delta t)/2 bold(S) bold(phi) (bold(c^n)) \
+  bold(c)^* -&underbrace((Delta t)/(2 Delta x^2) bold(D), bold(mu)_x) dot.o delta_x^2[bold(c)^*]=& bold(c)^n + underbrace((Delta t)/(2 Delta y^2) bold(D), bold(mu)_y) dot.o delta_y^2[bold(c)^n] + underbrace((Delta t)/2 bold(S) "diag"(bold(k)), bold(R)) bold(phi) (bold(c^n)) \
 
-  bold(c)^(n+1) -& underbrace((Delta t) / (2 Delta y^2) bold(D), bold(mu)_y) dot.o delta_y^2[bold(c)^(n+1)]=& bold(c)^* + underbrace((Delta t)/(2 Delta x^2) bold(D), bold(mu)_x) dot.o delta_x^2[bold(c)^*] + (Delta t)/2 bold(S) bold(phi) (bold(c^*))
+  bold(c)^(n+1) -& underbrace((Delta t) / (2 Delta y^2) bold(D), bold(mu)_y) dot.o delta_y^2[bold(c)^(n+1)]=& bold(c)^* + underbrace((Delta t)/(2 Delta x^2) bold(D), bold(mu)_x) dot.o delta_x^2[bold(c)^*] +  underbrace((Delta t)/2 bold(S) "diag"(bold(k)), bold(R)) bold(phi) (bold(c^*))
 $
 
 Kurios susiveda į dvi tridiagonalines lygčių sistemas:
 
 $
-  (bold(I)-mu_(x,m)bold(L)_W)c_(m,i,:)^*&=c^n_(m,i,:)+mu_(y,m)delta_y^2[c^n_(m,i,:)]+(Delta t)/2 bold(S)_(m,:) bold(phi)(bold(c)^n_(i,:)) \
+  (bold(I)-mu_(x,m)bold(L)_W)c_(m,i,:)^*&=c^n_(m,i,:)+mu_(y,m)delta_y^2[c^n_(m,i,:)]+bold(R)_(m,:) bold(phi)(bold(c)^n_(i,:)) \
 
-  (bold(I)-mu_(y,m)bold(L)_H)c_(m,:,j)^(n+1)&=c^*_(m,:,j)+mu_(x,m)delta_x^2[c^*_(m,:,j)]+(Delta t)/2 bold(S)_(m,:) bold(phi)(bold(c)^*_(:,j)) 
+  (bold(I)-mu_(y,m)bold(L)_H)c_(m,:,j)^(n+1)&=c^*_(m,:,j)+mu_(x,m)delta_x^2[c^*_(m,:,j)]+bold(R)_(m,:) bold(phi)(bold(c)^*_(:,j)) 
 $ <tridiag-eqs>
 
-Čia $m=1,dots,5$ -- medžiagos indeksas, $i=1,dots,H$ -- eilutės indeksas, $j=1,dots,W$ -- stulpelio indeksas, $a_(i,:)$ žymi $i$-tąją eilutę, o $a_(:,j)$ žymi $j$-ąjį stulpelį ir $bold(mu_x) = (mu_(x,1), dots, mu_(x,5))$, o $bold(mu_y) = (mu_(y,1), dots, mu_(y,5))$. Verta paminėti, kad $i=0$, $i=H$, $j=0$ ir $j=W$ yra kraštiniai atvejai, kada diskretaus Laplaso operatoriaus veiksmas nebūtų apibrėžtas, nes operatorius reikalautų reikšmių eilutės arba stulpelio, kurie nėra diskrečiame tinklelyje, todėl šiems kraštutiniams atvejams galioja kitokios lygtys, kurios bus apibendrintos išskleistose formulėse @expanded-tridiagonal-eq[]. $bold(L)_N$ žymi $N times N$ dydžio diskrečią Laplaso matricą, su Neumano kraštinės sąlygos prielaida:
+Čia $m=1,dots,5$ -- medžiagos indeksas, $i=1,dots,H$ -- eilutės indeksas, $j=1,dots,W$ -- stulpelio indeksas, $a_(i,:)$ žymi $i$-tąją matricos eilutę, o $a_(:,j)$ žymi $j$-ąjį matricos stulpelį. $bold(R) in RR^(5 times 3)$ žymi reakcijos narių koeficientų matricą. $bold(mu_x) = (mu_(x,1), dots, mu_(x,5))$, o $bold(mu_y) = (mu_(y,1), dots, mu_(y,5))$. Verta paminėti, kad $i=0$, $i=H$, $j=0$ ir $j=W$ yra kraštiniai atvejai, kada diskretaus Laplaso operatoriaus veiksmas nebūtų apibrėžtas, nes operatorius reikalautų reikšmių eilutės arba stulpelio, kurie nėra diskrečiame tinklelyje, todėl šiems kraštutiniams atvejams galioja kitokios lygtys, kurios bus apibendrintos išskleistose formulėse @expanded-tridiagonal-eq[]. $bold(L)_N$ žymi $N times N$ dydžio diskrečią Laplaso matricą, su Neumano kraštinės sąlygos prielaida:
 
 $
   bold(L)_N = underbrace(mat(

@@ -63,10 +63,13 @@ $
 Čia $Omega$ yra erdvės sritis, kurioje modeliuojame reakciją. Apjungiant lygtis @long-sytem-eqs[], sistemą galima užrašyti ir glaustesniu formatu:
 
 $
-  (partial bold(c)) / (partial t) &= bold(D) dot.o nabla^2 bold(c) + bold(S) dot bold(phi)(bold(c)), quad bold(S) = mat(-1, -1, -1; -2, 0, 0; 1, -1, 0; 0, 4, -3;0, 0, 1), quad  bold(phi)(bold(c)) = vec(k_1 c_1 c_2, k_2 c_1 c_3, k_3 c_1 c_4)
+  (partial bold(c)) / (partial t) = bold(D) dot.o nabla^2 bold(c) + bold(S) "diag"(bold(k)) bold(phi)(bold(c)) \
+  bold(S) = mat(-1, -1, -1; -2, 0, 0; 1, -1, 0; 0, 4, -3;0, 0, 1),quad 
+  bold(k) = vec(k_1, k_2, k_3) quad 
+  bold(phi)(bold(c)) = vec(c_1 c_2,c_1 c_3, c_1 c_4)
 $
 
-kur $bold(D) = (D_1, D_2, D_3, D_4, D_5)$.
+kur $bold(S)$ -- stoichiometrinė matrica, $bold(D) = (D_1, D_2, D_3, D_4, D_5)$ , o $"diag"(bold(a))$ yra funkcija, kuri iš vektoriaus $bold(a)$ elementų sukonstruoja diagonalią matricą.
 
 == Pradinė ir kraštinė sąlygos
 
