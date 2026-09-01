@@ -25,6 +25,7 @@ dependencies:
   # c++ libs
   - pybind11
   - xtensor
+  - xtensor-blas
   - xtensor-python
   - xtl
   - libopenblas

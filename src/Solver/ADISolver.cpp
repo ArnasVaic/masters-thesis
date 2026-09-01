@@ -17,7 +17,9 @@ void solveStep(Discretization const& disc,
     ADISolverCache& cache,
     double dt);
 
-void solve(Discretization const& disc,
+void solve(
+    xt::xarray<double> const& S,
+    Discretization const& disc,
     ModelParameters const& params,
     ITimeStep& timeStep,
     IBrake const& brake,
@@ -31,7 +33,7 @@ void solve(Discretization const& disc,
         capture.capture(state);
     }
 
-    ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x);
+    ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x, S);
     double cached_dt = timeStep.getTimestep();
     cache.update(params, disc, cached_dt);
 
@@ -84,9 +86,9 @@ void xSweepStep(size_t const mat,
     int const rows,
     int const cols) {
     double const mu_y = cache.mu_y[mat];
-    double const mu_1 = cache.reactionCoefficients(mat, 0);
-    double const mu_2 = cache.reactionCoefficients(mat, 1);
-    double const mu_3 = cache.reactionCoefficients(mat, 2);
+    double const mu_1 = cache.R(mat, 0);
+    double const mu_2 = cache.R(mat, 1);
+    double const mu_3 = cache.R(mat, 2);
 
     auto const& c = state.solution.c[mat];
     auto const& c1 = state.solution.c[0];
@@ -119,9 +121,9 @@ void ySweepStep(size_t const mat,
     int const rows,
     int const cols) {
     double const mu_x = cache.mu_x[mat];
-    double const mu_1 = cache.reactionCoefficients(mat, 0);
-    double const mu_2 = cache.reactionCoefficients(mat, 1);
-    double const mu_3 = cache.reactionCoefficients(mat, 2);
+    double const mu_1 = cache.R(mat, 0);
+    double const mu_2 = cache.R(mat, 1);
+    double const mu_3 = cache.R(mat, 2);
 
     auto const& c = cache.halfBuffer.c[mat];
     auto const& c1 = cache.halfBuffer.c[0];

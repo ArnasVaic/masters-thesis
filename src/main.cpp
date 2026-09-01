@@ -15,6 +15,18 @@
 
 int main() {
 
+    // -----------------------------------------------------------------
+    // YAG reaction stoichiometry
+    // -----------------------------------------------------------------
+
+    const xt::xarray<double> S = {
+        {-1, -1, -1},
+        {-2, 0, 0},
+        {1, -1, 0},
+        {0, 4, -3},
+        {0, 0, 1}
+    };
+
     yag_model::ModelParameters params(
         {1e-6, 1e-6, 1e-6, 1e-6, 1e-6},
         {1e6, 1e6, 1e6}
@@ -82,6 +94,7 @@ int main() {
     yag_model::QuantityCapture capture(400, disc);
 
     yag_model::solve(
+        S,
         disc,
         params_nd,
         step,

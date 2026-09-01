@@ -180,7 +180,9 @@ PYBIND11_MODULE(yag_model, m) {
 
     m.def(
         "solve",
-        [](yag_model::Discretization const &disc,
+        [](
+            xt::xarray<double> const& s,
+            yag_model::Discretization const &disc,
             yag_model::ModelParameters const &reactionParameters,
             std::shared_ptr<yag_model::ITimeStep> timeStep,
             std::shared_ptr<yag_model::IBrake> brake,
@@ -191,7 +193,9 @@ PYBIND11_MODULE(yag_model, m) {
             // Release the Python GIL
             py::gil_scoped_release release;
 
-            return yag_model::solve(disc,
+            return yag_model::solve(
+                s,
+                disc,
                 reactionParameters,
                 *timeStep,
                 *brake,
@@ -199,6 +203,7 @@ PYBIND11_MODULE(yag_model, m) {
                 *capture,
                 ic);
         },
+        py::arg("s"),
         py::arg("disc"),
         py::arg("reactionParameters"),
         py::arg("timeStep"),

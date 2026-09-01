@@ -13,15 +13,18 @@
 #include "Core/SolutionState.h"
 #include "TimeStep/ITimeStep.h"
 
-namespace yag_model {
-
-void solve(Discretization const &disc,
-    ModelParameters const &params,
-    ITimeStep &timeStep,
-    IBrake const &brake,
-    ICaptureTrigger const &captureTrigger,
-    ICapture &capture,
-    SolutionState const &ic);
-}  // namespace yag_model
+namespace yag_model
+{
+    void solve(
+        xt::xarray<double> const& S,
+        Discretization const& disc,
+        ModelParameters const& params,
+        ITimeStep& timeStep,
+        IBrake const& brake,
+        ICaptureTrigger const& captureTrigger,
+        ICapture& capture,
+        SolutionState const& ic
+    );
+} // namespace yag_model
 
 #endif  // YAG_MODEL_ADI_SOLVER_H

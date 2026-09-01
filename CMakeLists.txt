@@ -34,6 +34,7 @@ find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(xtensor CONFIG REQUIRED)
 find_package(xtensor-python REQUIRED)
+find_package(xtensor-blas CONFIG REQUIRED)
 
 # --------------------------------------------------
 # Core: low-level utilities
@@ -42,12 +43,14 @@ add_library(core_base
         src/Core/Quantity.cpp
         src/Core/SolutionState.cpp
         src/Core/TridiagonalLU.cpp
+        src/Core/Constants.h
 )
 
 target_include_directories(core_base PUBLIC src)
 
 target_link_libraries(core_base PUBLIC
         xtensor
+        xtensor-blas
         ${LAPACK_LIBRARIES}
         ${BLAS_LIBRARIES}
 )
@@ -135,7 +138,7 @@ if (BUILD_PYTHON)
     pybind11_add_module(yag_model
             src/bindings.cpp
     )
-    target_link_libraries(yag_model PUBLIC pybind11::module Python3::Python Python3::NumPy xtensor-python)
+    target_link_libraries(yag_model PUBLIC pybind11::module Python3::Python Python3::NumPy xtensor-python xtensor-blas)
     target_link_libraries(yag_model PRIVATE core)
 
     install(TARGETS yag_model LIBRARY DESTINATION .)
