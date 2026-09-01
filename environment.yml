@@ -21,6 +21,7 @@ dependencies:
   - pip
   - optuna
   - optuna-dashboard
+  - pybind11-stubgen
 
   # c++ libs
   - pybind11
