@@ -7,12 +7,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import yag_model as ym
-from core import MOLAR_MASSES, solve
+from core import MOLAR_MASSES, Scales, solve
+
+
+def diamond_mask(disc, a, b):
+    y, x = np.indices((disc.mesh_res_y, disc.mesh_res_x))
+    u, v = x % disc.mesh_res_x, y % disc.mesh_res_y
+    return np.where(np.abs(u - disc.mesh_res_x/2) < np.abs(v - disc.mesh_res_y/2), a, b)
+
+def form_diag_ic(disc) -> ym.SolutionState:
+    s = ym.SolutionState(disc.mesh_res_y, disc.mesh_res_x)
+    A = [5.0, 0.0]
+    B = [0.0, 3.0]
+    for mat in range(2):
+        s[mat] = diamond_mask(disc, A[mat], B[mat])
+    return s
 
 # %%
-def build_cfg(mp: ym.ModelParameters):
-    disc = ym.Discretization(1.0, 1.0, 40, 40)
-    ic = ym.build_checkerboard_initial_condition(disc, 5.0, 3.0)
+def build_cfg(mp: ym.ModelParameters, _: Scales):
+    disc = ym.Discretization(1.0, 1.0, 100, 100)
+    # ic = ym.build_checkerboard_initial_condition(disc, 5.0, 3.0)
+    ic = form_diag_ic(disc)
+    for i in range(5):
+        ic[i] = np.rot90(ic[i])
+
     ts = ym.FixedTimeStep(0.0001)
     br = ym.FixedStepBrake(100000)
     cpt = ym.StrideCaptureTrigger(100)
@@ -23,10 +41,11 @@ def build_cfg(mp: ym.ModelParameters):
 
 mp = ym.ModelParameters(
     [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
-    [60.0, 30.0, 15.0]
+    [60.0, 0, 0]
 )
 
-disc, _, _, _, _, cpt, ic = solve(mp, build_cfg)
+scales = Scales(L0=1.0, C0=1.0, D_ref=1.0)
+disc, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
 
 # %%
 
@@ -66,12 +85,19 @@ fig, axes = plt.subplots(
     constrained_layout=True,
 )
 
-for row in range(n_materials):
-    for col, frame in enumerate(frames):
+fig, axes = plt.subplots(
+    len(frames),          # rows = time snapshots
+    n_materials,          # cols = materials
+    figsize=(2.5 * n_materials, 2.2 * len(frames)),
+    constrained_layout=True,
+)
+
+for row, frame in enumerate(frames):
+    for col in range(n_materials):
 
         ax = axes[row, col]
 
-        img = cpt.c_history[row, frame]
+        img = cpt.c_history[col, frame]
 
         im = ax.imshow(
             img,
@@ -84,25 +110,17 @@ for row in range(n_materials):
         ax.set_xticks([])
         ax.set_yticks([])
 
-        # Time labels on top row
+        # Material labels on top
         if row == 0:
-            t = int(cpt.t_history[frame])
-            t = cpt.t_history[frame]
-            ms = t * 1000
+            ax.set_title(rf"$c_{{{col+1}}}$")
 
-            ax.set_title(f"{ms:.1f} ms")
-            # h = t // 3600
-            # m = (t % 3600) // 60
-            # s = t % 60
-
-            # ax.set_title(f"{h}:{m:02d}:{s:02d}")
-
-        # Material labels on first column
+        # Time labels on first column
         if col == 0:
+            ms = cpt.t_history[frame] * 1000
             ax.set_ylabel(
-                rf"$c_{{{row+1}}}$",
+                f"{ms:.1f} ms",
                 rotation=0,
-                labelpad=25,
+                labelpad=30,
                 va="center",
             )
 
@@ -115,8 +133,8 @@ cbar = fig.colorbar(
 )
 cbar.set_label("Molinė koncentracija ($mol/ \\mu m^3$)")
 
-fig.suptitle("Medžiagų molinės koncentracijos pasiskirstymas erdvėje reakcijos eigoje", y=1.02)
+# fig.suptitle("Medžiagų molinės koncentracijos pasiskirstymas erdvėje reakcijos eigoje", y=1.02)
 
-plt.savefig('../doc/assets/diagrams/frame_example.png', dpi=300)
+plt.savefig('../doc/assets/diagrams/frame_example_transposed.png', dpi=300)
 plt.show()
-# %%
+ # %%
