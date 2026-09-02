@@ -1,7 +1,7 @@
 # %%
 import numpy as np
 import yag_model as ym
-from core import solve, MOLAR_MASSES, build_optimization_config, config_info, Scales
+from py.core.core import solve, MOLAR_MASSES, build_optimization_config, config_info, Scales
 import matplotlib.pyplot as plt
 
 def build_config(mp: ym.ModelParameters, scales):

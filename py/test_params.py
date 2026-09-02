@@ -2,7 +2,7 @@
 
 import numpy as np
 import yag_model as ym
-from core import P_TRUE, Scales, build_optimization_config, loss, solve, get_p_pred
+from py.core.core import P_TRUE, Scales, build_optimization_config, loss, solve, get_p_pred
 
 scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
 

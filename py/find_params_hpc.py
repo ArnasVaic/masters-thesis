@@ -6,7 +6,7 @@ from optuna.storages import JournalStorage, JournalFileStorage
 from optuna.storages.journal import JournalFileBackend
 
 import yag_model as ym
-from core import solve, build_optimization_config, loss, Scales
+from py.core.core import solve, build_optimization_config, loss, Scales
 
 
 def objective(trial):

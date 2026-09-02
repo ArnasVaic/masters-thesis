@@ -2,7 +2,7 @@
 
 import yag_model as ym
 import optuna
-from core import solve, build_optimization_config, loss, Scales
+from py.core.core import solve, build_optimization_config, loss, Scales
 
 def objective(trial):
     scales = Scales(L0=1e-6, C0 = 3.91e4, D_ref=1e-7)

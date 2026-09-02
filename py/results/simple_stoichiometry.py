@@ -2,7 +2,7 @@
 
 import numpy as np
 import yag_model as ym
-from core import solve, MOLAR_MASSES, Scales
+from py.core.core import solve, MOLAR_MASSES, Scales
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
