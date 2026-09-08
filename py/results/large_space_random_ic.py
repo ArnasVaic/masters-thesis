@@ -2,25 +2,22 @@
 
 import numpy as np
 
-from py.core.core import Scales, solve
+import core.constants as constants
+from core.core import Scales, solve
 from yag_model import Discretization, FixedStepBrake, FixedTimeStep, InMemoryFrameCapture, ModelParameters, StrideCaptureTrigger
-from py.core.initial_conditions import rand_sq_ic
+from core.initial_conditions import rand_sq_ic
+import matplotlib.pyplot as plt
+# %%
 
 def build_cfg(mp: ModelParameters, _: Scales):
-    s = np.array([
-        [-5, 0, 0],
-        [-3, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-        [2, 0, 0]
-    ])
-    disc = Discretization(1.0, 1.0, 160, 160)
-    ic = rand_sq_ic(disc, 8, 8**2/2, 5.0, 3.0)
-    ts = FixedTimeStep(0.0001)
-    br = FixedStepBrake(100000)
-    cpt = StrideCaptureTrigger(100)
-    cp = InMemoryFrameCapture(1000, disc)
-    return [ s, disc, mp, ts, br, cpt, cp, ic ]
+    s = constants.S
+    d = Discretization(1.0, 1.0, 160, 160)
+    ic = rand_sq_ic(d, 8, int(8**2/2), 5.0, 3.0)
+    ts = FixedTimeStep(dt=1e-4)
+    br = FixedStepBrake(steps=int(1e5))
+    cpt = StrideCaptureTrigger(stride=int(1e4))
+    cp = InMemoryFrameCapture(capacity=int(1e4), disc=d)
+    return [ s, d, mp, ts, br, cpt, cp, ic ]
 
 mp = ModelParameters(
     [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
@@ -29,4 +26,9 @@ mp = ModelParameters(
 
 # %%
 scales = Scales(1.0, 1.0, 1.0)
-_, disc, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
+_, d, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
+
+# %%
+
+frame = 6
+plt.imshow(cpt.c_history[2, frame, :, :])
