@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import yag_model as ym
-from py.core.core import MOLAR_MASSES, Scales, solve
+from core.core import MOLAR_MASSES, Scales, solve
 
 
 def diamond_mask(disc, a, b):

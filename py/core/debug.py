@@ -1,6 +1,6 @@
 import numpy as np
 
-from py.core.core import Scales
+from core.core import Scales
 from yag_model import FixedTimeStep, TimeBrake
 
 def config_info(cfg, scales: Scales):

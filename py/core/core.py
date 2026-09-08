@@ -1,4 +1,4 @@
-from py.core.constants import MOLAR_MASSES, P_TRUE
+from core.constants import MOLAR_MASSES, P_TRUE
 import yag_model as ym
 import numpy as np
 
