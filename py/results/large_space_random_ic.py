@@ -5,14 +5,14 @@ import numpy as np
 import core.constants as constants
 from core.core import Scales, solve
 from yag_model import Discretization, FixedStepBrake, FixedTimeStep, InMemoryFrameCapture, ModelParameters, StrideCaptureTrigger
-from core.initial_conditions import rand_sq_ic
+from core.initial_conditions import random_squares
 import matplotlib.pyplot as plt
 # %%
 
 def build_cfg(mp: ModelParameters, _: Scales):
     s = constants.S
     d = Discretization(1.0, 1.0, 160, 160)
-    ic = rand_sq_ic(d, 8, int(8**2/2), 5.0, 3.0)
+    ic = random_squares(d, 8, int(8**2/2), 5.0, 3.0)
     ts = FixedTimeStep(dt=1e-4)
     br = FixedStepBrake(steps=int(1e5))
     cpt = StrideCaptureTrigger(stride=int(1e4))
