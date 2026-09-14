@@ -47,6 +47,10 @@
 
 #pagebreak(weak:true)
 
+#include "chapters/architecture.typ"
+
+#pagebreak(weak:true)
+
 #include "chapters/results.typ"
 
 #pagebreak(weak:true)
