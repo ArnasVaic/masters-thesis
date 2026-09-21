@@ -12,7 +12,9 @@ Tyrimui pritaikytas sprendiklis turi atsižvelgti į visus šiuos reikalavimus i
 
 Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai aprašyti skiriama nemažai dėmesio.
 
-== Aukšto lygio archiketūra
+#pagebreak()
+
+== Aukšto lygio architektūra
 
 #figure(
   diagram(
@@ -38,12 +40,16 @@ Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai apra
     edge(<solver>, <shared-obj>, "-|>", label: "kompiliuojasi į"),
     edge(<python>, <shared-obj>, "-|>", label: "naudoja")
   ),
-  caption: [Aukšto lygio skaičiavimų vykdymo diagrama]
+  caption: [Aukšto lygio skaičiavimų vykdymo diagrama,.]
 )
 
-Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra įgyvendintos su C++ programavimo kalba. Efektyviai matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algortimo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Kadangi tyrimas vykdomas WSL (_angl. Windows Subsystem for Linux_) aplinkoje, sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės, kuriose vykdoma tyrimo rezultatų analizė.
+Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algortimo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
 
 == Sprendiklio architektūra
+
+
+
+#set par(first-line-indent: 0pt)
 
 #let comp(title, fields: (), note: none) = align(left)[
   #strong(raw(title))
@@ -62,6 +68,92 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
   ]
 ]
 
+
+#figure(
+  diagram(
+    // debug: true,
+    node-fill: rgb("#d5d5d6"),
+    node-corner-radius: 3pt,
+    node-stroke: 1pt,
+    node-inset: 8pt,
+    node((0, 0), name: <qnt-title>,
+    stroke: none, fill: none, [
+      Kiekybiniai komponentai
+    ]),
+    node((0, 0.75), name: <solver-state>, [
+      *`SolverState`* \
+      #align(left, [
+        #raw("time: double") \
+        #raw("solution: SolutionState") \
+        #raw("step: size_t")
+      ])
+    ]),
+    node((0, 1.75), name: <time-step>, [
+      *`ITimeStep`*
+      #align(left, [
+        #raw("getTimestep(): double") \
+        #raw("advance(s: SolverState)")
+      ])
+    ]),
+    node((0, 2.75), name: <brake>, [
+      *`IBrake`*
+      #align(left, [
+        #raw("shouldBrake(s: SolverState): bool")
+      ])
+    ]),
+    node((0, 3.75), name: <capture-trigger>, [
+      *`ICaptureTrigger`*
+      #align(left, [
+        #raw("shouldCapture(s: SolverState): bool")
+      ])
+    ]),
+    node((0, 4.75), name: <capture>, [
+      *`ICapture`*
+      #align(left, [
+        #raw("capture(s: SolverState): bool")
+      ])
+    ]),
+    node(
+      stroke: (dash: "dashed"),
+      fill: white, 
+      enclose: (
+        <solver-state>,
+        <time-step>,
+        <qnt-title>,
+        <capture-trigger>,
+        <capture>),
+      name: <qnt-group>
+    ),
+    node((1, 2.5), name: <solve>, [
+      *`solve()`*
+    ]),
+    edge(<qnt-group>, <solve>, "-|>"),
+    node((2, 0), name: <ic>, [
+      *`InitialCondition`*
+    ]),
+    node((2, 0.75), name: <ic>, [
+      *`Discretization`*
+      #align(left, [
+        #raw("mesh_resolution_x: size_t") \
+        #raw("mesh_resolution_y: size_t") \
+        #raw("physical_width: double") \
+        #raw("physical_height: double")
+      ])
+    ]),
+    node((2, 1.75), name: <ic>, [
+      *`ModeParameters`*
+      #align(left, [
+        #raw("D: double[5]") \
+        #raw("k: double[3]")
+      ])
+    ]),
+  ),
+  caption: [Sprendklio konstrukcijai reikalingi komponentai.]
+) <solver-components>
+
+@solver-components yra pavaizduota kažkas?
+
+
 #figure(
   diagram(
     node-stroke: 1pt,
@@ -70,9 +162,9 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
     node-inset: 5pt,
     spacing: (7mm, 10mm),
 
-    node((1,0), comp("solve()", note: []), name: <solve>, width: 32mm),
+    node((1,0), comp("solve()", note: []), name: <solve>),
 
-    node((0,1.4), comp("SolverState", fields: ("solution : SolutionState", "time : double", "step : size_t")), name: <state>, width: 38mm),
+    node((0,1.4), comp("SolverState", fields: ("solution : SolutionState", "time : double", "step : size_t")), name: <state>),
     node((1,1.4), comp("ITimeStep", fields: ("getTimestep() : double", "advance(state)")), name: <timestep>, width: 38mm),
     node((2,1.4), comp("IBrake", fields: ("shouldBrake(state) : bool",)), name: <brake>, width: 38mm),
 
