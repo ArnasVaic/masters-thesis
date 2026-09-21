@@ -45,11 +45,23 @@ Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai apra
 
 Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algortimo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
 
+== Sprendinio formą kontroliuojantys komponentai
+
+=== Laiko žingsnio strategija
+
+#include "../assets/diagrams/timestep-component.typ"
+
+@timestep pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep taip pat nurodytos galimos sąsajos realizacijos: 
+- Fiksuotas laiko žingsnis (`FixedTimeStep`) -- žingsnio dydis išlieka pastovus
+- Geometrinis laiko žingsnis (`GeometricTimeStep`) -- žingsnio dydis didėja sekdamas geometrinę progresiją $Delta t_n = Delta t_0 r^n$
+
+Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
+
 == Sprendiklio architektūra
 
 
 
-#set par(first-line-indent: 0pt)
+
 
 #let comp(title, fields: (), note: none) = align(left)[
   #strong(raw(title))
