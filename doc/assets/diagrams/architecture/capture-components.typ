@@ -21,16 +21,20 @@
         #raw("r: double")
       ])
     ]),
-    node((0,0.5), name: <interface>, [
-      *`ITimeStep`*
+    node((0,0.5), name: <capture-trigger-interface>, [
+      *`ICaptureTrigger`*
       #align(left, [
-        #raw("getTimestep(): double") \
-        #raw("advance(s: SolverState)")
+        #raw("shouldCapture(s: SolverState): bool")
       ])
     ]),
-    
-    edge(<fixed>, <interface>, "-|>"),
-    edge(<exp>, <interface>, "-|>"),
+    node((0,2.5), name: <capture-interface>, [
+      *`ICapture`*
+      #align(left, [
+        #raw("capture(s: SolverState)")
+      ])
+    ]),
+    // edge(<fixed>, <capture-interface>, "-|>"),
+    // edge(<exp>, <interface>, "-|>"),
   ),
-  caption: [ Laiko žingsnio strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
-) <timestep-component-diagram>
+  caption: [ Sprendinio laiko ir formos fiksavimo strategijos sąsajos ir naudojamos realizacijos ]
+) <capture-component-diagram>

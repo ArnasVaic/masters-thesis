@@ -5,7 +5,7 @@
 
 #figure(
   diagram(
-    node-fill: rgb("#d5d5d6"),
+    node-fill: rgb("#e9e9e9"),
     node-corner-radius: 3pt,
     node-stroke: 1pt,
     node-inset: 10pt,

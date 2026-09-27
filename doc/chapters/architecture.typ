@@ -26,7 +26,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 #include "../assets/diagrams/architecture/timestep-component.typ"
 
-@timestep pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep taip pat nurodytos galimos sąsajos realizacijos: 
+@timestep-component-diagram pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep-component-diagram taip pat nurodytos galimos sąsajos realizacijos: 
 - Fiksuotas laiko žingsnis (`FixedTimeStep`) -- žingsnio dydis išlieka pastovus
 - Geometrinis laiko žingsnis (`GeometricTimeStep`) -- žingsnio dydis didėja sekdamas geometrinę progresiją $Delta t_n = Delta t_0 r^n$
 
@@ -36,137 +36,143 @@ Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptarto
 
 #include "../assets/diagrams/architecture/brake-component.typ"
 
-@brake-component-diagram pavaizduotas reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos, kurios tikslas yra nustatyti ar reakcijos stabdymo sąlyga yra išpildyta, kurio atveju sprendiklis nutrauks sprendimo ciklą. Tiksli stabdymo sąlyga priklauso nuo naudojamos realizacijos -- pačios paprasčiausios stabdymo strategijos yra fiksuoto laiko (`FixedTimeBrake`) arba fiksuoto laiko žingsnio (`FixedStepBrake`) realizacijos, kurios yra naudingos norint nustatyti ar sprendinys tenkina tam tikrą požymi, pavyzdžiui, nekintančią masę (@const-mass). 
+@brake-component-diagram pavaizduota reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos, kurios tikslas yra nustatyti ar reakcijos stabdymo sąlyga yra išpildyta, kurio atveju sprendiklis nutraukia sprendimo ciklą. Tiksli stabdymo sąlyga priklauso nuo naudojamos realizacijos -- pačios paprasčiausios stabdymo strategijos yra fiksuoto laiko (`FixedTimeBrake`) arba fiksuoto laiko žingsnio (`FixedStepBrake`) realizacijos, kurios yra naudingos norint nustatyti ar sprendinys tenkina tam tikrą požymi, pavyzdžiui, nekintančią masę (@const-mass). 
 
-Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendėjo būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima. 
+Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendiklio būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima. 
 
-== Sprendiklio architektūra
+=== Sprendinio laiko ir formos fiksavimo komponentai
 
-#let comp(title, fields: (), note: none) = align(left)[
-  #strong(raw(title))
-  #if fields.len() > 0 [
-    // #v(1pt)
-    #line(length: 100%, stroke: 0.4pt + gray)
-    // #v(1pt)
-    #text(size: 9pt)[
-      #for f in fields [
-        #raw(f) \
-      ]
-    ]
-  ] else if note != none [
-    #v(3pt)
-    #text(size: 9pt)[#note]
-  ]
-]
+#include "../assets/diagrams/architecture/capture-components.typ"
 
+@capture-component-diagram pavaizduoti 
 
-#figure(
-  diagram(
-    // debug: true,
-    node-fill: rgb("#d5d5d6"),
-    node-corner-radius: 3pt,
-    node-stroke: 1pt,
-    node-inset: 8pt,
-    node((0, 0), name: <qnt-title>,
-    stroke: none, fill: none, [
-      Kiekybiniai komponentai
-    ]),
-    node((0, 0.75), name: <solver-state>, [
-      *`SolverState`* \
-      #align(left, [
-        #raw("time: double") \
-        #raw("solution: SolutionState") \
-        #raw("step: size_t")
-      ])
-    ]),
-    node((0, 1.75), name: <time-step>, [
-      *`ITimeStep`*
-      #align(left, [
-        #raw("getTimestep(): double") \
-        #raw("advance(s: SolverState)")
-      ])
-    ]),
-    node((0, 2.75), name: <brake>, [
-      *`IBrake`*
-      #align(left, [
-        #raw("shouldBrake(s: SolverState): bool")
-      ])
-    ]),
-    node((0, 3.75), name: <capture-trigger>, [
-      *`ICaptureTrigger`*
-      #align(left, [
-        #raw("shouldCapture(s: SolverState): bool")
-      ])
-    ]),
-    node((0, 4.75), name: <capture>, [
-      *`ICapture`*
-      #align(left, [
-        #raw("capture(s: SolverState): bool")
-      ])
-    ]),
-    node(
-      stroke: (dash: "dashed"),
-      fill: white, 
-      enclose: (
-        <solver-state>,
-        <time-step>,
-        <qnt-title>,
-        <capture-trigger>,
-        <capture>),
-      name: <qnt-group>
-    ),
-    node((1, 2.5), name: <solve>, [
-      *`solve()`*
-    ]),
-    edge(<qnt-group>, <solve>, "-|>"),
-    node((2, 0), name: <ic>, [
-      *`InitialCondition`*
-    ]),
-    node((2, 0.75), name: <ic>, [
-      *`Discretization`*
-      #align(left, [
-        #raw("mesh_resolution_x: size_t") \
-        #raw("mesh_resolution_y: size_t") \
-        #raw("physical_width: double") \
-        #raw("physical_height: double")
-      ])
-    ]),
-    node((2, 1.75), name: <ic>, [
-      *`ModeParameters`*
-      #align(left, [
-        #raw("D: double[5]") \
-        #raw("k: double[3]")
-      ])
-    ]),
-  ),
-  caption: [Sprendklio konstrukcijai reikalingi komponentai.]
-) <solver-components>
+// == Sprendiklio architektūra
 
-@solver-components yra pavaizduota kažkas?
+// #let comp(title, fields: (), note: none) = align(left)[
+//   #strong(raw(title))
+//   #if fields.len() > 0 [
+//     // #v(1pt)
+//     #line(length: 100%, stroke: 0.4pt + gray)
+//     // #v(1pt)
+//     #text(size: 9pt)[
+//       #for f in fields [
+//         #raw(f) \
+//       ]
+//     ]
+//   ] else if note != none [
+//     #v(3pt)
+//     #text(size: 9pt)[#note]
+//   ]
+// ]
 
 
-#figure(
-  diagram(
-    node-stroke: 1pt,
-    node-fill: rgb("eeeeee"),
-    node-corner-radius: 3pt,
-    node-inset: 5pt,
-    spacing: (7mm, 10mm),
+// #figure(
+//   diagram(
+//     // debug: true,
+//     node-fill: rgb("#d5d5d6"),
+//     node-corner-radius: 3pt,
+//     node-stroke: 1pt,
+//     node-inset: 8pt,
+//     node((0, 0), name: <qnt-title>,
+//     stroke: none, fill: none, [
+//       Kiekybiniai komponentai
+//     ]),
+//     node((0, 0.75), name: <solver-state>, [
+//       *`SolverState`* \
+//       #align(left, [
+//         #raw("time: double") \
+//         #raw("solution: SolutionState") \
+//         #raw("step: size_t")
+//       ])
+//     ]),
+//     node((0, 1.75), name: <time-step>, [
+//       *`ITimeStep`*
+//       #align(left, [
+//         #raw("getTimestep(): double") \
+//         #raw("advance(s: SolverState)")
+//       ])
+//     ]),
+//     node((0, 2.75), name: <brake>, [
+//       *`IBrake`*
+//       #align(left, [
+//         #raw("shouldBrake(s: SolverState): bool")
+//       ])
+//     ]),
+//     node((0, 3.75), name: <capture-trigger>, [
+//       *`ICaptureTrigger`*
+//       #align(left, [
+//         #raw("shouldCapture(s: SolverState): bool")
+//       ])
+//     ]),
+//     node((0, 4.75), name: <capture>, [
+//       *`ICapture`*
+//       #align(left, [
+//         #raw("capture(s: SolverState): bool")
+//       ])
+//     ]),
+//     node(
+//       stroke: (dash: "dashed"),
+//       fill: white, 
+//       enclose: (
+//         <solver-state>,
+//         <time-step>,
+//         <qnt-title>,
+//         <capture-trigger>,
+//         <capture>),
+//       name: <qnt-group>
+//     ),
+//     node((1, 2.5), name: <solve>, [
+//       *`solve()`*
+//     ]),
+//     edge(<qnt-group>, <solve>, "-|>"),
+//     node((2, 0), name: <ic>, [
+//       *`InitialCondition`*
+//     ]),
+//     node((2, 0.75), name: <ic>, [
+//       *`Discretization`*
+//       #align(left, [
+//         #raw("mesh_resolution_x: size_t") \
+//         #raw("mesh_resolution_y: size_t") \
+//         #raw("physical_width: double") \
+//         #raw("physical_height: double")
+//       ])
+//     ]),
+//     node((2, 1.75), name: <ic>, [
+//       *`ModeParameters`*
+//       #align(left, [
+//         #raw("D: double[5]") \
+//         #raw("k: double[3]")
+//       ])
+//     ]),
+//   ),
+//   caption: [Sprendiklio konstrukcijai reikalingi komponentai.]
+// ) <solver-components>
 
-    node((1,0), comp("solve()", note: []), name: <solve>),
+// @solver-components yra pavaizduota kažkas?
 
-    node((0,1.4), comp("SolverState", fields: ("solution : SolutionState", "time : double", "step : size_t")), name: <state>),
-    node((1,1.4), comp("ITimeStep", fields: ("getTimestep() : double", "advance(state)")), name: <timestep>, width: 38mm),
-    node((2,1.4), comp("IBrake", fields: ("shouldBrake(state) : bool",)), name: <brake>, width: 38mm),
 
-    node((0.5,2.8), comp("ICaptureTrigger", fields: ("shouldCapture(state) : bool",)), name: <trigger>, width: 38mm),
-    node((1.5,2.8), comp("ICapture", fields: ("capture(state)",)), name: <capture>, width: 38mm),
+// #figure(
+//   diagram(
+//     node-stroke: 1pt,
+//     node-fill: rgb("eeeeee"),
+//     node-corner-radius: 3pt,
+//     node-inset: 5pt,
+//     spacing: (7mm, 10mm),
 
-    edge(<solve>, <state>, "-|>"),
-    edge(<solve>, <timestep>, "-|>"),
-    edge(<solve>, <brake>, "-|>"),
-    edge(<solve>, <trigger>, "-|>"),
-    edge(<solve>, <capture>, "-|>"),
-  ),
-  caption: [Sprendiklio komponentai. `solve()` naudoja būsenos objektą `SolverState` bei keturias strategijos sąsajas; kiekvieno bloko viduje nurodyti jo metodai (ar laukai), atskleidžiantys komponento atsakomybę.]
-	) <fig-architecture>
+//     node((1,0), comp("solve()", note: []), name: <solve>),
+
+//     node((0,1.4), comp("SolverState", fields: ("solution : SolutionState", "time : double", "step : size_t")), name: <state>),
+//     node((1,1.4), comp("ITimeStep", fields: ("getTimestep() : double", "advance(state)")), name: <timestep-component-diagram>, width: 38mm),
+//     node((2,1.4), comp("IBrake", fields: ("shouldBrake(state) : bool",)), name: <brake>, width: 38mm),
+
+//     node((0.5,2.8), comp("ICaptureTrigger", fields: ("shouldCapture(state) : bool",)), name: <trigger>, width: 38mm),
+//     node((1.5,2.8), comp("ICapture", fields: ("capture(state)",)), name: <capture>, width: 38mm),
+
+//     edge(<solve>, <state>, "-|>"),
+//     edge(<solve>, <timestep-component-diagram>, "-|>"),
+//     edge(<solve>, <brake>, "-|>"),
+//     edge(<solve>, <trigger>, "-|>"),
+//     edge(<solve>, <capture>, "-|>"),
+//   ),
+//   caption: [Sprendiklio komponentai. `solve()` naudoja būsenos objektą `SolverState` bei keturias strategijos sąsajas; kiekvieno bloko viduje nurodyti jo metodai (ar laukai), atskleidžiantys komponento atsakomybę.]
+// 	) <fig-architecture>

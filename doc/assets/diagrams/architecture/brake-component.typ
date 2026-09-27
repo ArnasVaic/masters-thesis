@@ -6,9 +6,9 @@
 #figure(
   diagram(
     node-stroke: 1pt,
-    node-fill: rgb("#eeddff"),
+    node-fill: rgb("#e9e9e9"),
     node-corner-radius: 3pt,
-    node((-0.75,0), name: <threshold>, [
+    node((0,0), name: <threshold>, [
       *`ProductThresholdBrake`*
       #align(left, [
         #raw("threshold: double") \
@@ -21,7 +21,7 @@
         #raw("steps: size_t")
       ])
     ]),
-    node((0,0), name: <fixed-time>, [
+    node((-0.75,0), name: <fixed-time>, [
       *`FixedTimeBrake`*
       #align(left, [
         #raw("t_end: double")
@@ -38,5 +38,5 @@
     edge(<threshold>, <interface>, "-|>"),
     edge(<fixed-time>, <interface>, "-|>"),
   ),
-  caption: [ Reakcijos stabdymo strategijos sąsaja (_angl. interface_) ir naudojamos realizacijos ]
+  caption: [ Reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos ]
 ) <brake-component-diagram>
