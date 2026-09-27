@@ -16,32 +16,7 @@ Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai apra
 
 == Aukšto lygio architektūra
 
-#figure(
-  diagram(
-    node-fill: rgb("#d5d5d6"),
-    node-corner-radius: 3pt,
-    node-stroke: 1pt,
-    node-inset: 10pt,
-    node((0,0), [
-      *yag_model*
-      #linebreak()
-      (įgyvendinta C++)
-    ], name: <solver>),
-    node((1,-0.75), [
-      *yag_model.so*
-      #linebreak()
-      (shared object)
-    ], name: <shared-obj>),
-    node((2,0), [
-      *python užrašinės*
-      #linebreak()
-      (rezultatų analizė)
-    ], name: <python>),
-    edge(<solver>, <shared-obj>, "-|>", label: "kompiliuojasi į"),
-    edge(<python>, <shared-obj>, "-|>", label: "naudoja")
-  ),
-  caption: [Aukšto lygio skaičiavimų vykdymo diagrama,.]
-)
+#include "../assets/diagrams/architecture/high-level-arch.typ"
 
 Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algortimo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
 
@@ -49,7 +24,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 === Laiko žingsnio strategija
 
-#include "../assets/diagrams/timestep-component.typ"
+#include "../assets/diagrams/architecture/timestep-component.typ"
 
 @timestep pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep taip pat nurodytos galimos sąsajos realizacijos: 
 - Fiksuotas laiko žingsnis (`FixedTimeStep`) -- žingsnio dydis išlieka pastovus
@@ -57,11 +32,13 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
 
+=== Reakcijos stabdymo komponentas
+
+#include "../assets/diagrams/architecture/brake-component.typ"
+
+
+
 == Sprendiklio architektūra
-
-
-
-
 
 #let comp(title, fields: (), note: none) = align(left)[
   #strong(raw(title))

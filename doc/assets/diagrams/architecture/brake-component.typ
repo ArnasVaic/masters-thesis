@@ -1,6 +1,7 @@
 #import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
 
-#set par(first-line-indent: 0pt)
+#import "../../../config/diagram.typ": diagram_style
+#show: diagram_style
 
 #figure(
   diagram(
@@ -8,28 +9,26 @@
     node-fill: rgb("#eeddff"),
     node-corner-radius: 3pt,
     node((-1,0), name: <fixed>, [
-      *`FixedTimeStep`*
+      *`ThresholdBrake`*
       #align(left, [
-        #raw("dt: double")
+        #raw("c5_threshold: double")
       ])
     ]),
     node((1,0), name: <exp>, [
-      *`GeometricTimeStep`*
+      *`FixedStepBrake`*
       #align(left, [
-        #raw("dt_0: double") \
-        #raw("r: double")
+        #raw("steps: size_t")
       ])
     ]),
     node((0,0.5), name: <interface>, [
-      *`ITimeStep`*
+      *`IBrake`*
       #align(left, [
-        #raw("getTimestep(): double") \
-        #raw("advance(s: SolverState)")
+        #raw("shouldBrake(s: SolverState): bool")
       ])
     ]),
     
     edge(<fixed>, <interface>, "-|>"),
     edge(<exp>, <interface>, "-|>"),
   ),
-  caption: [ Laiko žingsnio strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
-) <timestep>
+  caption: [ Reakcijos stabdyom strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
+) <brake-component-diagram>
