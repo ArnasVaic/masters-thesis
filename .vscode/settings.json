@@ -7,6 +7,7 @@
     "itrium",
     "kietafazė",
     "kietafazės",
+    "LAPACK",
     "ldiv",
     "ldlt",
     "legiruojant",
@@ -14,11 +15,14 @@
     "legiruoti",
     "perlin",
     "silico",
+    "skaitiškai",
     "Sprendiklio",
     "tridiag",
     "Tridiagonal",
+    "tridiagonalinių",
     "Typst",
-    "vizualizacija"
+    "vizualizacija",
+    "xtensor"
   ],
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",

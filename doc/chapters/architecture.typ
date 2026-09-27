@@ -18,7 +18,7 @@ Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai apra
 
 #include "../assets/diagrams/architecture/high-level-arch.typ"
 
-Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algortimo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
+Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algoritmo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
 
 == Sprendinio formą kontroliuojantys komponentai
 
@@ -36,7 +36,9 @@ Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptarto
 
 #include "../assets/diagrams/architecture/brake-component.typ"
 
+@brake-component-diagram pavaizduotas reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos, kurios tikslas yra nustatyti ar reakcijos stabdymo sąlyga yra išpildyta, kurio atveju sprendiklis nutrauks sprendimo ciklą. Tiksli stabdymo sąlyga priklauso nuo naudojamos realizacijos -- pačios paprasčiausios stabdymo strategijos yra fiksuoto laiko (`FixedTimeBrake`) arba fiksuoto laiko žingsnio (`FixedStepBrake`) realizacijos, kurios yra naudingos norint nustatyti ar sprendinys tenkina tam tikrą požymi, pavyzdžiui, nekintančią masę (@const-mass). 
 
+Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendėjo būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima. 
 
 == Sprendiklio architektūra
 
