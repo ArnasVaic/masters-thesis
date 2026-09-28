@@ -8,33 +8,48 @@
     node-stroke: 1pt,
     node-fill: rgb("#e9e9e9"),
     node-corner-radius: 3pt,
-    node((-1,0), name: <fixed>, [
-      *`FixedTimeStep`*
+    node((-0.5,0), name: <stride-ct>, [
+      *`StrideCaptureTrigger`*
       #align(left, [
-        #raw("dt: double")
+        #raw("stride: size_t")
       ])
     ]),
-    node((1,0), name: <exp>, [
-      *`GeometricTimeStep`*
+    node((0.5,0), name: <last-frame-ct>, [
+      *`LastFrameCaptureTrigger`*
       #align(left, [
-        #raw("dt_0: double") \
-        #raw("r: double")
+        #raw("brake: IBrake")
       ])
     ]),
-    node((0,0.5), name: <capture-trigger-interface>, [
+    node((0,1), name: <cti>, [
       *`ICaptureTrigger`*
       #align(left, [
         #raw("shouldCapture(s: SolverState): bool")
       ])
     ]),
-    node((0,2.5), name: <capture-interface>, [
+    node((-0.5,3), name: <imfc>, [
+      *`InMemoryFrameCapture`*
+      #align(left, [
+        #raw("capacity: size_t") \ 
+        #raw("disc: Discretization")
+      ])
+    ]),
+    node((0.5,3), name: <imqc>, [
+      *`InMemoryQuantityCapture`*
+      #align(left, [
+        #raw("capacity: size_t") \
+        #raw("disc: Discretization")
+      ])
+    ]),
+    node((0,2), name: <ci>, [
       *`ICapture`*
       #align(left, [
         #raw("capture(s: SolverState)")
       ])
     ]),
-    // edge(<fixed>, <capture-interface>, "-|>"),
-    // edge(<exp>, <interface>, "-|>"),
+    edge(<stride-ct>, <cti>, "-|>"),
+    edge(<last-frame-ct>, <cti>, "-|>"),
+    edge(<imfc>, <ci>, "-|>"),
+    edge(<imqc>, <ci>, "-|>"),
   ),
   caption: [ Sprendinio laiko ir formos fiksavimo strategijos sąsajos ir naudojamos realizacijos ]
 ) <capture-component-diagram>
