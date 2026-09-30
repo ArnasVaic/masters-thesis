@@ -32,7 +32,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
 
-=== Reakcijos stabdymo komponentas
+=== Reakcijos stabdymo strategijos
 
 #include "../assets/diagrams/architecture/brake-component.typ"
 
@@ -40,11 +40,11 @@ Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptarto
 
 Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendiklio būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima. 
 
-=== Sprendinio laiko ir formos fiksavimo komponentai
+=== Sprendinio fiksavimo strategijos
 
 #include "../assets/diagrams/architecture/capture-components.typ"
 
-@capture-component-diagram pavaizduoti 
+@capture-component-diagram pavaizduotos strategijų sąsajos yra naudojamos kontroliuoti kaip dažnai ir kokie duomenys yra renkami apie sprendinį. Sąsaja `ICaptureTrigger` kontroliuoja kada informacija apie sprendinį bus surinkta -- dažniausiai eksperimentuose naudojama realizaciją `StrideCaptureTrigger`, kuri renka informaciją kas $n$ (`stride`) žingsnių. Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, dažniausiai
 
 // == Sprendiklio architektūra
 

@@ -51,5 +51,5 @@
     edge(<imfc>, <ci>, "-|>"),
     edge(<imqc>, <ci>, "-|>"),
   ),
-  caption: [ Sprendinio laiko ir formos fiksavimo strategijos sąsajos ir naudojamos realizacijos ]
+  caption: [ Sprendinio fiksavimo sąsajos ir naudojamos realizacijos.  ]
 ) <capture-component-diagram>
