@@ -44,7 +44,12 @@ Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras proc
 
 #include "../assets/diagrams/architecture/capture-components.typ"
 
-@capture-component-diagram pavaizduotos strategijų sąsajos yra naudojamos kontroliuoti kaip dažnai ir kokie duomenys yra renkami apie sprendinį. Sąsaja `ICaptureTrigger` kontroliuoja kada informacija apie sprendinį bus surinkta -- dažniausiai eksperimentuose naudojama realizaciją `StrideCaptureTrigger`, kuri renka informaciją kas $n$ (`stride`) žingsnių. Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, dažniausiai
+@capture-component-diagram pavaizduotos strategijų sąsajos yra naudojamos kontroliuoti kaip dažnai ir kokie duomenys yra renkami apie sprendinį. Sąsaja `ICaptureTrigger` kontroliuoja kada informacija apie sprendinį bus surinkta, pora naudingų realizacijų:
+
+- Realizacija `StrideCaptureTrigger` surenka duomenis apie sprendinį kas $n$ (`stride`) žingsnių
+- Realizacija `LastFrameCaptureTrigger` surenka duomenis apie sprendinį tik tą žingsnį, ties kuriuo reakcijos stabdymo komponentas `IBrake` nusprendžia, kad reakcija yra pasibaigusi, dėl to @capture-component-diagram galime matyti šios realizacijos priklausomybę nuo minėto komponento `IBrake`
+
+Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, eksperimentuose dažniausiai pasirenkame
 
 // == Sprendiklio architektūra
 
