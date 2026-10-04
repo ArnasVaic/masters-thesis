@@ -49,7 +49,7 @@ Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras proc
 - Realizacija `StrideCaptureTrigger` surenka duomenis apie sprendinį kas $n$ (`stride`) žingsnių
 - Realizacija `LastFrameCaptureTrigger` surenka duomenis apie sprendinį tik tą žingsnį, ties kuriuo reakcijos stabdymo komponentas `IBrake` nusprendžia, kad reakcija yra pasibaigusi, dėl to @capture-component-diagram galime matyti šios realizacijos priklausomybę nuo minėto komponento `IBrake`
 
-Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, eksperimentuose dažniausiai pasirenkame
+Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, eksperimentuose dažniausiai pasirenkame tokius nustatymus, kad išsaugoto sprendinio
 
 // == Sprendiklio architektūra
 
