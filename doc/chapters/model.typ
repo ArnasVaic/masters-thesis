@@ -1,6 +1,6 @@
 #import "@preview/cetz:0.5.1": canvas, draw
 
-= Papildytas matematinis modelis
+= Papildytas matematinis modelis <mathematical-model>
 
 == Modelio sudarymas
 
@@ -66,7 +66,7 @@ $
   (partial bold(c)) / (partial t) = bold(D) dot.o nabla^2 bold(c) + bold(S) "diag"(bold(k)) bold(phi)(bold(c)) \
   bold(S) = mat(-1, -1, -1; -2, 0, 0; 1, -1, 0; 0, 4, -3;0, 0, 1),quad 
   bold(k) = vec(k_1, k_2, k_3) quad 
-  bold(phi)(bold(c)) = vec(c_1 c_2,c_1 c_3, c_1 c_4)
+  bold(phi)(bold(c)) = vec(c_1 c_2,c_1 c_3, c_1 c_4) #<model-constants>
 $
 
 kur $bold(S)$ -- stoichiometrinė matrica, $bold(D) = (D_1, D_2, D_3, D_4, D_5)$ , o $"diag"(bold(a))$ yra funkcija, kuri iš vektoriaus $bold(a)$ elementų sukonstruoja diagonalią matricą.

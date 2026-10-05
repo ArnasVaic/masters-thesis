@@ -14,15 +14,29 @@ Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai apra
 
 #pagebreak()
 
-== Aukšto lygio architektūra
+== Sprendiklio naudojimas
 
 #include "../assets/diagrams/architecture/high-level-arch.typ"
 
 Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algoritmo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
 
-== Sprendinio formą kontroliuojantys komponentai
+#pagebreak()
 
-=== Laiko žingsnio strategija
+== Sprendiklio sąsaja ir pagrindiniai komponentai
+
+Modulis `yag_model` įgyvendina funkciją `solve`, kuri skaitiškai sprendžia sistemą apibūdintą @mathematical-model[skyriuje]. Ši funkcija turi keletą parametrų:
+- $bold(S) in RR^(5 times 3)$ -- stoichiometrinė sistemos matrica. Atliekant įprastą rezultatų analizę šio parametro reikšmė bus tokia pati kaip @model-constants[lygt.]. Ši matrica egzistuoja kaip funkcijos parametras dėl to, kad būtų įmanoma testuoti modelio veikimą nepriklausomai nuo duotos stoichiometrinės matricos. Anksčiau minėtą supaprastiną cheminę reakciją @vaicekauskas2025yag galime modeliuoti paprasčiausiai pakeičiant šio argumento reikšmę.
+- `Discretization` -- erdvės diskretizacijos konfigūracija kontroliuoja modeliuojamos erdvės granuliarumą ir fizinį dydį, detaliau pavaizduota @solver-inputs-diagram
+- `ModelParameters` -- struktūra laikanti modelio fizines konstantas -- difuzijos ir reakcijos greičius. Detaliau pavaizduota @solver-inputs-diagram
+- `ITimeStep` -- žingsniavimo strategija, plačiau aprašyta @time-step-section[skyriuje]
+- `IBrake` -- reakcijos stabdymo strategija, plačiau aprašyta @brake-component-section[skyriuje]
+- `ICaptureTrigger` -- sprendinio fiksavimo dažnio strategija, plačiau aprašyta @capture-component-section[skyriuje]
+- `ICapture` -- sprendinio formos fiksavimo strategija, plačiau aprašyta @capture-component-section[skyriuje]
+- `SolutionState` -- pradinė sąlyga, detaliau pavaizduota @solver-inputs-diagram
+
+#include "../assets/diagrams/architecture/solver-inputs.typ"
+
+=== Laiko žingsnio strategijos <time-step-section>
 
 #include "../assets/diagrams/architecture/timestep-component.typ"
 
@@ -32,7 +46,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
 
-=== Reakcijos stabdymo strategijos
+=== Reakcijos stabdymo strategijos <brake-component-section>
 
 #include "../assets/diagrams/architecture/brake-component.typ"
 
@@ -40,7 +54,7 @@ Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptarto
 
 Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendiklio būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima. 
 
-=== Sprendinio fiksavimo strategijos
+=== Sprendinio fiksavimo strategijos <capture-component-section>
 
 #include "../assets/diagrams/architecture/capture-components.typ"
 
@@ -49,135 +63,18 @@ Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras proc
 - Realizacija `StrideCaptureTrigger` surenka duomenis apie sprendinį kas $n$ (`stride`) žingsnių
 - Realizacija `LastFrameCaptureTrigger` surenka duomenis apie sprendinį tik tą žingsnį, ties kuriuo reakcijos stabdymo komponentas `IBrake` nusprendžia, kad reakcija yra pasibaigusi, dėl to @capture-component-diagram galime matyti šios realizacijos priklausomybę nuo minėto komponento `IBrake`
 
-Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi, eksperimentuose dažniausiai pasirenkame tokius nustatymus, kad išsaugoto sprendinio
+Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi. Atliekant rezultatų analizę dažniausiai pasirenkame konfigūraciją, kuri duomenis išsaugo atmintyje, o keičiame tik saugomų duomenų formą.
 
-// == Sprendiklio architektūra
+- `InMemoryFrameCapture` -- ši realizacija užfiksuoja pilną sprendinį laiko momentu $t_n$, kurio forma yra $bold(c)(t=t_n) in RR^(5 times W times H)$
+- `InMemoryFrameCapture` -- užfiksuoja medžiagos kiekį laiko momentu $t_n$, #box[$bold(q)(t = t_n) in RR^5$]
 
-// #let comp(title, fields: (), note: none) = align(left)[
-//   #strong(raw(title))
-//   #if fields.len() > 0 [
-//     // #v(1pt)
-//     #line(length: 100%, stroke: 0.4pt + gray)
-//     // #v(1pt)
-//     #text(size: 9pt)[
-//       #for f in fields [
-//         #raw(f) \
-//       ]
-//     ]
-//   ] else if note != none [
-//     #v(3pt)
-//     #text(size: 9pt)[#note]
-//   ]
-// ]
+#pagebreak()
+
+== Sprendimo ciklas
+
+#pagebreak()
+
+== Sprendiklio efektyvumas
 
 
-// #figure(
-//   diagram(
-//     // debug: true,
-//     node-fill: rgb("#d5d5d6"),
-//     node-corner-radius: 3pt,
-//     node-stroke: 1pt,
-//     node-inset: 8pt,
-//     node((0, 0), name: <qnt-title>,
-//     stroke: none, fill: none, [
-//       Kiekybiniai komponentai
-//     ]),
-//     node((0, 0.75), name: <solver-state>, [
-//       *`SolverState`* \
-//       #align(left, [
-//         #raw("time: double") \
-//         #raw("solution: SolutionState") \
-//         #raw("step: size_t")
-//       ])
-//     ]),
-//     node((0, 1.75), name: <time-step>, [
-//       *`ITimeStep`*
-//       #align(left, [
-//         #raw("getTimestep(): double") \
-//         #raw("advance(s: SolverState)")
-//       ])
-//     ]),
-//     node((0, 2.75), name: <brake>, [
-//       *`IBrake`*
-//       #align(left, [
-//         #raw("shouldBrake(s: SolverState): bool")
-//       ])
-//     ]),
-//     node((0, 3.75), name: <capture-trigger>, [
-//       *`ICaptureTrigger`*
-//       #align(left, [
-//         #raw("shouldCapture(s: SolverState): bool")
-//       ])
-//     ]),
-//     node((0, 4.75), name: <capture>, [
-//       *`ICapture`*
-//       #align(left, [
-//         #raw("capture(s: SolverState): bool")
-//       ])
-//     ]),
-//     node(
-//       stroke: (dash: "dashed"),
-//       fill: white, 
-//       enclose: (
-//         <solver-state>,
-//         <time-step>,
-//         <qnt-title>,
-//         <capture-trigger>,
-//         <capture>),
-//       name: <qnt-group>
-//     ),
-//     node((1, 2.5), name: <solve>, [
-//       *`solve()`*
-//     ]),
-//     edge(<qnt-group>, <solve>, "-|>"),
-//     node((2, 0), name: <ic>, [
-//       *`InitialCondition`*
-//     ]),
-//     node((2, 0.75), name: <ic>, [
-//       *`Discretization`*
-//       #align(left, [
-//         #raw("mesh_resolution_x: size_t") \
-//         #raw("mesh_resolution_y: size_t") \
-//         #raw("physical_width: double") \
-//         #raw("physical_height: double")
-//       ])
-//     ]),
-//     node((2, 1.75), name: <ic>, [
-//       *`ModeParameters`*
-//       #align(left, [
-//         #raw("D: double[5]") \
-//         #raw("k: double[3]")
-//       ])
-//     ]),
-//   ),
-//   caption: [Sprendiklio konstrukcijai reikalingi komponentai.]
-// ) <solver-components>
 
-// @solver-components yra pavaizduota kažkas?
-
-
-// #figure(
-//   diagram(
-//     node-stroke: 1pt,
-//     node-fill: rgb("eeeeee"),
-//     node-corner-radius: 3pt,
-//     node-inset: 5pt,
-//     spacing: (7mm, 10mm),
-
-//     node((1,0), comp("solve()", note: []), name: <solve>),
-
-//     node((0,1.4), comp("SolverState", fields: ("solution : SolutionState", "time : double", "step : size_t")), name: <state>),
-//     node((1,1.4), comp("ITimeStep", fields: ("getTimestep() : double", "advance(state)")), name: <timestep-component-diagram>, width: 38mm),
-//     node((2,1.4), comp("IBrake", fields: ("shouldBrake(state) : bool",)), name: <brake>, width: 38mm),
-
-//     node((0.5,2.8), comp("ICaptureTrigger", fields: ("shouldCapture(state) : bool",)), name: <trigger>, width: 38mm),
-//     node((1.5,2.8), comp("ICapture", fields: ("capture(state)",)), name: <capture>, width: 38mm),
-
-//     edge(<solve>, <state>, "-|>"),
-//     edge(<solve>, <timestep-component-diagram>, "-|>"),
-//     edge(<solve>, <brake>, "-|>"),
-//     edge(<solve>, <trigger>, "-|>"),
-//     edge(<solve>, <capture>, "-|>"),
-//   ),
-//   caption: [Sprendiklio komponentai. `solve()` naudoja būsenos objektą `SolverState` bei keturias strategijos sąsajas; kiekvieno bloko viduje nurodyti jo metodai (ar laukai), atskleidžiantys komponento atsakomybę.]
-// 	) <fig-architecture>

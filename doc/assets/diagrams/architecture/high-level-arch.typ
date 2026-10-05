@@ -24,8 +24,8 @@
       #linebreak()
       (rezultatų analizė)
     ], name: <python>),
-    edge(<solver>, <shared-obj>, "-|>", label: "kompiliuojasi į"),
-    edge(<python>, <shared-obj>, "-|>", label: "naudoja")
+    edge(<solver>, <shared-obj>, "->", label: "kompiliuojasi į", mark-scale: 2),
+    edge(<python>, <shared-obj>, "->", label: "naudoja", mark-scale: 2)
   ),
   caption: [Aukšto lygio skaičiavimų vykdymo diagrama,.]
 ) <high-level-solver-arch>

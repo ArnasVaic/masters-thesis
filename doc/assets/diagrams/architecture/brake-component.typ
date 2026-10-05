@@ -10,33 +10,34 @@
     node-corner-radius: 3pt,
     node((0,0), name: <threshold>, [
       *`ProductThresholdBrake`*
-      #align(left, [
-        #raw("threshold: double") \
-        #raw("initial_mass: double")
-      ])
+      #align(left)[
+        `+ threshold : double` \
+        `+ initial_mass : double`
+      ]
     ]),
     node((0.75,0), name: <fixed-step>, [
       *`FixedStepBrake`*
-      #align(left, [
-        #raw("steps: size_t")
-      ])
+      #align(left)[
+        `+ steps : size_t`
+      ]
     ]),
     node((-0.75,0), name: <fixed-time>, [
       *`FixedTimeBrake`*
-      #align(left, [
-        #raw("t_end: double")
-      ])
+      #align(left)[
+        `+ t_end : double`
+      ]
     ]),
     node((0,1), name: <interface>, [
+      `<<interface>>` \
       *`IBrake`*
-      #align(left, [
-        #raw("shouldBrake(s: SolverState): bool")
-      ])
+      #align(left)[
+        `+ shouldBrake(s: SolverState) : bool`
+      ]
     ]),
     
-    edge(<fixed-step>, <interface>, "-|>"),
-    edge(<threshold>, <interface>, "-|>"),
-    edge(<fixed-time>, <interface>, "-|>"),
+    edge(<fixed-step>, <interface>, "--|>"),
+    edge(<threshold>, <interface>, "--|>"),
+    edge(<fixed-time>, <interface>, "--|>"),
   ),
-  caption: [ Reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos ]
+  caption: [ UML klasių diagrama, reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos ]
 ) <brake-component-diagram>

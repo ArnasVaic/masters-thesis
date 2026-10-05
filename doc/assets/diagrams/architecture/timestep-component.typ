@@ -10,27 +10,28 @@
     node-corner-radius: 3pt,
     node((-1,0), name: <fixed>, [
       *`FixedTimeStep`*
-      #align(left, [
-        #raw("dt: double")
-      ])
+      #align(left)[
+        `+ dt: double`
+      ]
     ]),
     node((1,0), name: <exp>, [
       *`GeometricTimeStep`*
-      #align(left, [
-        #raw("dt_0: double") \
-        #raw("r: double")
-      ])
+      #align(left)[
+        `+ dt_0 : double` \
+        `+ r : double`
+      ]
     ]),
     node((0,0.5), name: <interface>, [
+      `<<interface>>` \
       *`ITimeStep`*
-      #align(left, [
-        #raw("getTimestep(): double") \
-        #raw("advance(s: SolverState)")
-      ])
+      #align(left)[
+        `+ getTimestep() : double` \
+        `+ advance(s : SolverState)`
+      ]
     ]),
     
-    edge(<fixed>, <interface>, "-|>"),
-    edge(<exp>, <interface>, "-|>"),
+    edge(<fixed>, <interface>, "--|>"),
+    edge(<exp>, <interface>, "--|>"),
   ),
   caption: [ Laiko žingsnio strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
 ) <timestep-component-diagram>

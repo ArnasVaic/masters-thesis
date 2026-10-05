@@ -10,46 +10,48 @@
     node-corner-radius: 3pt,
     node((-0.5,0), name: <stride-ct>, [
       *`StrideCaptureTrigger`*
-      #align(left, [
-        #raw("stride: size_t")
-      ])
+      #align(left)[
+        `+ stride : size_t`
+      ]
     ]),
     node((0.5,0), name: <last-frame-ct>, [
       *`LastFrameCaptureTrigger`*
-      #align(left, [
-        #raw("brake: IBrake")
-      ])
+      #align(left)[
+       `+ brake : IBrake`
+      ]
     ]),
     node((0,1), name: <cti>, [
+      `<<interface>>` \
       *`ICaptureTrigger`*
-      #align(left, [
-        #raw("shouldCapture(s: SolverState): bool")
-      ])
+      #align(left)[
+        `+ shouldCapture(s : SolverState) : bool`
+      ]
     ]),
     node((-0.5,3), name: <imfc>, [
       *`InMemoryFrameCapture`*
-      #align(left, [
-        #raw("capacity: size_t") \ 
-        #raw("disc: Discretization")
-      ])
+      #align(left)[
+        `+ capacity : size_t` \ 
+        `+ disc : Discretization`
+      ]
     ]),
     node((0.5,3), name: <imqc>, [
       *`InMemoryQuantityCapture`*
-      #align(left, [
-        #raw("capacity: size_t") \
-        #raw("disc: Discretization")
-      ])
+      #align(left)[
+        `+ capacity : size_t` \
+        `+ disc : Discretization`
+      ]
     ]),
     node((0,2), name: <ci>, [
+      `<<interface>>` \
       *`ICapture`*
-      #align(left, [
-        #raw("capture(s: SolverState)")
-      ])
+      #align(left)[
+        `+ capture(s : SolverState)`
+      ]
     ]),
-    edge(<stride-ct>, <cti>, "-|>"),
-    edge(<last-frame-ct>, <cti>, "-|>"),
-    edge(<imfc>, <ci>, "-|>"),
-    edge(<imqc>, <ci>, "-|>"),
+    edge(<stride-ct>, <cti>, "--|>"),
+    edge(<last-frame-ct>, <cti>, "--|>"),
+    edge(<imfc>, <ci>, "--|>"),
+    edge(<imqc>, <ci>, "--|>"),
   ),
   caption: [ Sprendinio fiksavimo sąsajos ir naudojamos realizacijos.  ]
 ) <capture-component-diagram>
