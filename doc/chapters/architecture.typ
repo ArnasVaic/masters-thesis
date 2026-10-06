@@ -12,15 +12,11 @@ Tyrimui pritaikytas sprendiklis turi atsižvelgti į visus šiuos reikalavimus i
 
 Dėl šių priežasčių šiame tyrime naudojamo sprendiklio architektūrai aprašyti skiriama nemažai dėmesio.
 
-#pagebreak()
-
 == Sprendiklio naudojimas
 
 #include "../assets/diagrams/architecture/high-level-arch.typ"
 
 Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funkcija `solve` ir pagalbinės konfigūracinės konstrukcijos yra patalpintos į vieną modulį `yag_model`, kuris yra įgyvendintas su C++ programavimo kalba. Matricų manipuliacijai naudojama xtensor @xtensor biblioteka, kuri leidžia konstruoti tingiai vykdomas (_angl. lazy_) išraiškas su matricomis. Norint rasti skaitinį sprendinį, reikia spręsti daugelį tridiagonalinių lygčių sistemų (@expanded-tridiagonal-eq[lygt.]) -- efektyvų šių sistemų sprendimo algoritmo įgyvendinimą suteikia tiesinės algebros algoritmų biblioteka LAPACK @lapack. Kiekvienai klasei ir funkcijai, kuri turės būti išoriškai naudojama yra apibrėžtą python sąsaja (#box[_angl. binding_]). Rezultatų analizė yra vykdoma WSL (_angl. Windows Subsystem for Linux_) arba VU HPC aplinkoje, todėl sprendiklio sąsajos yra sukompiliuojamos į vieną `.so` failą (_angl. shared object_), kurį tiesiogiai gali importuoti python užrašinės vykdančios rezultatų analizę.
-
-#pagebreak()
 
 == Sprendiklio sąsaja ir pagrindiniai komponentai
 
@@ -66,13 +62,11 @@ Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras proc
 Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi. Atliekant rezultatų analizę dažniausiai pasirenkame konfigūraciją, kuri duomenis išsaugo atmintyje, o keičiame tik saugomų duomenų formą.
 
 - `InMemoryFrameCapture` -- ši realizacija užfiksuoja pilną sprendinį laiko momentu $t_n$, kurio forma yra $bold(c)(t=t_n) in RR^(5 times W times H)$
-- `InMemoryFrameCapture` -- užfiksuoja medžiagos kiekį laiko momentu $t_n$, #box[$bold(q)(t = t_n) in RR^5$]
-
-#pagebreak()
+- `InMemoryQuantityCapture` -- užfiksuoja medžiagos kiekį laiko momentu $t_n$, #box[$bold(q)(t = t_n) in RR^5$]
 
 == Sprendimo ciklas
 
-#pagebreak()
+#include "../assets/diagrams/architecture/solver-loop.typ"
 
 == Sprendiklio efektyvumas
 

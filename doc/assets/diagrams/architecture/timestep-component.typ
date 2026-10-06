@@ -33,5 +33,5 @@
     edge(<fixed>, <interface>, "--|>"),
     edge(<exp>, <interface>, "--|>"),
   ),
-  caption: [ Laiko žingsnio strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
+  caption: [ UML klasių diagrama, laiko žingsnio strategijos sąsaja (_angl. interface_) ir galimos realizacijos ]
 ) <timestep-component-diagram>
