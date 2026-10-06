@@ -7,9 +7,9 @@
 
 #title_page(
   "Kompiuterinio modeliavimo pirmo kurso mokslo tiriamojo darbo projektas",
-  [ 
-    Kietafazės YAG sintezės reakcijos parametrų nustatymas kompiuteriniais modeliais \ 
-    #text(size: 10pt)[Determination of reaction parameters for solid-phase YAG synthesis using computer models] 
+  [
+    Kietafazės YAG sintezės reakcijos parametrų nustatymas kompiuteriniais modeliais \
+    #text(size: 10pt)[Determination of reaction parameters for solid-phase YAG synthesis using computer models]
   ],
   "Arnas Vaicekauskas",
   "asist. dr. Rokas Astrauskas",
@@ -37,35 +37,35 @@
 
 #include "chapters/literature.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "chapters/model.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "chapters/numerical.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "chapters/architecture.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "chapters/results.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "backmatter/conclusions.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "backmatter/future_plans.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #include "backmatter/ai-use.typ"
 
-#pagebreak(weak:true)
+#pagebreak(weak: true)
 
 #bibliography("references.bib")
 
