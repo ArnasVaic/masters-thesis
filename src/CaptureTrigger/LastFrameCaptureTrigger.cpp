@@ -8,7 +8,7 @@ LastFrameCaptureTrigger::LastFrameCaptureTrigger(std::shared_ptr<IBrake> brake)
     : brake(std::move(brake)) {}
 
 bool LastFrameCaptureTrigger::shouldCapture(SolverState const& state) const {
-    return brake->shouldBrake(state);
+  return brake->shouldBrake(state);
 }
 
 }  // namespace yag_model

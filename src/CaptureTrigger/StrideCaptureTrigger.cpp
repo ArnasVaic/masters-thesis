@@ -2,11 +2,10 @@
 
 namespace yag_model {
 
-StrideCaptureTrigger::StrideCaptureTrigger(size_t const stride)
-    : stride(stride) {}
+StrideCaptureTrigger::StrideCaptureTrigger(size_t const stride) : stride(stride) {}
 
-bool StrideCaptureTrigger::shouldCapture(SolverState const &state) const {
-    return state.step % stride == 0;
+bool StrideCaptureTrigger::shouldCapture(SolverState const& state) const {
+  return state.step % stride == 0;
 }
 
 }  // namespace yag_model

@@ -5,9 +5,9 @@
 namespace yag_model {
 
 class ICapture {
-   public:
-    virtual ~ICapture() = default;
-    virtual void capture(SolverState const& state) = 0;
+public:
+  virtual ~ICapture() = default;
+  virtual void capture(SolverState const& state) = 0;
 };
 
 }  // namespace yag_model

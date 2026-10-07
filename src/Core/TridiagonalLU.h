@@ -5,12 +5,22 @@
 extern "C" {
 
 // factorization (ONCE)
-void dgttrf_(int* n, double* dl, double* d, double* du, double* du2, int* ipiv,
-             int* info);
+void dgttrf_(int* n, double* dl, double* d, double* du, double* du2, int* ipiv, int* info);
 
 // solve (MANY TIMES)
-void dgttrs_(char* trans, int* n, int* nrhs, double* dl, double* d, double* du,
-             double* du2, int* ipiv, double* b, int* ldb, int* info);
+void dgttrs_(
+    char* trans,
+    int* n,
+    int* nrhs,
+    double* dl,
+    double* d,
+    double* du,
+    double* du2,
+    int* ipiv,
+    double* b,
+    int* ldb,
+    int* info
+);
 }
 
 namespace yag_model {

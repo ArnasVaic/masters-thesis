@@ -2,9 +2,12 @@
 
 namespace yag_model {
 
-Discretization::Discretization(double const physical_space_w,
-                               double const physical_space_h,
-                               size_t const mesh_res_x, size_t const mesh_res_y)
+Discretization::Discretization(
+    double const physical_space_w,
+    double const physical_space_h,
+    size_t const mesh_res_x,
+    size_t const mesh_res_y
+)
     : physical_space_w(physical_space_w),
       physical_space_h(physical_space_h),
       mesh_res_x(mesh_res_x),

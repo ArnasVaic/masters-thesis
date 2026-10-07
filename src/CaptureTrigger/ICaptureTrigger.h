@@ -4,10 +4,10 @@
 
 namespace yag_model {
 class ICaptureTrigger {
-   public:
-    virtual ~ICaptureTrigger() = default;
+public:
+  virtual ~ICaptureTrigger() = default;
 
-    [[nodiscard]]
-    virtual bool shouldCapture(SolverState const &state) const = 0;
+  [[nodiscard]]
+  virtual bool shouldCapture(SolverState const& state) const = 0;
 };
 }  // namespace yag_model

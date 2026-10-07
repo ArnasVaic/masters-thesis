@@ -12,6 +12,7 @@ dependencies:
   - compilers
   - pkg-config
   - scikit-build-core
+  - clang-format>=18
 
   # python
   - numpy

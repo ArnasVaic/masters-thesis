@@ -6,15 +6,15 @@
 namespace yag_model {
 
 class FixedTimeStep : public ITimeStep {
-   public:
-    double dt;
+public:
+  double dt;
 
-    explicit FixedTimeStep(double dt);
+  explicit FixedTimeStep(double dt);
 
-    [[nodiscard]]
-    double getTimestep() const override;
+  [[nodiscard]]
+  double getTimestep() const override;
 
-    void advance(SolverState const& state) override;
+  void advance(SolverState const& state) override;
 };
 
 }  // namespace yag_model

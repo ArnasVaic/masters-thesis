@@ -7,19 +7,18 @@
 namespace yag_model {
 
 class ReagentQuantityThresholdBrake : public IBrake {
-   public:
-    double threshold;
-    double initial_reagent_quantity;
-    size_t stride;
-    Discretization disc;
+public:
+  double threshold;
+  double initial_reagent_quantity;
+  size_t stride;
+  Discretization disc;
 
-    ReagentQuantityThresholdBrake(double threshold,
-        double initial_reagent_quantity,
-        size_t stride,
-        Discretization const& disc);
+  ReagentQuantityThresholdBrake(
+      double threshold, double initial_reagent_quantity, size_t stride, Discretization const& disc
+  );
 
-    [[nodiscard]]
-    bool shouldBrake(SolverState const& state) const override;
+  [[nodiscard]]
+  bool shouldBrake(SolverState const& state) const override;
 };
 
 }  // namespace yag_model

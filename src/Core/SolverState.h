@@ -6,7 +6,7 @@
 
 namespace yag_model {
 class SolverState {
- public:
+public:
   SolutionState solution;
   double time;
   size_t step;

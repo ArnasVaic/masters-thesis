@@ -1,21 +1,13 @@
 #include "FixedTimeStep.h"
 
-namespace yag_model
-{
+namespace yag_model {
 
-FixedTimeStep::FixedTimeStep(double const dt): dt(dt)
-{
+FixedTimeStep::FixedTimeStep(double const dt) : dt(dt) {}
 
+double FixedTimeStep::getTimestep() const {
+  return dt;
 }
 
-double FixedTimeStep::getTimestep() const
-{
-    return dt;
-}
+void FixedTimeStep::advance(SolverState const& state) {}
 
-void FixedTimeStep::advance(SolverState const& state)
-{
-
-}
-
-} // yag_model
+}  // namespace yag_model
