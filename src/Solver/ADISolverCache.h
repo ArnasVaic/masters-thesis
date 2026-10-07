@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/24/2026.
-//
-
-#ifndef YAG_MODEL_ADI_SOLVER_CACHE_H
-#define YAG_MODEL_ADI_SOLVER_CACHE_H
+#pragma once
 
 #include "../Config/Discretization.h"
 #include "../Config/ModelParameters.h"
@@ -56,5 +51,3 @@ namespace yag_model
         static void initializeSweepMat(TridiagonalLU& tri, double mu);
     };
 } // namespace yag_model
-
-#endif  // YAG_MODEL_ADI_SOLVER_CACHE_H

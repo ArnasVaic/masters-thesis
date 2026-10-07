@@ -1,7 +1,3 @@
-//
-// Created by arnas on 4/24/2026.
-//
-
 #include "FixedTimeStep.h"
 
 namespace yag_model

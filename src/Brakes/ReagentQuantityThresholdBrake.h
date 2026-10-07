@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef YAG_MODEL_BRAKE_H
-#define YAG_MODEL_BRAKE_H
+#pragma once
 
 #include "../Config/Discretization.h"
 #include "../Core/SolverState.h"
@@ -28,5 +23,3 @@ class ReagentQuantityThresholdBrake : public IBrake {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_BRAKE_H

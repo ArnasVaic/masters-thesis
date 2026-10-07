@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef TEST_XTENSOR_SOLVER_STATE_H
-#define TEST_XTENSOR_SOLVER_STATE_H
+#pragma once
 
 #include <xtensor/containers/xarray.hpp>
 
@@ -20,5 +15,3 @@ class SolverState {
 };
 
 }  // namespace yag_model
-
-#endif  // TEST_XTENSOR_SOLVER_STATE_H

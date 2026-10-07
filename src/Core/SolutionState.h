@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef YAG_MODEL_SOLUTION_STATE_H
-#define YAG_MODEL_SOLUTION_STATE_H
+#pragma once
 
 #include <xtensor/containers/xarray.hpp>
 
@@ -17,5 +12,3 @@ class SolutionState {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_SOLUTION_STATE_H

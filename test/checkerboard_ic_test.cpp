@@ -1,7 +1,3 @@
-//
-// Created by arnas on 4/24/2026.
-//
-
 #include <catch2/catch_test_macros.hpp>
 
 #include "../src/InitialCondition/CheckerboardInitialCondition.h"

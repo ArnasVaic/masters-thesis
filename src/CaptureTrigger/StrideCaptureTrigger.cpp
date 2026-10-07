@@ -1,7 +1,3 @@
-//
-// Created by arnas on 5/1/26.
-//
-
 #include "StrideCaptureTrigger.h"
 
 namespace yag_model {

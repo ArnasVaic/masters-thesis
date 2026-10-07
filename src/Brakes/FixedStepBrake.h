@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/26/2026.
-//
-
-#ifndef YAG_MODEL_FIXED_STEP_BRAKE_H
-#define YAG_MODEL_FIXED_STEP_BRAKE_H
+#pragma once
 
 #include "Core/SolverState.h"
 #include "IBrake.h"
@@ -21,5 +16,3 @@ class FixedStepBrake : public IBrake {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_FIXED_STEP_BRAKE_H

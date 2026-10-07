@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/25/2026.
-//
-
-#ifndef YAG_MODEL_QUANTITY_CAPTURE_H
-#define YAG_MODEL_QUANTITY_CAPTURE_H
+#pragma once
 
 #include "Config/Discretization.h"
 #include "Core/SolverState.h"
@@ -25,5 +20,3 @@ class QuantityCapture : public ICapture {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_QUANTITY_CAPTURE_H

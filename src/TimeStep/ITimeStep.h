@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/30/2026.
-//
-
-#ifndef YAG_MODEL_ITIMESTEP_H
-#define YAG_MODEL_ITIMESTEP_H
+#pragma once
 
 #include "Core/SolverState.h"
 
@@ -19,5 +14,3 @@ class ITimeStep {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_ITIMESTEP_H

@@ -1,9 +1,5 @@
-//
-// Created by arnas on 5/1/26.
-//
+#pragma once
 
-#ifndef YAG_MODEL_STRIDE_CAPTURE_TRIGGER_H
-#define YAG_MODEL_STRIDE_CAPTURE_TRIGGER_H
 #include "ICaptureTrigger.h"
 
 namespace yag_model {
@@ -17,5 +13,3 @@ class StrideCaptureTrigger : public ICaptureTrigger {
     bool shouldCapture(SolverState const &state) const override;
 };
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_STRIDE_CAPTURE_TRIGGER_H

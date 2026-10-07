@@ -1,7 +1,3 @@
-//
-// Created by arnas on 4/25/2026.
-//
-
 #include "Core/TridiagonalLU.h"
 
 #include <stdexcept>

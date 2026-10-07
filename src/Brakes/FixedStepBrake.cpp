@@ -1,7 +1,3 @@
-//
-// Created by arnas on 4/26/2026.
-//
-
 #include "FixedStepBrake.h"
 
 namespace yag_model {

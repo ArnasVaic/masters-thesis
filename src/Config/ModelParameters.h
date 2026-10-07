@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef YAG_MODEL_REACTION_PARAMETERS_H
-#define YAG_MODEL_REACTION_PARAMETERS_H
+#pragma once
 
 #include <xtensor/containers/xarray.hpp>
 
@@ -19,5 +14,3 @@ class ModelParameters {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_REACTION_PARAMETERS_H

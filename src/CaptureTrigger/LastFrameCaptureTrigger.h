@@ -1,9 +1,5 @@
-//
-// Created by arnas on 5/2/26.
-//
+#pragma once
 
-#ifndef YAG_MODEL_LASTFRAMECAPTURETRIGGER_H
-#define YAG_MODEL_LASTFRAMECAPTURETRIGGER_H
 #include "Brakes/IBrake.h"
 #include "ICaptureTrigger.h"
 
@@ -20,5 +16,3 @@ class LastFrameCaptureTrigger : public ICaptureTrigger {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_LASTFRAMECAPTURETRIGGER_H

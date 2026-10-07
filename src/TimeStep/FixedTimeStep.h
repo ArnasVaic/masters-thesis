@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/24/2026.
-//
-
-#ifndef YAG_MODEL_FIXED_TIMESTEP_H
-#define YAG_MODEL_FIXED_TIMESTEP_H
+#pragma once
 
 #include "../Core/SolverState.h"
 #include "ITimeStep.h"
@@ -23,5 +18,3 @@ class FixedTimeStep : public ITimeStep {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_FIXED_TIMESTEP_H

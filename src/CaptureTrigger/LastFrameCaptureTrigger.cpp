@@ -1,7 +1,3 @@
-//
-// Created by arnas on 5/2/26.
-//
-
 #include "LastFrameCaptureTrigger.h"
 
 #include <utility>

@@ -1,9 +1,5 @@
-//
-// Created by arnas on 5/2/26.
-//
+#pragma once
 
-#ifndef YAG_MODEL_TIME_BRAKE_H
-#define YAG_MODEL_TIME_BRAKE_H
 #include "IBrake.h"
 
 namespace yag_model {
@@ -19,5 +15,3 @@ class TimeBrake : public IBrake {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_TIME_BRAKE_H

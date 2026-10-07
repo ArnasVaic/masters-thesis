@@ -1,9 +1,5 @@
-//
-// Created by arnas on 8/31/26.
-//
+#pragma once
 
-#ifndef YAG_MODEL_CONSTANTS_H
-#define YAG_MODEL_CONSTANTS_H
 #include <xtensor/containers/xarray.hpp>
 
 namespace yag_model
@@ -20,5 +16,3 @@ namespace yag_model
         };
     };
 }
-
-#endif //YAG_MODEL_CONSTANTS_H

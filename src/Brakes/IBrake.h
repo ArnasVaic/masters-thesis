@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/30/2026.
-//
-
-#ifndef YAG_MODEL_IBRAKE_H
-#define YAG_MODEL_IBRAKE_H
+#pragma once
 
 #include "../Core/SolverState.h"
 
@@ -18,5 +13,3 @@ class IBrake {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_IBRAKE_H

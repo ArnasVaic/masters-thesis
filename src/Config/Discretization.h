@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef YAG_MODEL_DISCRETIZATION_H
-#define YAG_MODEL_DISCRETIZATION_H
+#pragma once
 
 #include <cstddef>
 
@@ -22,5 +17,3 @@ class Discretization {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_DISCRETIZATION_H

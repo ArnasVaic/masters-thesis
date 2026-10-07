@@ -1,9 +1,4 @@
-//
-// Created by arnas on 4/23/2026.
-//
-
-#ifndef YAG_MODEL_FRAME_CAPTURE_H
-#define YAG_MODEL_FRAME_CAPTURE_H
+#pragma once
 
 #include "../Core/SolverState.h"
 #include "Config/Discretization.h"
@@ -24,5 +19,3 @@ class InMemoryFrameCapture : public ICapture {
 };
 
 }  // namespace yag_model
-
-#endif  // YAG_MODEL_FRAME_CAPTURE_H

@@ -1,7 +1,3 @@
-//
-// Created by arnas on 5/2/26.
-//
-
 #include "TimeBrake.h"
 
 namespace yag_model {
