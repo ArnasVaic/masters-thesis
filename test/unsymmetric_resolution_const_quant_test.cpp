@@ -2,7 +2,7 @@
 
 #include "../src/Captures/QuantityCapture.h"
 #include "Brakes/FixedStepBrake.h"
-#include "CaptureTrigger/StrideCaptureTrigger.h"
+#include "Capture/Triggers/StrideTrigger.h"
 #include "Core/Constants.h"
 #include "Core/Quantity.h"
 #include "InitialCondition/CheckerboardInitialCondition.h"
@@ -21,7 +21,7 @@ TEST_CASE("Const. reagent quant., reaction off, resolution w!=h", "[solver]") {
   size_t const totalSteps = 1000;
   yag_model::FixedTimeStep step(0.0001);
   yag_model::FixedStepBrake brake(totalSteps);
-  yag_model::StrideCaptureTrigger captureTrigger(1);
+  yag_model::StrideTrigger captureTrigger(1);
   yag_model::QuantityCapture capture(totalSteps, disc);
 
   auto ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);

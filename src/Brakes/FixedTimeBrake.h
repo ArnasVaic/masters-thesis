@@ -4,11 +4,11 @@
 
 namespace yag_model {
 
-class TimeBrake : public IBrake {
+class FixedTimeBrake : public IBrake {
 public:
-  double t_end;
+  double final_time;
 
-  explicit TimeBrake(double t_end);
+  explicit FixedTimeBrake(double final_time);
 
   [[nodiscard]]
   bool shouldBrake(SolverState const& state) const override;

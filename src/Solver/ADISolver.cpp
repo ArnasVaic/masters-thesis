@@ -1,5 +1,6 @@
 #include "ADISolver.h"
 
+#include <limits>
 #include <xtensor/core/xnoalias.hpp>
 
 #include "ADISolverCache.h"
@@ -17,35 +18,43 @@ void solve(
     Discretization const& disc,
     ModelParameters const& params,
     ITimeStep& timeStep,
-    IBrake const& brake,
-    ICaptureTrigger const& captureTrigger,
+    IBrake& brake,
+    ITrigger& trigger,
     ICapture& capture,
     SolutionState const& ic
 ) {
   SolverState state(disc.mesh_res_y, disc.mesh_res_x);
   state.solution = ic;
 
-  if (captureTrigger.shouldCapture(state)) {
+  SolverContext const ctx{disc, ic};
+  timeStep.begin(ctx);
+  brake.begin(ctx);
+  trigger.begin(ctx);
+
+  state.is_final = brake.shouldBrake(state);
+
+  if (trigger.shouldCapture(state)) {
     capture.capture(state);
   }
 
   ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x, S);
-  double cached_dt = timeStep.getTimestep();
-  cache.update(params, disc, cached_dt);
 
-  while (!brake.shouldBrake(state)) {
-    double const current_dt = timeStep.getTimestep();
+  // NaN compares unequal to everything, forces a cache update on the first step
+  double cached_dt = std::numeric_limits<double>::quiet_NaN();
 
-    if (std::abs(current_dt - cached_dt) > 1e-9) {
-      cached_dt = current_dt;
+  while (!state.is_final) {
+    double const dt = timeStep.advance(state);
+
+    if (dt != cached_dt) {
+      cached_dt = dt;
       cache.update(params, disc, cached_dt);
     }
 
     solveStep(disc, state, cache, cached_dt);
 
-    timeStep.advance(state);
+    state.is_final = brake.shouldBrake(state);
 
-    if (captureTrigger.shouldCapture(state)) {
+    if (trigger.shouldCapture(state)) {
       capture.capture(state);
     }
   }

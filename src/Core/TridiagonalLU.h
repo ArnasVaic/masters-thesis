@@ -5,20 +5,20 @@
 extern "C" {
 
 // factorization (ONCE)
-void dgttrf_(int* n, double* dl, double* d, double* du, double* du2, int* ipiv, int* info);
+void dgttrf_(int const* n, double* dl, double* d, double* du, double* du2, int* ipiv, int* info);
 
 // solve (MANY TIMES)
 void dgttrs_(
-    char* trans,
-    int* n,
-    int* nrhs,
-    double* dl,
-    double* d,
-    double* du,
-    double* du2,
-    int* ipiv,
+    char const* trans,
+    int const* n,
+    int const* nrhs,
+    double const* dl,
+    double const* d,
+    double const* du,
+    double const* du2,
+    int const* ipiv,
     double* b,
-    int* ldb,
+    int const* ldb,
     int* info
 );
 }

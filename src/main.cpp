@@ -1,10 +1,8 @@
 #include <iostream>
 #include <xtensor.hpp>
 
-#include "Brakes/FixedStepBrake.h"
-#include "Brakes/TimeBrake.h"
-#include "CaptureTrigger/LastFrameCaptureTrigger.h"
-#include "CaptureTrigger/StrideCaptureTrigger.h"
+#include "Brakes/FixedTimeBrake.h"
+#include "Capture/Triggers/StrideTrigger.h"
 #include "Captures/QuantityCapture.h"
 #include "Config/Discretization.h"
 #include "Config/ModelParameters.h"
@@ -67,13 +65,13 @@ int main() {
   // 6 hours in dimensionless time
   double const t_end = 6.0 * 60.0 * 60.0 / T0;
 
-  auto brake = std::make_shared<yag_model::TimeBrake>(t_end);
+  yag_model::FixedTimeBrake brake(t_end);
 
   // Capture only final frame
-  yag_model::StrideCaptureTrigger captureTrigger(10);
+  yag_model::StrideTrigger captureTrigger(10);
 
   // Storage for one frame
   yag_model::QuantityCapture capture(400, disc);
 
-  yag_model::solve(S, disc, params_nd, step, *brake, captureTrigger, capture, ic);
+  yag_model::solve(S, disc, params_nd, step, brake, captureTrigger, capture, ic);
 }

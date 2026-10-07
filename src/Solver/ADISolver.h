@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Brakes/IBrake.h"
-#include "CaptureTrigger/ICaptureTrigger.h"
+#include "Capture/Triggers/ITrigger.h"
 #include "Captures/ICapture.h"
 #include "Config/Discretization.h"
 #include "Config/ModelParameters.h"
@@ -14,8 +14,8 @@ void solve(
     Discretization const& disc,
     ModelParameters const& params,
     ITimeStep& timeStep,
-    IBrake const& brake,
-    ICaptureTrigger const& captureTrigger,
+    IBrake& brake,
+    ITrigger& trigger,
     ICapture& capture,
     SolutionState const& ic
 );

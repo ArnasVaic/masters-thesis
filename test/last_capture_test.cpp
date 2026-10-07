@@ -1,10 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../src/Captures/QuantityCapture.h"
-#include "Brakes/FixedStepBrake.h"
-#include "Brakes/TimeBrake.h"
-#include "CaptureTrigger/LastFrameCaptureTrigger.h"
-#include "CaptureTrigger/StrideCaptureTrigger.h"
+#include "Brakes/FixedTimeBrake.h"
+#include "Capture/Triggers/LastFrameTrigger.h"
+#include "Capture/Triggers/StrideTrigger.h"
 #include "Core/Constants.h"
 #include "Core/Quantity.h"
 #include "InitialCondition/CheckerboardInitialCondition.h"
@@ -21,13 +20,16 @@ TEST_CASE("Last capture trigger test", "[solver]") {
   );
 
   yag_model::FixedTimeStep step(0.0001);
-  auto brake = std::make_shared<yag_model::TimeBrake>(1.0);
-  yag_model::LastFrameCaptureTrigger captureTrigger(brake);
+  yag_model::FixedTimeBrake brake(1.0);
+  yag_model::LastFrameTrigger captureTrigger;
   yag_model::QuantityCapture capture(1, disc);
 
   auto ic = yag_model::buildCheckerboardInitialCondition(disc, 3e-6, 5e-6);
 
-  yag_model::solve(s, disc, params, step, *brake, captureTrigger, capture, ic);
+  yag_model::solve(s, disc, params, step, brake, captureTrigger, capture, ic);
 
-  REQUIRE(std::abs(capture.t_history(0) - 1.0) < 1e-9);
+  // Accumulated dt may fall just short of 1.0, so the brake can fire one step later
+  REQUIRE(capture.size == 1);
+  REQUIRE(capture.t_history(0) >= 1.0);
+  REQUIRE(capture.t_history(0) < 1.0 + step.dt);
 }

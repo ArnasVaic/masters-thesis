@@ -44,6 +44,7 @@ add_library(core_base
         src/Core/SolutionState.cpp
         src/Core/TridiagonalLU.cpp
         src/Core/Constants.h
+        src/Core/Channel.h
 )
 
 target_include_directories(core_base PUBLIC src)
@@ -60,6 +61,7 @@ target_link_libraries(core_base PUBLIC
 # --------------------------------------------------
 add_library(core_model
         src/Core/SolverState.cpp
+        src/Core/SolverContext.h
         src/Config/ModelParameters.cpp
         src/Config/Discretization.cpp
         src/InitialCondition/CheckerboardInitialCondition.cpp
@@ -74,6 +76,7 @@ target_link_libraries(core_model PUBLIC core_base)
 # --------------------------------------------------
 add_library(core_solver
         src/TimeStep/FixedTimeStep.cpp
+        src/TimeStep/GeometricTimeStep.cpp
         src/Solver/ADISolverCache.cpp
         src/Solver/ADISolver.cpp
         src/TimeStep/ITimeStep.h
@@ -91,12 +94,10 @@ target_link_libraries(core_solver PUBLIC
 add_library(core_capture
         src/Captures/InMemoryFrameCapture.cpp
         src/Captures/QuantityCapture.cpp
-        src/CaptureTrigger/ICaptureTrigger.h
-        src/CaptureTrigger/StrideCaptureTrigger.cpp
-        src/CaptureTrigger/StrideCaptureTrigger.h
         src/Captures/ICapture.h
-        src/CaptureTrigger/LastFrameCaptureTrigger.cpp
-        src/CaptureTrigger/LastFrameCaptureTrigger.h
+        src/Capture/Triggers/ITrigger.h
+        src/Capture/Triggers/StrideTrigger.cpp
+        src/Capture/Triggers/LastFrameTrigger.cpp
 )
 
 target_include_directories(core_capture PUBLIC src)
@@ -110,8 +111,7 @@ add_library(core_brakes
         src/Brakes/ReagentQuantityThresholdBrake.cpp
         src/Brakes/FixedStepBrake.cpp
         src/Brakes/IBrake.h
-        src/Brakes/TimeBrake.cpp
-        src/Brakes/TimeBrake.h
+        src/Brakes/FixedTimeBrake.cpp
 )
 
 target_include_directories(core_brakes PUBLIC src)
@@ -162,6 +162,8 @@ if (BUILD_TESTS)
             test/unsymmetric_resolution_const_quant_test.cpp
             test/const_quant_test.cpp
             test/xtensor_test.cpp
+            test/last_capture_test.cpp
+            test/components_test.cpp
     )
 
     target_link_libraries(tests PRIVATE

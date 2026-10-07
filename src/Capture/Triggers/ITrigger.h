@@ -4,16 +4,14 @@
 #include "Core/SolverState.h"
 
 namespace yag_model {
-
-class IBrake {
+class ITrigger {
 public:
-  virtual ~IBrake() = default;
+  virtual ~ITrigger() = default;
 
   // Called once before the first step, resets any internal state
   virtual void begin(SolverContext const& ctx) {}
 
   [[nodiscard]]
-  virtual bool shouldBrake(SolverState const& state) const = 0;
+  virtual bool shouldCapture(SolverState const& state) const = 0;
 };
-
 }  // namespace yag_model

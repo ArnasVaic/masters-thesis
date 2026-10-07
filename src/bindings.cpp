@@ -7,18 +7,21 @@
 #include <xtensor/containers/xarray.hpp>
 
 #include "Brakes/FixedStepBrake.h"
+#include "Brakes/FixedTimeBrake.h"
 #include "Brakes/IBrake.h"
 #include "Brakes/ReagentQuantityThresholdBrake.h"
-#include "Brakes/TimeBrake.h"
-#include "CaptureTrigger/LastFrameCaptureTrigger.h"
-#include "CaptureTrigger/StrideCaptureTrigger.h"
+#include "Capture/Triggers/LastFrameTrigger.h"
+#include "Capture/Triggers/StrideTrigger.h"
 #include "Captures/InMemoryFrameCapture.h"
 #include "Captures/QuantityCapture.h"
 #include "Config/ModelParameters.h"
+#include "Core/Channel.h"
+#include "Core/Constants.h"
 #include "Core/Quantity.h"
 #include "InitialCondition/CheckerboardInitialCondition.h"
 #include "Solver/ADISolver.h"
 #include "TimeStep/FixedTimeStep.h"
+#include "TimeStep/GeometricTimeStep.h"
 #include "TimeStep/ITimeStep.h"
 
 namespace py = pybind11;
@@ -72,10 +75,22 @@ PYBIND11_MODULE(yag_model, m) {
       .def(py::init<size_t, size_t>(), py::arg("rows"), py::arg("cols"))
       .def_readwrite("solution", &yag_model::SolverState::solution)
       .def_readwrite("time", &yag_model::SolverState::time)
-      .def_readwrite("step", &yag_model::SolverState::step);
+      .def_readwrite("step", &yag_model::SolverState::step)
+      .def_readwrite("is_final", &yag_model::SolverState::is_final);
+
+  py::enum_<yag_model::Channel>(m, "Channel", py::arithmetic())
+      .value("AL2O3", yag_model::AL2O3)
+      .value("Y2O3", yag_model::Y2O3)
+      .value("YAM", yag_model::YAM)
+      .value("YAP", yag_model::YAP)
+      .value("YAG", yag_model::YAG)
+      .value("ALL", yag_model::ALL)
+      .export_values();
+
+  m.attr("MOLAR_MASSES") = xt::pyarray<double>(yag_model::Constants::M);
+  m.attr("DEFAULT_STOICHIOMETRY") = xt::pyarray<double>(yag_model::Constants::S);
 
   py::class_<yag_model::ITimeStep, std::shared_ptr<yag_model::ITimeStep>>(m, "ITimeStep")
-      .def("getTimestep", &yag_model::ITimeStep::getTimestep)
       .def("advance", &yag_model::ITimeStep::advance, py::arg("state"));
 
   py::class_<
@@ -83,9 +98,15 @@ PYBIND11_MODULE(yag_model, m) {
       yag_model::ITimeStep,
       std::shared_ptr<yag_model::FixedTimeStep>>(m, "FixedTimeStep")
       .def(py::init<double>(), py::arg("dt"))
-      .def_readwrite("dt", &yag_model::FixedTimeStep::dt)
-      .def("getTimestep", &yag_model::FixedTimeStep::getTimestep)
-      .def("advance", &yag_model::FixedTimeStep::advance, py::arg("state"));
+      .def_readwrite("dt", &yag_model::FixedTimeStep::dt);
+
+  py::class_<
+      yag_model::GeometricTimeStep,
+      yag_model::ITimeStep,
+      std::shared_ptr<yag_model::GeometricTimeStep>>(m, "GeometricTimeStep")
+      .def(py::init<double, double>(), py::arg("dt_0"), py::arg("r"))
+      .def_readwrite("dt_0", &yag_model::GeometricTimeStep::dt_0)
+      .def_readwrite("r", &yag_model::GeometricTimeStep::r);
 
   py::class_<yag_model::IBrake, std::shared_ptr<yag_model::IBrake>>(m, "IBrake");
 
@@ -93,53 +114,43 @@ PYBIND11_MODULE(yag_model, m) {
       yag_model::FixedStepBrake,
       yag_model::IBrake,
       std::shared_ptr<yag_model::FixedStepBrake>>(m, "FixedStepBrake")
-      .def(py::init<size_t>(), py::arg("steps"))
-      .def_readonly("steps", &yag_model::FixedStepBrake::steps);
+      .def(py::init<size_t>(), py::arg("last_step"))
+      .def_readwrite("last_step", &yag_model::FixedStepBrake::last_step);
 
-  py::class_<yag_model::TimeBrake, yag_model::IBrake, std::shared_ptr<yag_model::TimeBrake>>(
-      m, "TimeBrake"
-  )
-      .def(py::init<double>(), py::arg("t_end"))
-      .def_readonly("t_end", &yag_model::TimeBrake::t_end);
+  py::class_<
+      yag_model::FixedTimeBrake,
+      yag_model::IBrake,
+      std::shared_ptr<yag_model::FixedTimeBrake>>(m, "FixedTimeBrake")
+      .def(py::init<double>(), py::arg("final_time"))
+      .def_readwrite("final_time", &yag_model::FixedTimeBrake::final_time);
 
   py::class_<
       yag_model::ReagentQuantityThresholdBrake,
       yag_model::IBrake,
       std::shared_ptr<yag_model::ReagentQuantityThresholdBrake>>(m, "ReagentQuantityThresholdBrake")
-      .def(
-          py::init<double, double, size_t, yag_model::Discretization const&>(),
-          py::arg("threshold"),
-          py::arg("initial_reagent_quantity"),
-          py::arg("stride"),
-          py::arg("disc")
-      )
-      .def_readonly("threshold", &yag_model::ReagentQuantityThresholdBrake::threshold)
+      .def(py::init<double, size_t>(), py::arg("threshold"), py::arg("stride"))
+      .def_readwrite("threshold", &yag_model::ReagentQuantityThresholdBrake::threshold)
+      .def_readwrite("stride", &yag_model::ReagentQuantityThresholdBrake::stride)
       .def_readonly(
           "initial_reagent_quantity",
           &yag_model::ReagentQuantityThresholdBrake::initial_reagent_quantity
-      )
-      .def_readonly("stride", &yag_model::ReagentQuantityThresholdBrake::stride)
-      .def_readonly("disc", &yag_model::ReagentQuantityThresholdBrake::disc);
+      );
 
-  py::class_<yag_model::ICaptureTrigger, std::shared_ptr<yag_model::ICaptureTrigger>>(
-      m, "ICaptureTrigger"
-  );
+  py::class_<yag_model::ITrigger, std::shared_ptr<yag_model::ITrigger>>(m, "ITrigger")
+      .def("shouldCapture", &yag_model::ITrigger::shouldCapture, py::arg("state"));
 
   py::class_<
-      yag_model::StrideCaptureTrigger,
-      yag_model::ICaptureTrigger,
-      std::shared_ptr<yag_model::StrideCaptureTrigger>>(m, "StrideCaptureTrigger")
+      yag_model::StrideTrigger,
+      yag_model::ITrigger,
+      std::shared_ptr<yag_model::StrideTrigger>>(m, "StrideTrigger")
       .def(py::init<size_t>(), py::arg("stride"))
-      .def_readwrite("stride", &yag_model::StrideCaptureTrigger::stride)
-      .def("shouldCapture", &yag_model::StrideCaptureTrigger::shouldCapture, py::arg("state"));
+      .def_readwrite("stride", &yag_model::StrideTrigger::stride);
 
   py::class_<
-      yag_model::LastFrameCaptureTrigger,
-      yag_model::ICaptureTrigger,
-      std::shared_ptr<yag_model::LastFrameCaptureTrigger>>(m, "LastFrameCaptureTrigger")
-      .def(py::init<std::shared_ptr<yag_model::IBrake>>(), py::arg("brake"))
-      .def_readwrite("brake", &yag_model::LastFrameCaptureTrigger::brake)
-      .def("shouldCapture", &yag_model::LastFrameCaptureTrigger::shouldCapture, py::arg("state"));
+      yag_model::LastFrameTrigger,
+      yag_model::ITrigger,
+      std::shared_ptr<yag_model::LastFrameTrigger>>(m, "LastFrameTrigger")
+      .def(py::init<>());
 
   py::class_<yag_model::ICapture, std::shared_ptr<yag_model::ICapture>>(m, "ICapture");
 
@@ -170,14 +181,14 @@ PYBIND11_MODULE(yag_model, m) {
          yag_model::ModelParameters const& reactionParameters,
          std::shared_ptr<yag_model::ITimeStep> timeStep,
          std::shared_ptr<yag_model::IBrake> brake,
-         std::shared_ptr<yag_model::ICaptureTrigger> captureTrigger,
+         std::shared_ptr<yag_model::ITrigger> trigger,
          std::shared_ptr<yag_model::ICapture> capture,
          yag_model::SolutionState const& ic) {
         // Release the Python GIL
         py::gil_scoped_release release;
 
         return yag_model::solve(
-            s, disc, reactionParameters, *timeStep, *brake, *captureTrigger, *capture, ic
+            s, disc, reactionParameters, *timeStep, *brake, *trigger, *capture, ic
         );
       },
       py::arg("s"),
@@ -185,7 +196,7 @@ PYBIND11_MODULE(yag_model, m) {
       py::arg("reactionParameters"),
       py::arg("timeStep"),
       py::arg("brake"),
-      py::arg("captureTrigger"),
+      py::arg("trigger"),
       py::arg("capture"),
       py::arg("ic")
   );

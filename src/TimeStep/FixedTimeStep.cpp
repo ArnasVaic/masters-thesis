@@ -4,10 +4,8 @@ namespace yag_model {
 
 FixedTimeStep::FixedTimeStep(double const dt) : dt(dt) {}
 
-double FixedTimeStep::getTimestep() const {
+double FixedTimeStep::advance(SolverState const& state) {
   return dt;
 }
-
-void FixedTimeStep::advance(SolverState const& state) {}
 
 }  // namespace yag_model

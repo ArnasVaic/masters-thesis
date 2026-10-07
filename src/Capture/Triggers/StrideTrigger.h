@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ICaptureTrigger.h"
+#include "ITrigger.h"
 
 namespace yag_model {
-class StrideCaptureTrigger : public ICaptureTrigger {
+class StrideTrigger : public ITrigger {
 public:
   size_t stride;
 
-  explicit StrideCaptureTrigger(size_t stride);
+  explicit StrideTrigger(size_t stride);
 
   [[nodiscard]]
   bool shouldCapture(SolverState const& state) const override;
