@@ -32,6 +32,9 @@ dependencies:
   - xtl
   - libopenblas
   - blas-devel
+  - hdf5
+  - highfive
 
   # testing
   - catch2
+  - pytest

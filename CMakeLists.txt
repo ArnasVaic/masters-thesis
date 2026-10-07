@@ -35,6 +35,7 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(xtensor CONFIG REQUIRED)
 find_package(xtensor-python REQUIRED)
 find_package(xtensor-blas CONFIG REQUIRED)
+find_package(HighFive CONFIG REQUIRED)
 
 # --------------------------------------------------
 # Core: low-level utilities
@@ -106,17 +107,20 @@ add_library(core_capture
         src/Capture/Reducers/TotalMassReducer.cpp
         src/Capture/Sinks/ISink.h
         src/Capture/Sinks/InMemorySink.cpp
+        src/Capture/Sinks/HDF5Sink.cpp
         src/Result/ResultMetadata.h
         src/Result/FrameBuffer.h
         src/Result/ResultBatch.cpp
         src/Result/BatchRange.cpp
         src/Result/IResult.h
         src/Result/InMemoryResult.cpp
+        src/Result/HDF5Format.h
+        src/Result/HDF5Result.cpp
 )
 
 target_include_directories(core_capture PUBLIC src)
 
-target_link_libraries(core_capture PUBLIC core_model)
+target_link_libraries(core_capture PUBLIC core_model HighFive::HighFive)
 
 # --------------------------------------------------
 # Brakes / logic
@@ -179,6 +183,7 @@ if (BUILD_TESTS)
             test/last_capture_test.cpp
             test/components_test.cpp
             test/capture_test.cpp
+            test/hdf5_test.cpp
     )
 
     target_link_libraries(tests PRIVATE

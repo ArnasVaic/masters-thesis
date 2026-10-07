@@ -15,6 +15,7 @@
 #include "Capture/Reducers/DensityFieldReducer.h"
 #include "Capture/Reducers/MolarQuantityReducer.h"
 #include "Capture/Reducers/TotalMassReducer.h"
+#include "Capture/Sinks/HDF5Sink.h"
 #include "Capture/Sinks/InMemorySink.h"
 #include "Capture/Triggers/LastFrameTrigger.h"
 #include "Capture/Triggers/StrideTrigger.h"
@@ -25,6 +26,7 @@
 #include "Core/Constants.h"
 #include "Core/Quantity.h"
 #include "InitialCondition/CheckerboardInitialCondition.h"
+#include "Result/HDF5Result.h"
 #include "Solver/ADISolver.h"
 #include "TimeStep/FixedTimeStep.h"
 #include "TimeStep/GeometricTimeStep.h"
@@ -193,6 +195,12 @@ PYBIND11_MODULE(yag_model, m) {
       .def(py::init<std::optional<size_t>>(), py::arg("capacity") = py::none())
       .def_readwrite("capacity", &yag_model::InMemorySink::capacity);
 
+  py::class_<yag_model::HDF5Sink, yag_model::ISink, std::shared_ptr<yag_model::HDF5Sink>>(
+      m, "HDF5Sink"
+  )
+      .def(py::init<std::string>(), py::arg("path"))
+      .def_readwrite("path", &yag_model::HDF5Sink::path);
+
   py::class_<yag_model::ResultMetadata>(m, "ResultMetadata")
       .def_readonly("frame_shape", &yag_model::ResultMetadata::frame_shape)
       .def_readonly("channels", &yag_model::ResultMetadata::channels)
@@ -202,6 +210,11 @@ PYBIND11_MODULE(yag_model, m) {
   py::class_<yag_model::IResult, std::shared_ptr<yag_model::IResult>>(m, "IResult")
       .def("__len__", &yag_model::IResult::size)
       .def_property_readonly("metadata", &yag_model::IResult::metadata);
+
+  py::class_<yag_model::HDF5Result, yag_model::IResult, std::shared_ptr<yag_model::HDF5Result>>(
+      m, "HDF5Result"
+  )
+      .def(py::init<std::string const&>(), py::arg("path"));
 
   py::class_<yag_model::CaptureConfig>(m, "CaptureConfig")
       .def(py::init<>())
