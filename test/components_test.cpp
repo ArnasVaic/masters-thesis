@@ -4,7 +4,6 @@
 #include "Brakes/FixedStepBrake.h"
 #include "Brakes/ReagentQuantityThresholdBrake.h"
 #include "Capture/Triggers/LastFrameTrigger.h"
-#include "Captures/QuantityCapture.h"
 #include "Core/Channel.h"
 #include "Core/Constants.h"
 #include "Core/Quantity.h"
@@ -56,39 +55,38 @@ TEST_CASE("Channel mask maps to channel indices", "[channel]") {
 }
 
 TEST_CASE("Last frame trigger captures exactly the final state", "[solver]") {
-  yag_model::Discretization const disc(1.0, 1.0, 8, 8);
+  yag_model::SolverConfig config;
+  config.discretization = yag_model::Discretization(1.0, 1.0, 8, 8);
+  config.step = std::make_shared<yag_model::FixedTimeStep>(0.5);
+  config.brake = std::make_shared<yag_model::FixedStepBrake>(10);
+  config.capture.trigger = std::make_shared<yag_model::LastFrameTrigger>();
+
   yag_model::ModelParameters const params({0.01, 0.01, 0.01, 0.01, 0.01}, {0.0, 0.0, 0.0});
 
-  yag_model::FixedTimeStep step(0.5);
-  yag_model::FixedStepBrake brake(10);
-  yag_model::LastFrameTrigger trigger;
-  yag_model::QuantityCapture capture(2, disc);
+  auto const ic = yag_model::buildCheckerboardInitialCondition(config.discretization, 1.0, 1.0);
+  auto const result = yag_model::solve(config, ic, params);
 
-  auto const ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);
-  yag_model::solve(yag_model::Constants::S, disc, params, step, brake, trigger, capture, ic);
-
-  REQUIRE(capture.size == 1);
-  REQUIRE(capture.t_history(0) == Catch::Approx(5.0));
+  REQUIRE(result->size() == 1);
+  REQUIRE(result->all().times()(0) == Catch::Approx(5.0));
 }
 
 TEST_CASE("Geometric time step drives solver time", "[solver]") {
-  yag_model::Discretization const disc(1.0, 1.0, 8, 8);
+  yag_model::SolverConfig config;
+  config.discretization = yag_model::Discretization(1.0, 1.0, 8, 8);
+  config.step = std::make_shared<yag_model::GeometricTimeStep>(0.1, 2.0);
+  config.brake = std::make_shared<yag_model::FixedStepBrake>(4);
+  config.capture.trigger = std::make_shared<yag_model::LastFrameTrigger>();
+
   yag_model::ModelParameters const params({0.01, 0.01, 0.01, 0.01, 0.01}, {0.0, 0.0, 0.0});
 
-  yag_model::GeometricTimeStep step(0.1, 2.0);
-  yag_model::FixedStepBrake brake(4);
-  yag_model::LastFrameTrigger trigger;
-  yag_model::QuantityCapture capture(1, disc);
-
-  auto const ic = yag_model::buildCheckerboardInitialCondition(disc, 1.0, 1.0);
+  auto const ic = yag_model::buildCheckerboardInitialCondition(config.discretization, 1.0, 1.0);
 
   // Solving twice checks that begin() resets the step
   for (int run = 0; run < 2; ++run) {
-    capture.size = 0;
-    yag_model::solve(yag_model::Constants::S, disc, params, step, brake, trigger, capture, ic);
+    auto const result = yag_model::solve(config, ic, params);
 
     // 0.1 + 0.2 + 0.4 + 0.8
-    REQUIRE(capture.t_history(0) == Catch::Approx(1.5));
+    REQUIRE(result->all().times()(0) == Catch::Approx(1.5));
   }
 }
 

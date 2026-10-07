@@ -2,8 +2,9 @@
 #include <xtensor.hpp>
 
 #include "Brakes/FixedTimeBrake.h"
+#include "Capture/Reducers/MolarQuantityReducer.h"
+#include "Capture/Sinks/InMemorySink.h"
 #include "Capture/Triggers/StrideTrigger.h"
-#include "Captures/QuantityCapture.h"
 #include "Config/Discretization.h"
 #include "Config/ModelParameters.h"
 #include "Core/SolutionState.h"
@@ -59,19 +60,22 @@ int main() {
   // Time stepping
   // -----------------------------------------------------------------
 
+  yag_model::SolverConfig config;
+  config.discretization = disc;
+
   double const dt = 6.0 / T0;  // exactly as Python
-  yag_model::FixedTimeStep step(dt);
+  config.step = std::make_shared<yag_model::FixedTimeStep>(dt);
 
   // 6 hours in dimensionless time
   double const t_end = 6.0 * 60.0 * 60.0 / T0;
+  config.brake = std::make_shared<yag_model::FixedTimeBrake>(t_end);
 
-  yag_model::FixedTimeBrake brake(t_end);
+  // Capture molar quantities every 10 steps, keep up to 400 frames
+  config.capture.trigger = std::make_shared<yag_model::StrideTrigger>(10);
+  config.capture.reducer = std::make_shared<yag_model::MolarQuantityReducer>();
+  config.capture.sink = std::make_shared<yag_model::InMemorySink>(400);
+  config.stoichiometry = S;
 
-  // Capture only final frame
-  yag_model::StrideTrigger captureTrigger(10);
-
-  // Storage for one frame
-  yag_model::QuantityCapture capture(400, disc);
-
-  yag_model::solve(S, disc, params_nd, step, brake, captureTrigger, capture, ic);
+  auto const result = yag_model::solve(config, ic, params_nd);
+  std::cout << "Captured " << result->size() << " frames\n";
 }

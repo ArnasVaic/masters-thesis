@@ -80,29 +80,43 @@ add_library(core_solver
         src/Solver/ADISolverCache.cpp
         src/Solver/ADISolver.cpp
         src/TimeStep/ITimeStep.h
+        src/Config/CaptureConfig.h
+        src/Config/SolverConfig.h
 )
 
 target_include_directories(core_solver PUBLIC src)
 
 target_link_libraries(core_solver PUBLIC
         core_model
+        core_capture
+        core_brakes
 )
 
 # --------------------------------------------------
 # Capture / IO
 # --------------------------------------------------
 add_library(core_capture
-        src/Captures/InMemoryFrameCapture.cpp
-        src/Captures/QuantityCapture.cpp
-        src/Captures/ICapture.h
         src/Capture/Triggers/ITrigger.h
         src/Capture/Triggers/StrideTrigger.cpp
         src/Capture/Triggers/LastFrameTrigger.cpp
+        src/Capture/Reducers/IReducer.h
+        src/Capture/Reducers/ConcentrationFieldReducer.cpp
+        src/Capture/Reducers/DensityFieldReducer.cpp
+        src/Capture/Reducers/MolarQuantityReducer.cpp
+        src/Capture/Reducers/TotalMassReducer.cpp
+        src/Capture/Sinks/ISink.h
+        src/Capture/Sinks/InMemorySink.cpp
+        src/Result/ResultMetadata.h
+        src/Result/FrameBuffer.h
+        src/Result/ResultBatch.cpp
+        src/Result/BatchRange.cpp
+        src/Result/IResult.h
+        src/Result/InMemoryResult.cpp
 )
 
 target_include_directories(core_capture PUBLIC src)
 
-target_link_libraries(core_capture PUBLIC core_base)
+target_link_libraries(core_capture PUBLIC core_model)
 
 # --------------------------------------------------
 # Brakes / logic
@@ -116,7 +130,7 @@ add_library(core_brakes
 
 target_include_directories(core_brakes PUBLIC src)
 
-target_link_libraries(core_brakes PUBLIC core_base)
+target_link_libraries(core_brakes PUBLIC core_model)
 
 # --------------------------------------------------
 # High-level core facade
@@ -164,6 +178,7 @@ if (BUILD_TESTS)
             test/xtensor_test.cpp
             test/last_capture_test.cpp
             test/components_test.cpp
+            test/capture_test.cpp
     )
 
     target_link_libraries(tests PRIVATE

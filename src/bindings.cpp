@@ -1,6 +1,7 @@
 #define FORCE_IMPORT_ARRAY
 #define PY_ARRAY_UNIQUE_SYMBOL yag_model_array_api
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include <xtensor-python/pyarray.hpp>
 #include <xtensor-python/pytensor.hpp>
@@ -10,11 +11,16 @@
 #include "Brakes/FixedTimeBrake.h"
 #include "Brakes/IBrake.h"
 #include "Brakes/ReagentQuantityThresholdBrake.h"
+#include "Capture/Reducers/ConcentrationFieldReducer.h"
+#include "Capture/Reducers/DensityFieldReducer.h"
+#include "Capture/Reducers/MolarQuantityReducer.h"
+#include "Capture/Reducers/TotalMassReducer.h"
+#include "Capture/Sinks/InMemorySink.h"
 #include "Capture/Triggers/LastFrameTrigger.h"
 #include "Capture/Triggers/StrideTrigger.h"
-#include "Captures/InMemoryFrameCapture.h"
-#include "Captures/QuantityCapture.h"
+#include "Config/CaptureConfig.h"
 #include "Config/ModelParameters.h"
+#include "Config/SolverConfig.h"
 #include "Core/Channel.h"
 #include "Core/Constants.h"
 #include "Core/Quantity.h"
@@ -152,53 +158,83 @@ PYBIND11_MODULE(yag_model, m) {
       std::shared_ptr<yag_model::LastFrameTrigger>>(m, "LastFrameTrigger")
       .def(py::init<>());
 
-  py::class_<yag_model::ICapture, std::shared_ptr<yag_model::ICapture>>(m, "ICapture");
+  py::class_<yag_model::IReducer, std::shared_ptr<yag_model::IReducer>>(m, "IReducer")
+      .def_property_readonly("name", &yag_model::IReducer::name);
 
   py::class_<
-      yag_model::InMemoryFrameCapture,
-      yag_model::ICapture,
-      std::shared_ptr<yag_model::InMemoryFrameCapture>>(m, "InMemoryFrameCapture")
-      .def(py::init<size_t, yag_model::Discretization>(), py::arg("capacity"), py::arg("disc"))
-      .def_readonly("size", &yag_model::InMemoryFrameCapture::size)
-      .def_readonly("capacity", &yag_model::InMemoryFrameCapture::capacity)
-      .def_readonly("t_history", &yag_model::InMemoryFrameCapture::t_history)
-      .def_readonly("c_history", &yag_model::InMemoryFrameCapture::c_history);
+      yag_model::ConcentrationFieldReducer,
+      yag_model::IReducer,
+      std::shared_ptr<yag_model::ConcentrationFieldReducer>>(m, "ConcentrationFieldReducer")
+      .def(py::init<>());
 
   py::class_<
-      yag_model::QuantityCapture,
-      yag_model::ICapture,
-      std::shared_ptr<yag_model::QuantityCapture>>(m, "QuantityCapture")
-      .def(py::init<size_t, yag_model::Discretization>(), py::arg("capacity"), py::arg("disc"))
-      .def_readonly("size", &yag_model::QuantityCapture::size)
-      .def_readonly("capacity", &yag_model::QuantityCapture::capacity)
-      .def_readonly("t_history", &yag_model::QuantityCapture::t_history)
-      .def_readonly("q_history", &yag_model::QuantityCapture::q_history);
+      yag_model::DensityFieldReducer,
+      yag_model::IReducer,
+      std::shared_ptr<yag_model::DensityFieldReducer>>(m, "DensityFieldReducer")
+      .def(py::init<>());
+
+  py::class_<
+      yag_model::MolarQuantityReducer,
+      yag_model::IReducer,
+      std::shared_ptr<yag_model::MolarQuantityReducer>>(m, "MolarQuantityReducer")
+      .def(py::init<>());
+
+  py::class_<
+      yag_model::TotalMassReducer,
+      yag_model::IReducer,
+      std::shared_ptr<yag_model::TotalMassReducer>>(m, "TotalMassReducer")
+      .def(py::init<>());
+
+  py::class_<yag_model::ISink, std::shared_ptr<yag_model::ISink>>(m, "ISink");
+
+  py::class_<yag_model::InMemorySink, yag_model::ISink, std::shared_ptr<yag_model::InMemorySink>>(
+      m, "InMemorySink"
+  )
+      .def(py::init<std::optional<size_t>>(), py::arg("capacity") = py::none())
+      .def_readwrite("capacity", &yag_model::InMemorySink::capacity);
+
+  py::class_<yag_model::ResultMetadata>(m, "ResultMetadata")
+      .def_readonly("frame_shape", &yag_model::ResultMetadata::frame_shape)
+      .def_readonly("channels", &yag_model::ResultMetadata::channels)
+      .def_readonly("reducer", &yag_model::ResultMetadata::reducer)
+      .def_readonly("discretization", &yag_model::ResultMetadata::discretization);
+
+  py::class_<yag_model::IResult, std::shared_ptr<yag_model::IResult>>(m, "IResult")
+      .def("__len__", &yag_model::IResult::size)
+      .def_property_readonly("metadata", &yag_model::IResult::metadata);
+
+  py::class_<yag_model::CaptureConfig>(m, "CaptureConfig")
+      .def(py::init<>())
+      .def_readwrite("channels", &yag_model::CaptureConfig::channels)
+      .def_readwrite("reducer", &yag_model::CaptureConfig::reducer)
+      .def_readwrite("trigger", &yag_model::CaptureConfig::trigger)
+      .def_readwrite("sink", &yag_model::CaptureConfig::sink);
+
+  py::class_<yag_model::SolverConfig>(m, "SolverConfig")
+      .def(py::init<>())
+      .def_readwrite("discretization", &yag_model::SolverConfig::discretization)
+      .def_readwrite("step", &yag_model::SolverConfig::step)
+      .def_readwrite("brake", &yag_model::SolverConfig::brake)
+      .def_readwrite("capture", &yag_model::SolverConfig::capture)
+      .def_property(
+          "stoichiometry",
+          [](yag_model::SolverConfig& self) { return xt::pyarray<double>(self.stoichiometry); },
+          [](yag_model::SolverConfig& self, xt::pyarray<double> v) { self.stoichiometry = v; }
+      );
 
   m.def(
       "solve",
-      [](xt::xarray<double> const& s,
-         yag_model::Discretization const& disc,
-         yag_model::ModelParameters const& reactionParameters,
-         std::shared_ptr<yag_model::ITimeStep> timeStep,
-         std::shared_ptr<yag_model::IBrake> brake,
-         std::shared_ptr<yag_model::ITrigger> trigger,
-         std::shared_ptr<yag_model::ICapture> capture,
-         yag_model::SolutionState const& ic) {
+      [](yag_model::SolverConfig const& config,
+         yag_model::SolutionState const& ic,
+         yag_model::ModelParameters const& params) {
         // Release the Python GIL
         py::gil_scoped_release release;
 
-        return yag_model::solve(
-            s, disc, reactionParameters, *timeStep, *brake, *trigger, *capture, ic
-        );
+        return yag_model::solve(config, ic, params);
       },
-      py::arg("s"),
-      py::arg("disc"),
-      py::arg("reactionParameters"),
-      py::arg("timeStep"),
-      py::arg("brake"),
-      py::arg("trigger"),
-      py::arg("capture"),
-      py::arg("ic")
+      py::arg("config"),
+      py::arg("ic"),
+      py::arg("params")
   );
 
   m.def(

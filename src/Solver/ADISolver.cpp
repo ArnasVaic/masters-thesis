@@ -1,6 +1,7 @@
 #include "ADISolver.h"
 
 #include <limits>
+#include <stdexcept>
 #include <xtensor/core/xnoalias.hpp>
 
 #include "ADISolverCache.h"
@@ -13,16 +14,42 @@ void ySweepStep(size_t mat, SolverState& state, ADISolverCache& cache, int rows,
 
 void solveStep(Discretization const& disc, SolverState& state, ADISolverCache& cache, double dt);
 
-void solve(
-    xt::xarray<double> const& S,
-    Discretization const& disc,
-    ModelParameters const& params,
-    ITimeStep& timeStep,
-    IBrake& brake,
-    ITrigger& trigger,
-    ICapture& capture,
-    SolutionState const& ic
+static void validate(SolverConfig const& config, SolutionState const& ic) {
+  Discretization const& disc = config.discretization;
+
+  for (auto const& c : ic.c) {
+    if (c.dimension() != 2 || c.shape(0) != disc.mesh_res_y || c.shape(1) != disc.mesh_res_x) {
+      throw std::invalid_argument("Initial condition shape does not match discretization");
+    }
+  }
+
+  auto const& S = config.stoichiometry;
+  if (S.dimension() != 2 || S.shape(0) != 5 || S.shape(1) != 3) {
+    throw std::invalid_argument("Stoichiometry matrix must have shape (5, 3)");
+  }
+
+  if (config.capture.channels == 0 || (config.capture.channels & ~ALL) != 0) {
+    throw std::invalid_argument("Capture channels must be a non-empty subset of ALL");
+  }
+
+  if (!config.step || !config.brake || !config.capture.reducer || !config.capture.trigger ||
+      !config.capture.sink) {
+    throw std::invalid_argument("Solver config components must not be None");
+  }
+}
+
+std::shared_ptr<IResult> solve(
+    SolverConfig const& config, SolutionState const& ic, ModelParameters const& params
 ) {
+  validate(config, ic);
+
+  Discretization const& disc = config.discretization;
+  ITimeStep& timeStep = *config.step;
+  IBrake& brake = *config.brake;
+  IReducer const& reducer = *config.capture.reducer;
+  ITrigger& trigger = *config.capture.trigger;
+  ISink& sink = *config.capture.sink;
+
   SolverState state(disc.mesh_res_y, disc.mesh_res_x);
   state.solution = ic;
 
@@ -31,13 +58,24 @@ void solve(
   brake.begin(ctx);
   trigger.begin(ctx);
 
+  std::vector<size_t> const channels = channelIndices(config.capture.channels);
+  sink.begin({
+      .frame_shape = reducer.frameShape(channels.size(), disc),
+      .channels = config.capture.channels,
+      .reducer = reducer.name(),
+      .discretization = disc,
+  });
+
+  auto const capture = [&] {
+    if (trigger.shouldCapture(state)) {
+      sink.write(reducer.reduce(state.solution, channels, disc), state.time);
+    }
+  };
+
   state.is_final = brake.shouldBrake(state);
+  capture();
 
-  if (trigger.shouldCapture(state)) {
-    capture.capture(state);
-  }
-
-  ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x, S);
+  ADISolverCache cache(disc.mesh_res_y, disc.mesh_res_x, config.stoichiometry);
 
   // NaN compares unequal to everything, forces a cache update on the first step
   double cached_dt = std::numeric_limits<double>::quiet_NaN();
@@ -53,11 +91,10 @@ void solve(
     solveStep(disc, state, cache, cached_dt);
 
     state.is_final = brake.shouldBrake(state);
-
-    if (trigger.shouldCapture(state)) {
-      capture.capture(state);
-    }
+    capture();
   }
+
+  return sink.finish();
 }
 
 void solveStep(
