@@ -44,6 +44,7 @@ add_library(core_base
         src/Core/Quantity.cpp
         src/Core/SolutionState.cpp
         src/Core/TridiagonalLU.cpp
+        src/Core/TridiagonalSolver.cpp
         src/Core/Constants.h
         src/Core/Channel.h
 )
@@ -83,6 +84,8 @@ add_library(core_solver
         src/TimeStep/ITimeStep.h
         src/Config/CaptureConfig.h
         src/Config/SolverConfig.h
+        src/TimeStep/ClampedGeometricTimeStep.cpp
+        src/TimeStep/ClampedGeometricTimeStep.h
 )
 
 target_include_directories(core_solver PUBLIC src)
@@ -185,6 +188,8 @@ if (BUILD_TESTS)
             test/components_test.cpp
             test/capture_test.cpp
             test/hdf5_test.cpp
+            test/tridiagonal_solver_test.cpp
+            test/adi_solver_test.cpp
     )
 
     target_link_libraries(tests PRIVATE

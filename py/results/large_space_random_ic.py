@@ -1,34 +1,32 @@
 # %%
 
-import numpy as np
-
-import core.constants as constants
-from core.core import Scales, solve
-from yag_model import Discretization, FixedStepBrake, FixedTimeStep, InMemoryFrameCapture, ModelParameters, StrideCaptureTrigger
-from core.initial_conditions import random_squares
+import yag_model as ym
+from yag_utils.initial_conditions import random_squares
 import matplotlib.pyplot as plt
 # %%
 
-def build_cfg(mp: ModelParameters, _: Scales):
-    s = constants.S
-    d = Discretization(1.0, 1.0, 160, 160)
-    ic = random_squares(d, 8, int(8**2/2), 5.0, 3.0)
-    ts = FixedTimeStep(dt=1e-4)
-    br = FixedStepBrake(steps=int(1e5))
-    cpt = StrideCaptureTrigger(stride=int(1e4))
-    cp = InMemoryFrameCapture(capacity=int(1e4), disc=d)
-    return [ s, d, mp, ts, br, cpt, cp, ic ]
+disc = ym.discretization(mesh_resolution=(160, 160), physical_size=(1.0, 1.0))
+ic = random_squares(disc, c1=5.0, c2=3.0, n=8, m=int(8**2/2))
 
-mp = ModelParameters(
-    [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
-    [10.0, 5.0, 1.0]
+config = ym.solver_config(
+    discretization=disc,
+    step=ym.fixed_step(dt=1e-4),
+    brake=ym.fixed_step_brake(last_step=int(1e5)),
+    capture=ym.capture_config(
+        trigger=ym.stride_trigger(every=int(1e4)),
+        sink=ym.in_memory_sink(capacity=int(1e4)),
+    ),
+)
+
+mp = ym.model_params(
+    D=[1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
+    k=[10.0, 5.0, 1.0]
 )
 
 # %%
-scales = Scales(1.0, 1.0, 1.0)
-_, d, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
+c, t = ym.solve(config, ic, mp).all()
 
 # %%
 
 frame = 6
-plt.imshow(cpt.c_history[2, frame, :, :])
+plt.imshow(c[frame, 2])

@@ -2,43 +2,41 @@
 
 import numpy as np
 import yag_model as ym
-from core.core import solve, MOLAR_MASSES, Scales
+import yag_utils.stoichiometry
+from yag_utils.initial_conditions import checkerboard
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 # %%
-def build_cfg(mp: ym.ModelParameters, _: Scales):
-    s = np.array([
-        [-5, 0, 0],
-        [-3, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-        [2, 0, 0]
-    ])
-    disc = ym.Discretization(1.0, 1.0, 40, 40)
-    ic = ym.build_checkerboard_initial_condition(disc, 50.0, 30.0)
-    ts = ym.FixedTimeStep(0.0001)
-    br = ym.FixedStepBrake(100000)
-    cpt = ym.StrideCaptureTrigger(100)
-    cp = ym.InMemoryFrameCapture(1000, disc)
-    return [ s, disc, mp, ts, br, cpt, cp, ic ]
+disc = ym.discretization(mesh_resolution=(40, 40), physical_size=(1.0, 1.0))
+ic = checkerboard(disc, 50.0, 30.0)
 
-mp = ym.ModelParameters(
-    [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
-    [10.0, 5.0, 1.0]
+config = ym.solver_config(
+    discretization=disc,
+    step=ym.fixed_step(dt=0.0001),
+    brake=ym.fixed_step_brake(last_step=100000),
+    capture=ym.capture_config(
+        trigger=ym.stride_trigger(every=100),
+        sink=ym.in_memory_sink(capacity=1000),
+    ),
+    # 5 Al2O3 + 3 Y2O3 -> 2 YAG
+    stoichiometry=yag_utils.stoichiometry.simplified,
+)
+
+mp = ym.model_params(
+    D=[1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
+    k=[10.0, 5.0, 1.0]
 )
 
 # %%
-scales = Scales(1.0, 1.0, 1.0)
-_, disc, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
+c, t = ym.solve(config, ic, mp).all()
 # %%
 # Return indicator of "symmetry" along
 # the vertical axis. The maximum difference 
 # between mesh cell values at the same x
 # but mirror y (along mid point) values
 frame = 900
-c = cpt.c_history
 
 # Mirror along both spatial axes
 cf = c[:, :, ::-1, ::-1]
@@ -47,7 +45,7 @@ cdiff = cf - c
 fig, axes = plt.subplots(1, 5, figsize=(20, 4))
 
 for material in range(5):
-    f = cdiff[material, frame, :, :]
+    f = cdiff[frame, material]
 
     im = axes[material].imshow(f)
     axes[material].set_title(f"Material {material + 1}")
@@ -59,8 +57,8 @@ plt.tight_layout()
 plt.show()
 
 print("float64 precision ~15–16 decimal places")
-print("local max diff:", np.max(cdiff[:, frame]))
+print("local max diff:", np.max(cdiff[frame]))
 print("global max diff:", np.max(cdiff))
 # %%
 
-# plt.imshow(c[4, frame, :, :])    
+# plt.imshow(c[frame, 4])    

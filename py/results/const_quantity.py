@@ -1,32 +1,36 @@
 # %%
-# Pirmiausia paleisti main.py, kad 
-# cwd būtų py, o ne py/results, kitaip
-# neveiks from core import ...
 import numpy as np
 import yag_model as ym
-from core.core import solve, MOLAR_MASSES, Scales
+from yag_utils.channels import LABELS
+from yag_utils.initial_conditions import checkerboard
+from yag_utils.mass import total_mass
+from yag_utils.paths import diagrams_dir
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 # %%
-def build_cfg(mp: ym.ModelParameters, _: Scales):
-    disc = ym.Discretization(1.0, 1.0, 40, 40)
-    ic = ym.build_checkerboard_initial_condition(disc, 5.0, 3.0)
-    ts = ym.FixedTimeStep(0.0001)
-    br = ym.FixedStepBrake(100000)
-    cpt = ym.StrideCaptureTrigger(100)
-    cp = ym.QuantityCapture(1000, disc)
-    return [ disc, mp, ts, br, cpt, cp, ic ]
+disc = ym.discretization(mesh_resolution=(40, 40), physical_size=(1.0, 1.0))
+ic = checkerboard(disc, 5.0, 3.0)
 
-# %%
-mp = ym.ModelParameters(
-    [1e-2, 1e-2, 1e-2, 1e-2, 1e-2], 
-    [10.0, 5.0, 1.0]
+config = ym.solver_config(
+    discretization=disc,
+    step=ym.fixed_step(dt=0.0001),
+    brake=ym.fixed_step_brake(last_step=100000),
+    capture=ym.capture_config(
+        reducer=ym.reducers.total_mass(),
+        trigger=ym.stride_trigger(every=100),
+        sink=ym.in_memory_sink(capacity=1000),
+    ),
 )
 
-scales = Scales(1.0, 1.0, 1.0)
-disc, _, _, _, _, cpt, ic = solve(mp, build_cfg, scales)
+# %%
+mp = ym.model_params(
+    D=[1e-2, 1e-2, 1e-2, 1e-2, 1e-2],
+    k=[10.0, 5.0, 1.0]
+)
+
+m, t = ym.solve(config, ic, mp).all()
 
 # %% Norint sėkmingai paleisti reikia įrašyti Libertinus Serif šriftą.
 plt.style.use('ggplot')  # try: 'ggplot', 'bmh', 'fivethirtyeight'
@@ -60,26 +64,18 @@ mpl.rcParams.update({
 
 mpl.rcParams["font.family"] = "Libertinus Serif"
 
-m0 = \
-    MOLAR_MASSES[0] * ym.quantity(ic[0], disc) + \
-    MOLAR_MASSES[1] * ym.quantity(ic[1], disc)
+# Initially only reagents are present
+m0 = total_mass(ic, disc)
 
-ELEMENT_NAME_STRINGS = [
-    '$Al_2O_3$','$Y_2O_3$','$YAM$','$YAP$','$YAG$'
-]
-
-m_sum = np.zeros_like(cpt.q_history[0])
 for i in range(5):
-    m = cpt.q_history[i] * MOLAR_MASSES[i]
-    m_sum += m
-    plt.plot(cpt.t_history, 100 * m / m0, label=ELEMENT_NAME_STRINGS[i])
+    plt.plot(t, 100 * m[:, i] / m0, label=LABELS[i])
 
-plt.plot(cpt.t_history, 100 * m_sum / m0, label='$\\Sigma$')
+plt.plot(t, 100 * m.sum(axis=1) / m0, label='$\\Sigma$')
 plt.xlabel('Reakcijos laikas (s)')
 plt.ylabel('Medžiagų masės dalys (%)')
 plt.legend()
 plt.tight_layout()
-#plt.savefig('../../doc/assets/diagrams/const-mass.png', dpi=300)
+#plt.savefig(diagrams_dir() / 'const-mass.png', dpi=300)
 
 # %%
 

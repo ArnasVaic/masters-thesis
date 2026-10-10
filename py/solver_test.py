@@ -1,22 +1,16 @@
 # %%
 import numpy as np
 import yag_model as ym
-from py.core.core import solve, MOLAR_MASSES, build_optimization_config, config_info, Scales
 import matplotlib.pyplot as plt
-
-def build_config(mp: ym.ModelParameters, scales):
-    disc, mp_nd, ts, br, _, _, ic = build_optimization_config(mp, scales)
-
-    # ts = ym.FixedTimeStep(0.00001)
-    # br = ym.TimeBrake(1.0)
-
-    cpt = ym.StrideCaptureTrigger(100)
-    cp = ym.InMemoryFrameCapture(300, disc)
-    return [disc, mp_nd, ts, br, cpt, cp, ic]
+from yag_utils.channels import LABELS
+from yag_utils.debug import config_info
+from yag_utils.mass import field_masses, total_mass
+from yag_utils.optimization import DEFAULT_SCALES, optimization_config
+from yag_utils.scaling import to_dimensionless
 
 # %% Solver config
 
-scales = Scales(L0=1e-6, C0 = 3.91e4, D_ref=1e-7)
+scales = DEFAULT_SCALES
 logD = [
     -15.520843103369195,
     -14.962864487926721,
@@ -31,39 +25,42 @@ logK = [
     -8.998608159571566
 ]
 
-mp = ym.ModelParameters(
+mp = ym.model_params(
     # [ 1e-15 ] * 5,
     # [ 1e-8 ] * 3
-    [10**d for d in logD],
-    [10**k for k in logK]
+    D=[10**d for d in logD],
+    k=[10**k for k in logK]
+)
+mp_nd = to_dimensionless(mp, scales)
+
+# Experiment setup, but capture concentration fields every 100 steps
+config, ic = optimization_config(
+    scales,
+    capture=ym.capture_config(
+        trigger=ym.stride_trigger(every=100),
+        sink=ym.in_memory_sink(capacity=300),
+    ),
 )
 
-cfg = build_config(mp, scales)
-config_info(cfg, scales)
+# config.step = ym.fixed_step(dt=0.00001)
+# config.brake = ym.fixed_time_brake(final_time=1.0)
+
+disc = config.discretization
+config_info(config, ic, mp_nd, scales)
 
 # %% Solve
-ym.solve(*cfg)
+result = ym.solve(config, ic, mp_nd)
+c, t = result.all()
 
 # %%
 
-disc, mp_nd, ts, br, cpt, cp, ic = cfg
+m0 = total_mass(ic, disc)
+m = field_masses(c, disc)
 
-m0 = \
-    MOLAR_MASSES[0] * ym.quantity(ic[0], disc) + \
-    MOLAR_MASSES[1] * ym.quantity(ic[1], disc)
-
-ELEMENT_NAME_STRINGS = [
-    '$Al_2O_3$','$Y_2O_3$','$YAM$','$YAP$','$YAG$'
-]
-
-m_sum = np.zeros((cp.size))
 for i in range(5):
-    qi = np.array([ ym.quantity(cp.c_history[i, f, :, :], disc) for f in range(cp.size) ])
-    m = qi * MOLAR_MASSES[i]
-    m_sum += m
-    plt.plot(cp.t_history[:cp.size], 100 * m / m0, label=ELEMENT_NAME_STRINGS[i])
+    plt.plot(t, 100 * m[:, i] / m0, label=LABELS[i])
 
-plt.plot(cp.t_history[:cp.size], 100 * m_sum / m0, label='$\\Sigma$')
+plt.plot(t, 100 * m.sum(axis=1) / m0, label='$\\Sigma$')
 plt.xlabel('Reakcijos laikas (s)')
 plt.ylabel('Medžiagų masės dalys (%)')
 plt.legend()
@@ -72,15 +69,15 @@ plt.tight_layout()
 # %%
 
 frame = 1
-assert frame < cp.size
+assert frame < len(result)
 species = 1
-plt.title(f"$c_{1+species}(t={cp.t_history[frame]})$")
+plt.title(f"$c_{1+species}(t={t[frame]})$")
 
-print(f"min = {np.min(cp.c_history)}, max = {np.max(cp.c_history)}")
-mx = np.max(cp.c_history)
+print(f"min = {np.min(c)}, max = {np.max(c)}")
+mx = np.max(c)
 
-plt.imshow(cp.c_history[species, frame, :, :], vmin=0.0, vmax=mx)
-#plt.imshow(cp.c_history[species, frame, :, :])
+plt.imshow(c[frame, species], vmin=0.0, vmax=mx)
+#plt.imshow(c[frame, species])
 
 plt.colorbar()
 # %%

@@ -2,9 +2,9 @@
 
 import numpy as np
 import yag_model as ym
-from py.core.core import P_TRUE, Scales, build_optimization_config, loss, solve, get_p_pred
+from yag_utils.constants import P_TRUE
+from yag_utils.optimization import evaluate, loss
 
-scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
 
 def info(p_pred, mp):
     print(f"{'channel':<8} {'mass % (pred)':<16} {'mass % (true)':<16} {'rel. err. %':<16} ")
@@ -20,15 +20,14 @@ def info(p_pred, mp):
     print("-" * 56)
     print(f"{'total':<8} {pp_sum:<16.2f} {pt_sum:<16.2f} {rel_err_sum:<16.2f}")
 
+    # mp holds physical parameters
     print(f"{'parameter':<12} {'value':<16}")
     print("-" * 30)
     for i, D in enumerate(mp.D):
-        D_phys = D * scales.D_ref
-        print(f"D_{i+1:<12} {D_phys:<16.8e}")
+        print(f"D_{i+1:<12} {D:<16.8e}")
     print("-" * 30)
-    for i, K in enumerate(mp.K):
-        K_phys = K / (scales.C0 * scales.T0)
-        print(f"K_{i+1:<12} {K_phys:<16.8e}")
+    for i, k in enumerate(mp.k):
+        print(f"k_{i+1:<12} {k:<16.8e}")
     print("-" * 30)
 
 logD = [
@@ -45,16 +44,13 @@ logK = [
     -8.998608159571566
 ]
 
-mp = ym.ModelParameters(
-    [ 10**d for d in logD ],
-    [ 10**k for k in logK ]
+mp = ym.model_params(
+    D=[ 10**d for d in logD ],
+    k=[ 10**k for k in logK ]
 )
 
-disc, _, _, _, _, cpt, ic = solve(mp, build_optimization_config, scales)
+p_pred = evaluate(mp)
 
-l = loss(ic, disc, cpt)
-print(f'loss: {l}')
-
-p_pred = get_p_pred(ic, disc, cpt)
+print(f'loss: {loss(p_pred)}')
 info(p_pred, mp)
 # %%

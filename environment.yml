@@ -22,6 +22,7 @@ dependencies:
   - pip
   - optuna
   - optuna-dashboard
+  - tqdm
   - pybind11-stubgen
 
   # c++ libs

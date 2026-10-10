@@ -185,8 +185,18 @@ TEST_CASE("Solve rejects invalid configuration", "[solver]") {
     REQUIRE_THROWS_AS(yag_model::solve(config, ic, params), std::invalid_argument);
   }
 
+  SECTION("wrong number of model parameters") {
+    yag_model::ModelParameters const short_params({0.01, 0.01}, {0.0, 0.0, 0.0});
+    REQUIRE_THROWS_AS(yag_model::solve(config, ic, short_params), std::invalid_argument);
+  }
+
   SECTION("mismatched initial condition") {
     config.discretization = disc;
     REQUIRE_THROWS_AS(yag_model::solve(config, ic, params), std::invalid_argument);
   }
+}
+
+TEST_CASE("Discretization rejects degenerate meshes", "[config]") {
+  REQUIRE_THROWS_AS(yag_model::Discretization(1.0, 1.0, 1, 4), std::invalid_argument);
+  REQUIRE_THROWS_AS(yag_model::Discretization(0.0, 1.0, 4, 4), std::invalid_argument);
 }

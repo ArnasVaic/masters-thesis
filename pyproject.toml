@@ -11,6 +11,8 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "yag_model"
 version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["numpy"]
 
 # if building for practical use:
 [tool.scikit-build]
@@ -20,3 +22,9 @@ cmake.build-type = "Release"
 # cmake.build-type = "RelWithDebInfo"
 
 build-dir = "build/{wheel_tag}"
+
+# Pure-Python helpers installed next to the extension module
+wheel.packages = ["py/yag_utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["test/python"]

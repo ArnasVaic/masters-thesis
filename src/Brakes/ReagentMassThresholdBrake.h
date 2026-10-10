@@ -7,16 +7,16 @@
 
 namespace yag_model {
 
-// Brakes once the reagent quantity drops to the given fraction of the initial one
-class ReagentQuantityThresholdBrake : public IBrake {
+// Brakes once the reagent mass drops to the given fraction of the initial one
+class ReagentMassThresholdBrake : public IBrake {
 public:
   double threshold;
   size_t stride;
 
   // Computed from the initial condition in begin()
-  double initial_reagent_quantity;
+  double initial_reagent_mass;
 
-  ReagentQuantityThresholdBrake(double threshold, size_t stride);
+  ReagentMassThresholdBrake(double threshold, size_t stride);
 
   void begin(SolverContext const& ctx) override;
 

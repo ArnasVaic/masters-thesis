@@ -40,8 +40,8 @@ int main() {
     D /= D_ref;
   }
 
-  for (auto& K : params_nd.K) {
-    K *= C0 * T0;
+  for (auto& k : params_nd.k) {
+    k *= C0 * T0;
   }
 
   // -----------------------------------------------------------------

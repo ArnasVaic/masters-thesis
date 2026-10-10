@@ -98,12 +98,46 @@ You can either build the `yag_model` target with CMake via CLion or terminal, wh
 import yag_model
 ```
 
-All methods and classes are placed under the namespace `yag_model`. To see how to use, check `py/solver_test.py`.
+All methods and classes are placed under the namespace `yag_model`. To see how to use, check `py/solver_test.py` and `sketch/ideal-python-api-design.txt`.
 
-If you don't want to copy around the `.so` file, you can install the bindings as a package, this will build bindings (note that `yag_model` environment needs to be active in your shell):
+If you don't want to copy around the `.so` file, you can install the bindings as a package, this will build bindings and also install the pure-Python helpers `yag_utils` (`py/yag_utils`) so they can be imported from any working directory (note that `yag_model` environment needs to be active in your shell):
 
 ```bash
 pip install -e . --no-build-isolation
 ```
 
+Minimal example:
+
+```python
+import yag_model as yag
+from yag_utils.initial_conditions import random_squares
+
+config = yag.solver_config(
+    step=yag.fixed_step(dt=1e-4),
+    brake=yag.fixed_step_brake(last_step=1000),
+    capture=yag.capture_config(
+        reducer=yag.reducers.total_mass(),
+        trigger=yag.stride_trigger(every=10),
+        sink=yag.in_memory_sink(),  # or yag.hdf5_sink('result.h5')
+    ),
+)
+ic = random_squares(config.discretization, c1=5.0, c2=3.0)
+result = yag.solve(config, ic, yag.model_params(D=[1e-2] * 5, k=[10.0, 5.0, 1.0]))
+
+c, t = result.all()                        # everything at once, frames first: (N, C, ...)
+for c, t in result.batches(batch_size=50):  # or in batches
+    ...
+
+result = yag.hdf5_result('result.h5')      # reopen a file written by hdf5_sink
+```
+
 To launch Python code I use VSCode with Python & Jupyter extensions.
+
+## Tests
+
+```bash
+# C++ (Catch2)
+cmake --build build --target tests && ./build/tests
+# Python API, requires the package to be installed (see above)
+pytest
+```

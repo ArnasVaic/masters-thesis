@@ -10,4 +10,6 @@ double quantity(xt::xarray<double> const& c, Discretization const& disc);
 
 double reagentQuantity(SolutionState const& state, Discretization const& disc);
 
+double reagentMass(SolutionState const& state, Discretization const& disc);
+
 }  // namespace yag_model
