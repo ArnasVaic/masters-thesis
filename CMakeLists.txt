@@ -127,6 +127,7 @@ target_link_libraries(core_capture PUBLIC core_model HighFive::HighFive)
 # --------------------------------------------------
 add_library(core_brakes
         src/Brakes/ReagentQuantityThresholdBrake.cpp
+        src/Brakes/ReagentMassThresholdBrake.cpp
         src/Brakes/FixedStepBrake.cpp
         src/Brakes/IBrake.h
         src/Brakes/FixedTimeBrake.cpp
