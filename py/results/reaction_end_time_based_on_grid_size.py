@@ -71,6 +71,7 @@ def reaction_end_time(size: int, trial: int) -> float:
     return float(times[-1])
 
 
+# %%
 RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
 end_times = load_end_times(RESULTS_PATH)
 sizes = range(2, MAX_SIZE + 1)
