@@ -1,5 +1,5 @@
 *.svg filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
-
 doc/**/*.typ linguist-documentation=false
 doc/**/*.bib linguist-documentation=false
+*.csv filter=lfs diff=lfs merge=lfs -text
