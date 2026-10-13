@@ -15,6 +15,7 @@ config = ym.solver_config(
     step=ym.fixed_step(dt=1e-3),
     brake=ym.fixed_step_brake(last_step=100_000),
     capture=ym.capture_config(
+        reducer=ym.reducers.density_field(),
         trigger=ym.stride_trigger(every=100),
         sink=ym.in_memory_sink(capacity=1000),
     ),
@@ -26,7 +27,7 @@ mp = ym.model_params(
 )
 
 ic = ics.checkerboard(config.discretization, 5.0, 3.0)
-c, t = ym.solve(config, ic, mp).all()
+rho, t = ym.solve(config, ic, mp).all()
 
 # %%
 
@@ -35,20 +36,28 @@ plt.style.use("ggplot")
 mpl.rcParams.update({
     "font.family": "Libertinus Serif",
     "figure.dpi": 150,
-    "font.size": 11,
-    "axes.labelsize": 12,
-    "axes.titlesize": 13,
+    "font.size": 16,
+    "axes.labelsize": 20,
+    "axes.titlesize": 20,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "grid.alpha": 0.3,
+    # Render math in the document font instead of DejaVu Sans
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Libertinus Serif",
+    "mathtext.it": "Libertinus Serif",
+    "mathtext.bf": "Libertinus Serif",
 })
+
+# Shared style for the column (channel) and row (time) labels
+label_style = dict(fontsize=20, color="black")
 
 # --------------------------------------------------
 # Select frames to display
 # --------------------------------------------------
 
-n_frames = c.shape[0]
-n_materials = c.shape[1]
+n_frames = rho.shape[0]
+n_materials = rho.shape[1]
 
 n_cols = 4  # number of time snapshots
 # frames = np.unique(
@@ -56,16 +65,9 @@ n_cols = 4  # number of time snapshots
 # )
 frames = [1, 4, 25, 50]
 
-# Global color scale
-vmin = np.min(c)
-vmax = np.max(c)
-
-# fig, axes = plt.subplots(
-#     n_materials,
-#     len(frames),
-#     figsize=(2.0 * len(frames), 2.0 * n_materials),
-#     constrained_layout=True,
-# )
+# Per-channel color scale, shared across time snapshots
+vmin = rho.min(axis=(0, 2, 3))
+vmax = rho.max(axis=(0, 2, 3))
 
 fig, axes = plt.subplots(
     len(frames),          # rows = time snapshots
@@ -79,13 +81,13 @@ for row, frame in enumerate(frames):
 
         ax = axes[row, col]
 
-        img = c[frame, col]
+        img = rho[frame, col]
 
         im = ax.imshow(
             img,
             cmap="viridis",
-            vmin=vmin,
-            vmax=vmax,
+            vmin=vmin[col],
+            vmax=vmax[col],
             origin="lower",
         )
 
@@ -94,26 +96,41 @@ for row, frame in enumerate(frames):
 
         # Material labels on top
         if row == 0:
-            ax.set_title(rf"$c_{{{col+1}}}$")
+            ax.set_title(rf"$\rho_{{{col+1}}}$", **label_style)
 
         # Time labels on first column
         if col == 0:
-            ms = t[frame] * 1000
             ax.set_ylabel(
-                f"{ms:.1f} ms",
+                f"$t_{row}$",
+                **label_style,
                 rotation=0,
                 labelpad=30,
                 va="center",
             )
 
-# Shared colorbar
-cbar = fig.colorbar(
-    im,
-    ax=axes,
-    shrink=0.8,
-    location="right",
-)
-cbar.set_label("Molinė koncentracija ($mol/ \\mu m^3$)")
+        # Per-channel colorbar below each column
+        if row == len(frames) - 1:
+            cbar = fig.colorbar(
+                im,
+                ax=axes[:, col],
+                location="bottom",
+                shrink=0.9,
+            )
+            # Only the range endpoints, aligned inwards so they stay under the bar
+            cbar.set_ticks(
+                [vmin[col], vmax[col]],
+                labels=[
+                    # Treat values negligible relative to the range as zero
+                    "0" if abs(v) < 1e-3 * vmax[col] else f"{v:.3g}"
+                    for v in (vmin[col], vmax[col])
+                ],
+            )
+            cbar.ax.tick_params(labelsize=label_style["fontsize"] - 4, labelcolor="black")
+            lo, hi = cbar.ax.get_xticklabels()
+            lo.set_horizontalalignment("left")
+            hi.set_horizontalalignment("right")
+
+# fig.supxlabel("Tankis ($g/ \\mu m^3$)")
 
 # fig.suptitle("Medžiagų molinės koncentracijos pasiskirstymas erdvėje reakcijos eigoje", y=1.02)
 

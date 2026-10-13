@@ -26,13 +26,19 @@ $
 #pagebreak(weak: true)
 
 #figure(
-  image("../assets/diagrams/frame_example.png"),
-  caption: [Medžiagų molinės koncentracijos pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parametrai tokie patys kaip pastovios masės demonstracijoje @const-mass išskyrus reakcijos koeficientus. Čia $k_1 = 60.0, k_2 = 30.0, k_3 = 15.0$.]
+  image("../assets/diagrams/frame_example_transposed.png"),
+  caption: [Reakcijoje dalyvaujančių medžiagų tankio pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parameterai $k_i = 1.0$, $D_i = 10^(-2)$, diskretaus tinklelio rezoliucija $W = H = 100, $ o $Delta x = Delta y = 1/99$.]
 ) <frame-example>
 
 @frame-example matome, kaip atrodo neagreguoti kompiuterinio modelio rezultatai -- modelio produktas yra visų penkių reakcijoje dalyvaujančių medžiagų pasiskirstymai erdvėje diskrečiais laiko momentais, tuo tarpu @const-mass pavaizduoti rezultatai buvo gauti apdorojant šiuos duomenis iš jų išgaunant medžiagų masės kiekius sistemoje.
 
-Modelio parametrai @frame-example yra parinkti atsitiktinai norint pademonstruoti modelio rezultatus ir modeliuojamą reakcijos procesą. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirmas stulpelis), 2-3 medžiagų koncentracijų nėra, nes sistemoje yra tik reagentai, kurių pradinę sąlygą jau aptarėme modelio sekcijoje. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik sandūroje, panašų procesą galime įsivaizduoti ir cheminėje reakcijoje, kada medžiagų dalelės pradeda tirpti aukštoje temperatūroje, kas leidžia joms reaguoti ir sandūroje sudaryti produktą YAG. Kompiuterinio modelio rezultatuose galima pastebėti subtilų tarpinių produktų nesimetriškumą $x$ ir $y$ ašimis. Šį polinkį galėtų lemti faktas, kad skirtingų medžiagų poros reaguoja skirtingu greičiu.
+Modelio parametrai @frame-example yra parinkti atsitiktiniu būdu norint pademonstruoti reakcijos dinamiką. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirma eilutė), YAP, YAM ir YAG medžiagų beveik nėra arba jos tik pradeda formuotis. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik tarpusavyje formuodamos tarpinius (YAM, YAP) ir galutinį (YAG) produktus. Modelis yra sukonstruotas atspindėti cheminį reakcijos procesą -- dalelės lydosi aukštoje temperatūroje, o kai atsiranda kontaktas tarp skirtingų medžiagų, jos reaguoja.
+
+Galime pastebėti, kad nors modelio fizinės konstantos yra izotropinės, modelio rezultatai turi skirtingas simetrijas $x=y$ ir $y = H - x$ ašimis
+
+== Modelio rezultatų nesimetriškumas
+
+Nors modelio parametrai yra izotropiniai, atidžiau pažiūrėjus į @frame-example yra matoma, kad sprendinys yra nesimetriškas
 
 = Modelio parametro optimizavimas
 
