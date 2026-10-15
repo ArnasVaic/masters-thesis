@@ -3,3 +3,4 @@
 # a new package because that causes linking errors.
 rm -rf build
 rm -rf cmake-build-debug
+
