@@ -12,6 +12,32 @@ def checkerboard(disc: Discretization, c1: float, c2: float) -> SolutionState:
     return yag_model.checkerboard_initial_condition(disc, c1, c2)
 
 
+def mirrored_checkerboard(
+        disc: Discretization,
+        c1: float,
+        c2: float,
+        subdivision: tuple[int, int]) -> SolutionState:
+    """Split the mesh into nx x ny blocks and fill them with a 2x2 checkerboard mirrored along x and y.
+
+    Mirroring the 2x2 cell gives rows ABBA / BAAB / BAAB / ABBA, so the result is a checkerboard
+    with 2x2 squares of blocks, offset by one block (half a square) and starting with c1.
+    """
+
+    H, W = disc.shape
+    nx, ny = subdivision
+
+    assert W % nx == 0
+    assert H % ny == 0
+
+    by, bx = np.indices((H, W))
+    mask = ((bx // (W // nx) + 1) // 2 + (by // (H // ny) + 1) // 2) % 2 == 0
+
+    return to_solution_state(disc, [
+        np.where(mask, c1, 0.0),
+        np.where(mask, 0.0, c2),
+    ])
+
+
 def random_squares(
         disc: Discretization,
         c1: float,
