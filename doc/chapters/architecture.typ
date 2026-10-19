@@ -21,7 +21,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 == Sprendiklio sąsaja ir pagrindiniai komponentai
 
 Modulis `yag_model` įgyvendina funkciją `solve`, kuri skaitiškai sprendžia sistemą apibūdintą @mathematical-model[skyriuje]. Ši funkcija turi keletą parametrų:
-- $bold(S) in RR^(5 times 3)$ -- stoichiometrinė sistemos matrica. Atliekant įprastą rezultatų analizę šio parametro reikšmė bus tokia pati kaip @model-constants[lygt.]. Ši matrica egzistuoja kaip funkcijos parametras dėl to, kad būtų įmanoma testuoti modelio veikimą nepriklausomai nuo duotos stoichiometrinės matricos. Anksčiau minėtą supaprastiną cheminę reakciją @vaicekauskas2025yag galime modeliuoti paprasčiausiai pakeičiant šio argumento reikšmę.
+- $bold(S) in RR^(5 times 3)$ -- stoichiometrinė sistemos matrica. Atliekant įprastą rezultatų analizę šio parametro reikšmė bus tokia pati kaip @compact-model-and-related-notation[lygt.] esančios matricos $bold(S)$. Ši matrica egzistuoja kaip funkcijos parametras dėl to, kad būtų įmanoma testuoti modelio veikimą nepriklausomai nuo duotos stoichiometrinės matricos. Anksčiau minėtą supaprastiną cheminę reakciją @vaicekauskas2025yag galime modeliuoti paprasčiausiai pakeičiant šio argumento reikšmę.
 - `Discretization` -- erdvės diskretizacijos konfigūracija kontroliuoja modeliuojamos erdvės granuliarumą ir fizinį dydį, detaliau pavaizduota @solver-inputs-diagram
 - `ModelParameters` -- struktūra laikanti modelio fizines konstantas -- difuzijos ir reakcijos greičius. Detaliau pavaizduota @solver-inputs-diagram
 - `ITimeStep` -- žingsniavimo strategija, plačiau aprašyta @time-step-section[skyriuje]

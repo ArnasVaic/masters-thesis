@@ -54,18 +54,16 @@ Rezultatai matomi @simplified-frame-example sutampa su prieš tai pateiktu reakc
 
 #figure(
   image("../assets/diagrams/frame_example_transposed.png"),
-  caption: [Modelio rezultatai, kai naudojama išplėsta stoichiometrinė matrica Reakcijoje dalyvaujančių medžiagų tankio pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parametrai $k_i = 1.0$, $D_i = 10^(-2)$, diskretaus tinklelio rezoliucija $W = H = 100,$ o $Delta x = Delta y = 1/99$.],
+  caption: [Modelio rezultatai, kai naudojama išplėsta stoichiometrinė matrica $bold(S)$ iš @compact-model-and-related-notation[lygt.]. Reakcijoje dalyvaujančių medžiagų tankio pasiskirstymas erdvėje įvairiais laiko momentais. Modelio parametrai $k_i = 1.0$, $D_i = 10^(-2)$, diskretaus tinklelio rezoliucija $W = H = 100,$ o $Delta x = Delta y = 1/99$. ],
 ) <frame-example>
 
-@frame-example matome, kaip atrodo neagreguoti kompiuterinio modelio rezultatai -- modelio produktas yra visų penkių reakcijoje dalyvaujančių medžiagų pasiskirstymai erdvėje diskrečiais laiko momentais, tuo tarpu @const-mass pavaizduoti rezultatai buvo gauti apdorojant šiuos duomenis iš jų išgaunant medžiagų masės kiekius sistemoje.
+@frame-example matome modelio rezultatus, kai naudojama pilna stoichiometrinė matrica. Šiuo atveju modelio rezultatas yra penkių medžiagų tankio pasiskirstymo istorija laike. Modelio parametrai šiam (kaip ir praeitam) pavyzdžiui yra parinkti atsitiktiniu būdu norint pademonstruoti reakcijoje slypinčią dinamiką. Kadangi parametrų fiziniai matai pavyzdyje neturi prasmės, todėl ir tankio reikšmių amplitudę žyminčios spalvų juostos (_angl. colorbars_) matavimo vienetų neturi. 
 
-Modelio parametrai @frame-example yra parinkti atsitiktiniu būdu norint pademonstruoti reakcijos dinamiką. Kaip ir pavyzdyje @const-mass matome, kad pirmuoju pavaizduotu laiko momentu (pirma eilutė), YAP, YAM ir YAG medžiagų beveik nėra arba jos tik pradeda formuotis. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik tarpusavyje formuodamos t arpinius (YAM, YAP) ir galutinį (YAG) produktus. Modelis yra sukonstruotas atspindėti cheminį reakcijos procesą -- dalelės lydosi aukštoje temperatūroje, o kai atsiranda kontaktas tarp skirtingų medžiagų, jos reaguoja.
+Šį modelio rezultatą galime lyginti su prieš tai pateiktų pavyzdžiu @const-mass, kuriame matome tik masės dalies kitimą per laiką. Pirmuoju pavaizduotu laiko momentu (pirma eilutė), YAP, YAM ir YAG medžiagų beveik nėra arba jos tik pradeda formuotis. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik tarpusavyje formuodamos t arpinius (YAM, YAP) ir galutinį (YAG) produktus. 
 
-Galime pastebėti, kad nors modelio fizinės konstantos yra izotropinės, modelio rezultatai turi skirtingas simetrijas $x=y$ ir $y = H - x$ ašimis
+Galime pastebėti, kad šį kartą sprendinys turi mažiau simetrijų negu prieš tai pademonstruoto supaprastinto modelio sprendinys (@simplified-frame-example), nors ir naudojama identiška pradinė sąlyga. Laikant tašką (0, 0) srities centru, šiuo atveju tarpiniai ir galutinis produktai turi simetrijas aplink $y=x$ ir $y=-x$ ašis. Tai gali atrodyti gan neįprasta, kadangi reakcijos ir difuzijos grečiai abejais atvejais yra izotropiniai, tačiau priežastis yra gana akivaizdi nagrinėjant reakcijos geometriją.
 
-== Modelio rezultatų nesimetriškumas
-
-Nors modelio parametrai yra izotropiniai, atidžiau pažiūrėjus į @frame-example yra matoma, kad sprendinys yra nesimetriškas
+#include "../assets/diagrams/non-symmetry/non-symmetry-explanation.typ"
 
 = Modelio parametro optimizavimas
 
