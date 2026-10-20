@@ -1,5 +1,6 @@
 # %%
 
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -36,7 +37,7 @@ def solve(stoichiometry, channels):
     ic = ics.checkerboard(config.discretization, 5.0, 3.0)
     return ym.solve(config, ic, mp).all()
 
-
+# %%
 # Full pathway through YAM and YAP, all species
 rho_default, t_default = solve(stoich.default, ALL)
 
@@ -158,4 +159,22 @@ def plot_frames(rho, channels, frames, filename):
 
 plot_frames(rho_default, ALL, frames, 'complex_reaction_dynamics_example.png')
 plot_frames(rho_simplified, simplified_channels, frames, 'simplified_reaction_dynamics_example.png')
- # %%
+
+# %% Experimentation RGB aggregated images?
+
+def show_rgb(rho, frame, rgb_channel_map):
+    r = rho_default[frame, rgb_channel_map[0]]
+    g = rho_default[frame, rgb_channel_map[1]]
+    b = rho_default[frame, rgb_channel_map[2]]
+
+    r = r / np.max(r)
+    g = g / np.max(g)
+
+    if not math.isclose(np.max(b), 0):
+        b = b / np.max(b)
+
+    img = np.stack((r, g, b))
+    img = np.transpose(img, axes=(1, 2, 0))
+    plt.imshow(img)
+
+show_rgb(rho_default, 0, [0, 1, 2])
