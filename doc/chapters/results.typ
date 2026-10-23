@@ -61,11 +61,15 @@ Rezultatai matomi @simplified-frame-example sutampa su prieš tai pateiktu reakc
 
 Šį modelio rezultatą galime lyginti su prieš tai pateiktų pavyzdžiu @const-mass, kuriame matome tik masės dalies kitimą per laiką. Pirmuoju pavaizduotu laiko momentu (pirma eilutė), YAP, YAM ir YAG medžiagų beveik nėra arba jos tik pradeda formuotis. Laikui bėgant šios medžiagos difunduoja ir reaguoja tik tarpusavyje formuodamos t arpinius (YAM, YAP) ir galutinį (YAG) produktus.
 
-Galime pastebėti, kad šį kartą sprendinys turi mažiau simetrijų negu prieš tai pademonstruoto supaprastinto modelio sprendinys (@simplified-frame-example), nors ir naudojama identiška pradinė sąlyga. Laikant tašką (0, 0) srities centru, šiuo atveju tarpiniai ir galutinis produktai turi simetrijas aplink $y=x$ ir $y=-x$ ašis. Dviejų papildomų medžiagų modeliavimas modelio sprendiniui suteikia daug sudėtingesnį elges, kurį toliau panagrinėsime.
+Galime pastebėti, kad šį kartą sprendinys turi mažiau simetrijų negu prieš tai pademonstruoto supaprastinto modelio sprendinys (@simplified-frame-example), nors ir naudojama identiška pradinė sąlyga. Laikant tašką (0, 0) srities centru, šiuo atveju tarpiniai ir galutinis produktai turi simetrijas aplink $y=x$ ir $y=-x$ ašis. Dviejų papildomų medžiagų modeliavimas modelio sprendiniui suteikia daug sudėtingesnį elgesį. 
 
-Pirmajame laiko momente $t_1$ reakcija vyksta visai trumpa laiką.
 
-#include "../assets/diagrams/non-symmetry/non-symmetry-explanation.typ"
+// Gal nereikia, tiesiog nieko nesakius pereiti prie pvz?
+// Toliau paanalizuosime vieną iš pagrindinių priežasčių, kodėl 3-4 medžiagų sprendiniuose pasirodo puslankiai judantis priešingomis kryptimis ir prarandama pliuso formos simtetrija, kurią galime matyti reakcijos pradžioje.
+
+#include "../assets/diagrams/non-symmetry/example.typ"
+
+@non-symmetry-example vaizduojami supaprastinti modelio rezultatai, kuriuos analizuodami galime lengviau suprasti sprendinio elgesį ir kas lemia įstrižai atsiskyrusių žiedų atsiradimą. Ketvirta medžiaga formuojasi tose vietose, kur yra ir pirmos ir trečios medžiagos, šie plotai pažymėti raudonai. Svarbu pastebėti, kad $rho_4$ neturi Stokios simetrijos kaip $rho_3$ -- ji formuojasi arčiau apatiniojo kairiojo ir viršutinio dešiniojo kampo. Trečiosios medžiagos šiuose kampuose būti negali, nes ten patekusi, ji imtų reaguoti su pirmąją medžiaga, kuriuos šiuose kampuose yra ypač daug (žr. $rho_1$). Tokios saveikos su kitais dvejais kampais (viršutinis kairysis bei apatinis dešinysis) nėra -- juose nėra pirmos medžiagos, todėl trečioji medžiaga gali kauptis vykstant difuzijai, taip susiformuoja atsiskyrę žiedai .
 
 = Modelio parametro optimizavimas
 
