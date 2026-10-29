@@ -68,6 +68,86 @@ def test_scaling_round_trip():
     np.testing.assert_allclose(back.k, params.k)
 
 
+def test_scales_convert_units_both_ways():
+    from yag_utils.scaling import Scales
+
+    scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
+    assert scales.Q0 == pytest.approx(3.91e4 * 1e-12)
+
+    assert scales.dimensionless_length(2e-6) == pytest.approx(2.0)
+    assert scales.dimensionless_time(3e-5) == pytest.approx(3.0)
+    assert scales.dimensionless_concentration(3.91e4) == pytest.approx(1.0)
+    assert scales.dimensionless_quantity(scales.Q0) == pytest.approx(1.0)
+
+    x = np.array([0.5, 2.0])
+    np.testing.assert_allclose(scales.dimensionless_length(scales.physical_length(x)), x)
+    np.testing.assert_allclose(scales.dimensionless_time(scales.physical_time(x)), x)
+    np.testing.assert_allclose(scales.dimensionless_concentration(scales.physical_concentration(x)), x)
+    np.testing.assert_allclose(scales.dimensionless_quantity(scales.physical_quantity(x)), x)
+
+
+def test_discretization_scaling_keeps_mesh():
+    from yag_utils import physical
+    from yag_utils.scaling import Scales, physical_discretization
+
+    scales = Scales(L0=1e-6, C0=1.0, D_ref=1.0)
+    disc = physical.discretization(scales, physical_size=(1e-6, 2e-6), mesh_resolution=(8, 6))
+
+    assert disc.mesh_resolution == (8, 6)
+    assert disc.physical_size == pytest.approx((1.0, 2.0))
+
+    phys = physical_discretization(disc, scales)
+    assert phys.mesh_resolution == (8, 6)
+    assert phys.physical_size == pytest.approx((1e-6, 2e-6))
+
+
+def test_physical_result_scales_by_reducer(make_config, ic, params, disc):
+    from yag_utils.mass import field_masses
+    from yag_utils.scaling import Scales, physical_discretization, physical_result, physical_values
+
+    scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
+
+    fields = yag.solve(make_config(), ic, params)
+    masses = yag.solve(make_config(reducer=yag.reducers.total_mass()), ic, params)
+
+    c, t = physical_result(fields, scales)
+    m, _ = physical_result(masses, scales)
+
+    np.testing.assert_allclose(c, fields.all().values * scales.C0)
+    np.testing.assert_allclose(t, fields.all().times * scales.T0)
+    # Physical fields on the physical mesh give the same masses as converted reducer output
+    np.testing.assert_allclose(field_masses(c, physical_discretization(disc, scales)), m)
+
+    with pytest.raises(ValueError):
+        physical_values(c, "unknown", scales)
+
+
+def test_physical_components_use_dimensionless_units(disc):
+    from yag_utils import physical
+    from yag_utils.scaling import Scales, to_dimensionless
+
+    scales = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-15)
+
+    assert physical.fixed_step(scales, dt=1.0).dt == pytest.approx(1e-3)
+    assert physical.fixed_time_brake(scales, final_time=6 * 60 * 60).final_time == pytest.approx(21.6)
+
+    step = physical.geometric_step(scales, dt_0=10.0, r=1.1)
+    assert (step.dt_0, step.r) == pytest.approx((1e-2, 1.1))
+
+    step = physical.clamped_geometric_step(scales, dt_0=10.0, r=1.1, upper_bound=100.0, every=5)
+    assert (step.dt_0, step.r, step.upper_bound) == pytest.approx((1e-2, 1.1, 0.1))
+    assert step.every == 5
+
+    params = physical.model_params(scales, D=[1e-15] * 5, k=[1e-8] * 3)
+    expected = to_dimensionless(yag.model_params(D=[1e-15] * 5, k=[1e-8] * 3), scales)
+    np.testing.assert_allclose(params.D, expected.D)
+    np.testing.assert_allclose(params.k, expected.k)
+
+    ic = physical.checkerboard_initial_condition(scales, disc, 3.91e4, 3 / 5 * 3.91e4)
+    np.testing.assert_allclose(ic[0], yag.checkerboard_initial_condition(disc, 1.0, 0.6)[0])
+    np.testing.assert_allclose(ic[1], yag.checkerboard_initial_condition(disc, 1.0, 0.6)[1])
+
+
 def test_field_masses_match_total_mass_reducer(disc, ic, params):
     from yag_utils.mass import field_masses, total_mass
 

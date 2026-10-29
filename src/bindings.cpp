@@ -30,6 +30,7 @@
 #include "Result/HDF5Result.h"
 #include "Result/InMemoryResult.h"
 #include "Solver/ADISolver.h"
+#include "TimeStep/ClampedGeometricTimeStep.h"
 #include "TimeStep/FixedTimeStep.h"
 #include "TimeStep/GeometricTimeStep.h"
 #include "TimeStep/ITimeStep.h"
@@ -240,6 +241,25 @@ PYBIND11_MODULE(yag_model, m) {
   )
       .def_readwrite("dt_0", &ym::GeometricTimeStep::dt_0)
       .def_readwrite("r", &ym::GeometricTimeStep::r);
+
+  withFactory(
+      py::class_<
+          ym::ClampedGeometricTimeStep,
+          ym::ITimeStep,
+          std::shared_ptr<ym::ClampedGeometricTimeStep>>(m, "ClampedGeometricTimeStep"),
+      m,
+      "clamped_geometric_step",
+      &make<ym::ClampedGeometricTimeStep, double, double, double, size_t>,
+      py::arg("dt_0"),
+      py::arg("r"),
+      py::arg("upper_bound"),
+      py::arg("every") = 1,
+      "dt starts at dt_0 and is multiplied by r after every `every` steps, up to upper_bound"
+  )
+      .def_readwrite("dt_0", &ym::ClampedGeometricTimeStep::dt_0)
+      .def_readwrite("r", &ym::ClampedGeometricTimeStep::r)
+      .def_readwrite("upper_bound", &ym::ClampedGeometricTimeStep::upper_bound)
+      .def_readwrite("every", &ym::ClampedGeometricTimeStep::stride);
 
   // ---------------------------------------------------------------------------
   // Brakes

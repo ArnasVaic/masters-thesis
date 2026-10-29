@@ -3,6 +3,7 @@
 
 namespace yag_model {
 
+// Timestep starting at dt_0, multiplied by r after every `stride` steps, capped at upper_bound
 class ClampedGeometricTimeStep : public ITimeStep {
 public:
   double dt_0;

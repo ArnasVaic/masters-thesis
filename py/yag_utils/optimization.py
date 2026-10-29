@@ -4,12 +4,14 @@ import numpy as np
 import yag_model as yag
 from yag_model import CaptureConfig, IResult, ModelParameters, SolutionState, SolverConfig
 
-from .constants import P_TRUE
-from .initial_conditions import checkerboard
+from . import physical
+from .constants import AL2O3_CONCENTRATION, P_TRUE
 from .mass import total_mass
 from .scaling import Scales, to_dimensionless
 
-DEFAULT_SCALES = Scales(L0=1e-6, C0=3.91e4, D_ref=1e-7)
+# D_ref matches the order of fitted diffusion coefficients (m^2/s), so D* and k*
+# are of order one and T0 = 1000 s, making the 6 hour experiment t* = 21.6
+DEFAULT_SCALES = Scales(L0=1e-6, C0=AL2O3_CONCENTRATION, D_ref=1e-15)
 
 
 def optimization_config(
@@ -19,16 +21,16 @@ def optimization_config(
 
     By default only the per-species mass of the last frame is captured.
     """
-    L0, T0, C0 = scales.L0, scales.T0, scales.C0
-
     # Dimensionless discretization of a 1 um x 1 um domain
-    disc = yag.discretization(mesh_resolution=(40, 40), physical_size=(1e-6 / L0, 1e-6 / L0))
+    disc = physical.discretization(scales, physical_size=(1e-6, 1e-6), mesh_resolution=(40, 40))
 
     # Dimensionless concentration is preferred for numerical stability,
     # account for this by scaling reaction coefficients. Resulting mass
     # parts would be scaled by the same constant so when optimizing
     # parameters this doesn't matter much.
-    ic = checkerboard(disc, 3.91e4 / C0, 3 / 5 * 3.91e4 / C0)
+    ic = physical.checkerboard_initial_condition(
+        scales, disc, AL2O3_CONCENTRATION, 3 / 5 * AL2O3_CONCENTRATION
+    )
 
     if capture is None:
         capture = yag.capture_config(
@@ -43,9 +45,10 @@ def optimization_config(
         # because the simulation remains stable if this is used. Alternatively
         # time step could be chosen as a ratio dx^2 / D which would ensure comfortable
         # ADI solver cache constants and avoid numerical instabilities.
-        step=yag.fixed_step(dt=1.0 / T0),
+        # The step is 1 s physical time, scaling doesn't change dt D / dx^2.
+        step=physical.fixed_step(scales, dt=1.0),
         # Concrete experiment time we're optimizing for is 6 hours
-        brake=yag.fixed_time_brake(final_time=6 * 60 * 60 / T0),
+        brake=physical.fixed_time_brake(scales, final_time=6 * 60 * 60),
         capture=capture,
     )
 

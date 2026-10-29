@@ -9,6 +9,7 @@
 #include "Core/Quantity.h"
 #include "InitialCondition/CheckerboardInitialCondition.h"
 #include "Solver/ADISolver.h"
+#include "TimeStep/ClampedGeometricTimeStep.h"
 #include "TimeStep/FixedTimeStep.h"
 #include "TimeStep/GeometricTimeStep.h"
 
@@ -27,6 +28,33 @@ TEST_CASE("Geometric time step grows and resets on begin", "[timestep]") {
 
   step.begin(ctx);
   REQUIRE(step.advance(state) == 1.0);
+}
+
+TEST_CASE("Clamped geometric time step grows every stride up to the bound", "[timestep]") {
+  yag_model::Discretization const disc(1.0, 1.0, 4, 4);
+  yag_model::SolutionState const ic(4, 4);
+  yag_model::SolverState state(4, 4);
+  yag_model::SolverContext const ctx{disc, ic};
+
+  yag_model::ClampedGeometricTimeStep step(1.0, 2.0, 5.0, 2);
+
+  // Starts at dt_0 and grows after every stride steps
+  std::vector<double> dts;
+  step.begin(ctx);
+  for (size_t i = 0; i < 8; ++i) {
+    state.step = i;
+    dts.push_back(step.advance(state));
+  }
+  REQUIRE(dts == std::vector<double>{1.0, 1.0, 2.0, 2.0, 4.0, 4.0, 5.0, 5.0});
+
+  state.step = 0;
+  step.begin(ctx);
+  REQUIRE(step.advance(state) == 1.0);
+
+  // dt_0 above the bound is clamped too
+  yag_model::ClampedGeometricTimeStep large(10.0, 2.0, 5.0, 2);
+  large.begin(ctx);
+  REQUIRE(large.advance(state) == 5.0);
 }
 
 TEST_CASE("Reagent threshold brake initializes from initial condition", "[brake]") {

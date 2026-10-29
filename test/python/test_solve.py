@@ -108,6 +108,20 @@ def test_geometric_step_and_time_brake(disc, ic, params):
     assert yag.solve(config, ic, params).all().times[0] == pytest.approx(1.5)
 
 
+def test_clamped_geometric_step_drives_solver_time(disc, ic, params):
+    step = yag.clamped_geometric_step(dt_0=0.1, r=2.0, upper_bound=0.5)
+    assert (step.dt_0, step.r, step.upper_bound, step.every) == (0.1, 2.0, 0.5, 1)
+
+    config = yag.solver_config(
+        discretization=disc,
+        step=step,
+        brake=yag.fixed_step_brake(last_step=4),
+        capture=yag.capture_config(trigger=yag.last_frame_trigger()),
+    )
+    # 0.1 + 0.2 + 0.4 + 0.5, starts at dt_0 and stops at the bound
+    assert yag.solve(config, ic, params).all().times[0] == pytest.approx(1.2)
+
+
 def test_reagent_quantity_threshold_brake_initializes_from_ic(disc, ic, params):
     brake = yag.reagent_quantity_threshold_brake(threshold=0.99, every=1)
     config = yag.solver_config(discretization=disc, step=yag.fixed_step(dt=0.01), brake=brake)

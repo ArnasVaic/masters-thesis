@@ -8,6 +8,7 @@ from . import (
     mass,
     optimization,
     paths,
+    physical,
     scaling,
     stoichiometry,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "mass",
     "optimization",
     "paths",
+    "physical",
     "scaling",
     "stoichiometry",
 ]

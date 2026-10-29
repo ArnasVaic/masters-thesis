@@ -6,7 +6,7 @@ from yag_utils.channels import LABELS
 from yag_utils.debug import config_info
 from yag_utils.mass import field_masses, total_mass
 from yag_utils.optimization import DEFAULT_SCALES, optimization_config
-from yag_utils.scaling import to_dimensionless
+from yag_utils.scaling import physical_discretization, physical_result, to_dimensionless
 
 # %% Solver config
 
@@ -50,12 +50,14 @@ config_info(config, ic, mp_nd, scales)
 
 # %% Solve
 result = ym.solve(config, ic, mp_nd)
-c, t = result.all()
+
+# Concentrations (mol/m^3) and times (s) back in physical units
+c, t = physical_result(result, scales)
 
 # %%
 
-m0 = total_mass(ic, disc)
-m = field_masses(c, disc)
+m0 = scales.physical_quantity(total_mass(ic, disc))
+m = field_masses(c, physical_discretization(disc, scales))
 
 for i in range(5):
     plt.plot(t, 100 * m[:, i] / m0, label=LABELS[i])

@@ -41,6 +41,9 @@ def test_default_components_are_not_shared_between_configs():
 def test_factories_are_the_classes():
     assert isinstance(yag.stride_trigger(every=3), yag.StrideTrigger)
     assert isinstance(yag.geometric_step(dt_0=1.0, r=2.0), yag.GeometricTimeStep)
+    assert isinstance(
+        yag.clamped_geometric_step(dt_0=1.0, r=2.0, upper_bound=5.0), yag.ClampedGeometricTimeStep
+    )
     assert isinstance(yag.in_memory_sink(capacity=5), yag.InMemorySink)
     assert isinstance(yag.reducers.total_mass(), yag.TotalMassReducer)
     assert yag.reducers.density_field().name == "density_field"
