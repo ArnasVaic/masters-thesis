@@ -35,73 +35,82 @@ Modelyje naudojame tolygų tinklelį -- horizontalūs ($Delta x$) ir vertikalūs
 
 === Reakcijos stabdis
 
-@simplified-chemical-reaction pavaizduota reakcijos stabdžio strategija *`IBrake`* kontroliuoja kada modelis laikys reakciją pasibaigusią.
+@simplified-chemical-reaction pavaizduota reakcijos stabdžio sąsaja *`IBrake`* kontroliuoja kada modelis laikys reakciją pasibaigusią.
 Modeliuojame reakcijos-difuzijos sistemą, kurioje reagentų reakcijos greitis yra proporcingas kiekiui, dėl šios priežasties nėra laiko momento, kada bus sureagavę visi reagentai -- su šia problema susiduria ir chemikai. Praktikoje turime pasirinkti tokią stabdymo sąlygą, kuri leistų suvaldyti sprendinio paieškos laiką. Turime keletą dažnai naudojamų strategijų:
 
 - Nurodyto laiko stabdis -- pavyzdžiui, reakciją stabdome po 4 simuliacijos valandų
 - Žingsnių skaičiaus stabdis -- reakciją stabdome tuomet, kai modelis įvykdo nurodytą diskrečių laiko žingsnių kiekį. Šis metodas skiriasi nuo nurodyto laiko stabdžio, nes laiko žingsnio dydis gali kisti.
 - Reagentų masės dalies stabdis -- reakcija stabdoma tuomet, kai bendra reagentų masė pasiekia nedidelį, iš anksto nustatytą, bendros visų reakcijos medžiagų masės procentą.
 
+=== Stoichiometrinė matrica
+
+Stoichiometrinė matricą lemia modeliuojama cheminė reakcija, dažniausiai tai bus ta pati matrica $bold(S)$, kurią jau matėme anksčiau @compact-model-and-related-notation[ lygtyje], nes pagrindinė nagrinėjama sistema yra YAG sintezė.
+
 === Fiksavimo konfigūracija
 
 @solver-architecture-diagram pavaizduota sprendėjo fiksavimo konfigūracija *`CaptureConfig`* kontroliuoja kaip, kada ir kur bus saugomi sprendinio kadrai. Pavyzdžiui,
 
 - Laukelis `channels` yra bitų vėliavėlė (_angl. bitflag_), kuri leidžia pasirinkti kurių medžiagų kadrus norėsime saugoti.
-- *`Reducer`* tai yra komponentas, kuris prieš išsaugant duomenis juos agreguoja. @solver-architecture-diagram yra pavaizduotos keturios tokios realizacijos, tarp kurių yra glaudus ryšys, kaip pavaizduota diagramoje @reducer-diagram
+- *`IReducer`* yra kadrų agregavimo sąsaja. Šis komponentas gali transformuoti kadro duomenis prieš juos išsaugant. @reducer-diagram yra pavaizduotos keturios realizacijos iš @solver-architecture-diagram ir ryšys tarp jų.
+- *`ISink`* yra saugojimo vietos sąsaja, ji kontroliuoja kur bus išsaugoti transformuoti sprendinio duomenys. Šiame darbe naudojamos dvi realizacijos -- realizacija, kuri išsaugo duomenis atmintyje (*`InMemorySink`*) ir realizacija, kuri išsaugo duomenis HDF5 formato faile (*`HDF5Sink`*). HDF5 yra plačiai naudojamas failo formatas saugoti įvairaus pobūdžio skaitinius duomenis ir jų metaduomenis.
+- *`ITrigger`* yra saugojimo momento sąsaja, šios sąsajos realizacijos kontroliuoja kada sprendinio kadras bus saugojamas. Paprasčiausia šios sąsajos realizacija išsaugo kiekvieną kadrą, tačiau kai diskrečių laiko žingsnių vykdoma labai daug, saugoti kiekvieną kadrą gali būti per brangu, tokiu atveju naudojamos strategijos, kurios kiekviena kartą praleidžia $n$ kadrų (*`StrideTrigger`*), arba fiksuoja tik paskutinį reakcijos kadrą (*`LastFrameTrigger`*).
 
 #include "../assets/diagrams/architecture/reducers.typ"
 
-Laukelis `reducer` apibudina kaip bus agreguojami kadro duomenys prieš juos išsaugant. Pavyzdžiui, kai nagrinėjame
+// Laukelis `reducer` apibudina kaip bus agreguojami kadro duomenys prieš juos išsaugant. Pavyzdžiui, kai nagrinėjame
 
-Modulis `yag_model` įgyvendina funkciją `solve`, kuri skaitiškai sprendžia sistemą apibūdintą @mathematical-model[skyriuje]. Ši funkcija turi keletą parametrų:
-- $bold(S) in RR^(5 times 3)$ -- stoichiometrinė sistemos matrica. Atliekant įprastą rezultatų analizę šio parametro reikšmė bus tokia pati kaip @compact-model-and-related-notation[lygt.] esančios matricos $bold(S)$. Ši matrica egzistuoja kaip funkcijos parametras dėl to, kad būtų įmanoma testuoti modelio veikimą nepriklausomai nuo duotos stoichiometrinės matricos. Anksčiau minėtą supaprastiną cheminę reakciją @vaicekauskas2025yag galime modeliuoti paprasčiausiai pakeičiant šio argumento reikšmę.
-- `Discretization` -- erdvės diskretizacijos konfigūracija kontroliuoja modeliuojamos erdvės granuliarumą ir fizinį dydį, detaliau pavaizduota @solver-inputs-diagram
-- `ModelParameters` -- struktūra laikanti modelio fizines konstantas -- difuzijos ir reakcijos greičius. Detaliau pavaizduota @solver-inputs-diagram
-- `ITimeStep` -- žingsniavimo strategija, plačiau aprašyta @time-step-section[skyriuje]
-- `IBrake` -- reakcijos stabdymo strategija, plačiau aprašyta @brake-component-section[skyriuje]
-- `ICaptureTrigger` -- sprendinio fiksavimo dažnio strategija, plačiau aprašyta @capture-component-section[skyriuje]
-- `ICapture` -- sprendinio formos fiksavimo strategija, plačiau aprašyta @capture-component-section[skyriuje]
-- `SolutionState` -- pradinė sąlyga, detaliau pavaizduota @solver-inputs-diagram
+// Modulis `yag_model` įgyvendina funkciją `solve`, kuri skaitiškai sprendžia sistemą apibūdintą @mathematical-model[skyriuje]. Ši funkcija turi keletą parametrų:
+// - $bold(S) in RR^(5 times 3)$ -- stoichiometrinė sistemos matrica. Atliekant įprastą rezultatų analizę šio parametro reikšmė bus tokia pati kaip @compact-model-and-related-notation[lygt.] esančios matricos $bold(S)$. Ši matrica egzistuoja kaip funkcijos parametras dėl to, kad būtų įmanoma testuoti modelio veikimą nepriklausomai nuo duotos stoichiometrinės matricos. Anksčiau minėtą supaprastiną cheminę reakciją @vaicekauskas2025yag galime modeliuoti paprasčiausiai pakeičiant šio argumento reikšmę.
+// - `Discretization` -- erdvės diskretizacijos konfigūracija kontroliuoja modeliuojamos erdvės granuliarumą ir fizinį dydį, detaliau pavaizduota @solver-inputs-diagram
+// - `ModelParameters` -- struktūra laikanti modelio fizines konstantas -- difuzijos ir reakcijos greičius. Detaliau pavaizduota @solver-inputs-diagram
+// - `ITimeStep` -- žingsniavimo strategija, plačiau aprašyta @time-step-section[skyriuje]
+// - `IBrake` -- reakcijos stabdymo strategija, plačiau aprašyta @brake-component-section[skyriuje]
+// - `ICaptureTrigger` -- sprendinio fiksavimo dažnio strategija, plačiau aprašyta @capture-component-section[skyriuje]
+// - `ICapture` -- sprendinio formos fiksavimo strategija, plačiau aprašyta @capture-component-section[skyriuje]
+// - `SolutionState` -- pradinė sąlyga, detaliau pavaizduota @solver-inputs-diagram
 
-#include "../assets/diagrams/architecture/solver-inputs.typ"
+// #include "../assets/diagrams/architecture/solver-inputs.typ"
 
-=== Laiko žingsnio strategijos <time-step-section>
+// === Laiko žingsnio strategijos <time-step-section>
 
-#include "../assets/diagrams/architecture/timestep-component.typ"
+// #include "../assets/diagrams/architecture/timestep-component.typ"
 
-@timestep-component-diagram pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep-component-diagram taip pat nurodytos galimos sąsajos realizacijos:
-- Fiksuotas laiko žingsnis (`FixedTimeStep`) -- žingsnio dydis išlieka pastovus
-- Geometrinis laiko žingsnis (`GeometricTimeStep`) -- žingsnio dydis didėja sekdamas geometrinę progresiją $Delta t_n = Delta t_0 r^n$
+// @timestep-component-diagram pavaizduotas laiko žingsnio strategijos sąsaja. Jis leidžia kontroliuoti kaip reakcijos eigoje keičiasi laiko žingsnis. Metodas `getTimestep` suteikia prieigą prie dabartinio laiko žingsnio, o metodas `advance` atnaujina laiko žingsnį. Praktikoje norėtume naudoti strategiją, kuri suteikia kuo didesnį laiko žingsnį, tačiau tuo pačiu metu išlaiko modelį skaitiškai stabiliu, šiam balansui nustatyti gali prireikti informacijos apie sistemos sprendinį todėl kaip argumentą paduodame sprendiklio būseną. @timestep-component-diagram taip pat nurodytos galimos sąsajos realizacijos:
+// - Fiksuotas laiko žingsnis (`FixedTimeStep`) -- žingsnio dydis išlieka pastovus
+// - Geometrinis laiko žingsnis (`GeometricTimeStep`) -- žingsnio dydis didėja sekdamas geometrinę progresiją $Delta t_n = Delta t_0 r^n$
 
-Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
+// Praktikoje naudojame subtilesnes laiko žingsnio strategijas, kurios bus aptartos ateinančiuose skyriuose.
 
-=== Reakcijos stabdymo strategijos <brake-component-section>
+// === Reakcijos stabdymo strategijos <brake-component-section>
 
-#include "../assets/diagrams/architecture/brake-component.typ"
+// #include "../assets/diagrams/architecture/brake-component.typ"
 
-@brake-component-diagram pavaizduota reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos, kurios tikslas yra nustatyti ar reakcijos stabdymo sąlyga yra išpildyta, kurio atveju sprendiklis nutraukia sprendimo ciklą. Tiksli stabdymo sąlyga priklauso nuo naudojamos realizacijos -- pačios paprasčiausios stabdymo strategijos yra fiksuoto laiko (`FixedTimeBrake`) arba fiksuoto laiko žingsnio (`FixedStepBrake`) realizacijos, kurios yra naudingos norint nustatyti ar sprendinys tenkina tam tikrą požymi, pavyzdžiui, nekintančią masę (@const-mass).
+// @brake-component-diagram pavaizduota reakcijos stabdymo strategijos sąsaja ir naudojamos realizacijos, kurios tikslas yra nustatyti ar reakcijos stabdymo sąlyga yra išpildyta, kurio atveju sprendiklis nutraukia sprendimo ciklą. Tiksli stabdymo sąlyga priklauso nuo naudojamos realizacijos -- pačios paprasčiausios stabdymo strategijos yra fiksuoto laiko (`FixedTimeBrake`) arba fiksuoto laiko žingsnio (`FixedStepBrake`) realizacijos, kurios yra naudingos norint nustatyti ar sprendinys tenkina tam tikrą požymi, pavyzdžiui, nekintančią masę (@const-mass).
 
-Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendiklio būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima.
+// Praktikoje YAG sintezės reakcija yra vykdoma tol kol sureaguoja tam tikras procentas procentas pradinių medžiagų masės -- pilnai reagentai nesureaguoja todėl, kad produktas gaminasi greičiu proporcingu reagentų kiekiui, o reakcija teoriškai niekad nesibaigia, tik nuolat lėtėja. Tokį reakcijos stabdymą galime modeliuoti su realizacija `ProductThresholdBrake`. Čia `threshold` -- iš anksto nustatytas produkto masės procentas, kurį pasiekus stabdymo sąlyga bus tenkinama, o `initial_mass` --  pradinė reagentų masė. Kadangi metodas `shouldBrake` kaip įvestį gauną dabartinę sprendiklio būseną `s`, visą informacija, kurios reikia nustatyti dabartinę produkto masę yra turima.
 
-=== Sprendinio fiksavimo strategijos <capture-component-section>
+// === Sprendinio fiksavimo strategijos <capture-component-section>
 
-#include "../assets/diagrams/architecture/capture-components.typ"
+// #include "../assets/diagrams/architecture/capture-components.typ"
 
-@capture-component-diagram pavaizduotos strategijų sąsajos yra naudojamos kontroliuoti kaip dažnai ir kokie duomenys yra renkami apie sprendinį. Sąsaja `ICaptureTrigger` kontroliuoja kada informacija apie sprendinį bus surinkta, pora naudingų realizacijų:
+// @capture-component-diagram pavaizduotos strategijų sąsajos yra naudojamos kontroliuoti kaip dažnai ir kokie duomenys yra renkami apie sprendinį. Sąsaja `ICaptureTrigger` kontroliuoja kada informacija apie sprendinį bus surinkta, pora naudingų realizacijų:
 
-- Realizacija `StrideCaptureTrigger` surenka duomenis apie sprendinį kas $n$ (`stride`) žingsnių
-- Realizacija `LastFrameCaptureTrigger` surenka duomenis apie sprendinį tik tą žingsnį, ties kuriuo reakcijos stabdymo komponentas `IBrake` nusprendžia, kad reakcija yra pasibaigusi, dėl to @capture-component-diagram galime matyti šios realizacijos priklausomybę nuo minėto komponento `IBrake`
+// - Realizacija `StrideCaptureTrigger` surenka duomenis apie sprendinį kas $n$ (`stride`) žingsnių
+// - Realizacija `LastFrameCaptureTrigger` surenka duomenis apie sprendinį tik tą žingsnį, ties kuriuo reakcijos stabdymo komponentas `IBrake` nusprendžia, kad reakcija yra pasibaigusi, dėl to @capture-component-diagram galime matyti šios realizacijos priklausomybę nuo minėto komponento `IBrake`
 
-Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi. Atliekant rezultatų analizę dažniausiai pasirenkame konfigūraciją, kuri duomenis išsaugo atmintyje, o keičiame tik saugomų duomenų formą.
+// Sąsaja `ICapture` kontroliuoja kokie duomenys apie sprendinį yra renkami ir kur jie saugomi. Atliekant rezultatų analizę dažniausiai pasirenkame konfigūraciją, kuri duomenis išsaugo atmintyje, o keičiame tik saugomų duomenų formą.
 
-- `InMemoryFrameCapture` -- ši realizacija užfiksuoja pilną sprendinį laiko momentu $t_n$, kurio forma yra $bold(c)(t=t_n) in RR^(5 times W times H)$
-- `InMemoryQuantityCapture` -- užfiksuoja medžiagos kiekį laiko momentu $t_n$, #box[$bold(q)(t = t_n) in RR^5$]
+// - `InMemoryFrameCapture` -- ši realizacija užfiksuoja pilną sprendinį laiko momentu $t_n$, kurio forma yra $bold(c)(t=t_n) in RR^(5 times W times H)$
+// - `InMemoryQuantityCapture` -- užfiksuoja medžiagos kiekį laiko momentu $t_n$, #box[$bold(q)(t = t_n) in RR^5$]
 
-== Sprendimo ciklas
+// == Sprendimo ciklas
 
-#include "../assets/diagrams/architecture/solver-loop.typ"
+// #include "../assets/diagrams/architecture/solver-loop.typ"
 
 == Sprendiklio efektyvumas
 
-
+- Ką rašysiu?
+- Tridiagonalinis sprendimas
+  - in place
+  - stabilumas
 

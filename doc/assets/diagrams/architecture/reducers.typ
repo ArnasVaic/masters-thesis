@@ -33,5 +33,5 @@
       edge(<rho>, <m>, "->", $integral_Omega rho dif A$, label-side: left),
     )
   },
-  caption: [ Galimi kadro duomenų reduktoriai. Koncentracijos laukas $c$ gali būti integruojamas sričiai $Omega$ arba dauginamas iš molinės masės $M$, o abu keliai veda į bendrą medžiagos masę $m$. ],
+  caption: [ Skirtingi būdai kaip galima agreguoti orginalų sprendinio kadrą ir ryšiai tarp šių būdų. Koncentracijos laukas $c$ gali būti integruojamas sričiai $Omega$ arba dauginamas iš molinės masės $M$, o abu keliai veda į bendrą medžiagos masę $m$. ],
 ) <reducer-diagram>
