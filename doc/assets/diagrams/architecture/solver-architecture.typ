@@ -1,4 +1,4 @@
-#import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
 
 #import "../../../config/diagram.typ": diagram_style
 #show: diagram_style
@@ -19,7 +19,7 @@
 // Realization edge from an implementation stacked below its interface,
 // routed along a shared vertical line left of the interface
 #let realizes(impl, interface) = {
-  let bus = (rel: (-8pt, 0pt), to: str(interface) + ".west")
+  let bus = (rel: (-16pt, 0pt), to: str(interface) + ".west")
   edge(impl, (bus, "|-", str(impl) + ".west"), bus, interface, "--|>")
 }
 
@@ -165,5 +165,5 @@
       realizes(<hdf5>, <sink>),
     )
   },
-  caption: [ UML klasių diagrama, sprendiklio `solve` įvestys, konfigūracija ir rezultatas. ]
+  caption: [ UML klasių diagrama, pagrindinės sprendiklio modulio `yag_model` funkcijos `solve` įvestys, konfigūracija ir rezultatas. ],
 ) <solver-architecture-diagram>

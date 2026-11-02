@@ -1,5 +1,10 @@
+#import "@preview/wordometer:0.1.6": total-words, word-count
+
+
 #import "config/style.typ": style_config
 #import "config/titlepage.typ": title_page
+
+#show: word-count
 
 #show: style_config("lt")
 
@@ -15,6 +20,8 @@
   "asist. dr. Rokas Astrauskas",
   "lt",
 )
+
+Total word count #total-words, goal: 4324
 
 #outline(depth: 3)
 
