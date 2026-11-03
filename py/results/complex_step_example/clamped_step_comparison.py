@@ -24,6 +24,7 @@ DT_0 = 1.0             # s
 UPPER_BOUND = 60.0     # s
 EVERY = 1              # steps between dt increases
 FINAL_TIME = 6 * 60 * 60  # s
+THRESHOLD = 3 # %
 
 # Timed solves per ratio, the fastest one is reported
 REPEATS = 3
@@ -55,7 +56,8 @@ def solve(r: float, capture: yag.CaptureConfig, final_time: float = FINAL_TIME):
     config = yag.solver_config(
         discretization=disc,
         step=physical.clamped_geometric_step(scales, dt_0=DT_0, r=r, upper_bound=UPPER_BOUND, every=EVERY),
-        brake=physical.fixed_time_brake(scales, final_time=final_time),
+        # brake=physical.fixed_time_brake(scales, final_time=final_time),
+        brake = yag.reagent_mass_threshold_brake(THRESHOLD / 100, every=10),
         capture=capture,
     )
     return yag.solve(config, ic, params)
@@ -106,7 +108,8 @@ for r in RATIOS:
         p=p,
         t=t,
         # Mass percentages exactly at FINAL_TIME, the last step may overshoot it
-        p_final=np.array([np.interp(FINAL_TIME, t, p[:, i]) for i in range(5)]),
+        # p_final=np.array([np.interp(FINAL_TIME, t, p[:, i]) for i in range(5)]),
+        p_final=np.array([p[-1, i] for i in range(5)]),
         frames=field_frames(r),
     )
     print(

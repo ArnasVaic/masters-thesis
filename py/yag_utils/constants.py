@@ -14,3 +14,7 @@ MOLAR_MASSES = yag_model.MOLAR_MASSES
 # Initial Al2O3 concentration (mol/m^3), density over molar mass,
 # Y2O3 starts at 3/5 of it so both reagents react fully
 AL2O3_CONCENTRATION = 3.91e4
+
+# Fitted parameters (see py/solver_test.py), log10 of D in m^2/s and k in m^3/(mol s)
+FITTED_LOG_D = (-15.520843103369195, -14.962864487926721, -14.08355774833853, -15.939166775886509, -15.064413562884312)
+FITTED_LOG_K = (-8.81287507930491, -8.171172197361324, -8.998608159571566)
