@@ -21,7 +21,7 @@
   "lt",
 )
 
-Total word count #total-words, goal: 4324
+// Total word count #total-words, goal: 4324
 
 #outline(depth: 3)
 
