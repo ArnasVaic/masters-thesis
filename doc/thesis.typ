@@ -62,6 +62,14 @@
 
 #pagebreak(weak: true)
 
+#include "chapters/larger-spaces.typ"
+
+#pagebreak(weak: true)
+
+#include "chapters/parameter-search.typ"
+
+#pagebreak(weak: true)
+
 #include "backmatter/conclusions.typ"
 
 #pagebreak(weak: true)
