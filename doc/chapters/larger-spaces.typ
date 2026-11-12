@@ -2,9 +2,9 @@
 
 = Didesnių erdvių modeliavimas
 
-Vienas iš šio tyrimo uždavinių yra surasti fizinių modelio parametrų reikšmes. Iki šiol pristatyti rezultatai buvo gauti modeliuojant mažą erdvės sritį, kuri kaip jau minėta yra stipriai idealizuota ir gali lemti, kad rasti parametrai nebus tokie tikslūs kokie galėtų būti. Dėl to apsvarstysime ir kitokias, didesnes pradines sąlygas.
+Vienas iš šio tyrimo uždavinių yra surasti fizinių modelio parametrų reikšmes. Iki šiol pristatyti rezultatai buvo gauti modeliuojant mažą erdvės sritį, kuri kaip jau minėta yra stipriai idealizuota ir gali lemti, kad rasti parametrai nebus tokie tikslūs kokie galėtų būti. Dėl to apsvarstysime ir kitokias, didesnes pradines sąlygas. 
 
-== Padidinta pradinė salygą
+== Ideali pradinė salygą
 
 Šis pavadinimas apibudina tą pačią pradinę salygą, kuria demonstravome iki šiol neapsiribojant mažu plotu. Pradinės sąlygos sukonstruotos tokiu būdu, kaip pavaizduota @larger-initial-condition, turi privalumą -- jos yra deterministiškos ir kaip pastebi straipnių autoriai @ivanauskasComputationalModellingYAG2009 jos yra periodinės, dėl ko ir užtenka modeliuoti mažiausiąją sritį, kur $n=1$. Šis privalumas yra aktualus tik tada, jei bandome sutaupyti skaičiavimo resursų, tačiau analitine prasme deterministiška pradinė sąlyga nėra ypač įdomi.
 
@@ -59,7 +59,7 @@ Vienas iš šio tyrimo uždavinių yra surasti fizinių modelio parametrų reik�
   caption: [ Padidintos pradinės sąlygos vizualizacija. Idealizuotas homogeniško aliuminio ir itrio oksidų mišinio modelis. Plotų atspalvių skirtumas žymi, kad tai skirtingos medžiagos.],
 ) <larger-initial-condition>
 
-Svarbu pastebėti, kad didinant erdvės dydį didžiausias atstumas tarp skirtingų medžiagų išlieka toks pat -- būtent tai lemia, kad reakcija užtrunka beveik tiek pat laiko nepriklausomai nuo modeliuojamos erdvės dydžio, kaip pavaizduota @larger-initial-condition-end-time 
+Svarbu pastebėti, kad didinant erdvės dydį atstumas nuo bet kurios dalelės centro iki artimiausio kitos medžiagos dalelės centro išlieka toks pat -- būtent tai lemia, kad reakcija užtrunka beveik tiek pat laiko nepriklausomai nuo modeliuojamos erdvės dydžio, kaip pavaizduota @larger-initial-condition-end-time Dėl šios priežasties tokiu būdu sukonstruotą pradinę sąlyga vadiname idealia.
 
 #figure(
   image("../assets/diagrams/checkerboard-end-time.png", width: 60%),
@@ -68,7 +68,7 @@ Svarbu pastebėti, kad didinant erdvės dydį didžiausias atstumas tarp skirtin
 
 == Atsitiktinės išsidėščiusios idealios dalelės
 
-Pirmasis bandymas modeliuoti nedeterministišką pradinę sąlyga yra artimas padidintai pradinei sąlygai. Šiuo atveju atsisakome dydžio ribojimo, tačiau taip pat atsisakome ir prielaidos, kad dalelės tolygiai pasiskirščiusios erdvėje -- leidžiame jom pasiskirstyti visiškai atsitiktiniu būdu kaip pavaizduota @random-squares-initial-condition
+Pirmasis bandymas modeliuoti nedeterministišką pradinę sąlyga yra artimas idealiai pradinei sąlygai. Šiuo atveju atsisakome dydžio ribojimo, tačiau taip pat atsisakome ir prielaidos, kad dalelės tolygiai pasiskirščiusios erdvėje -- leidžiame jom pasiskirstyti visiškai atsitiktiniu būdu kaip pavaizduota @random-squares-initial-condition
 
 // Real arrangements of the random_rectangles builder (seed 0): one string per row from the
 // bottom, 0 is a c1 particle and 1 a c2 particle. n particles of 1 um per side
@@ -110,6 +110,8 @@ Pirmasis bandymas modeliuoti nedeterministišką pradinę sąlyga yra artimas pa
 
 Galime numanyti, kad toks išsidėstymas turės stiprų poveikį vidutinei reakcijos trukmei. Kiekvienam dydžiui $n$ egzistuoja dalelių konfigūracija, kuri užtruks ilgiausiai. Nesunku sugalvoti kaip galėtų atrodyti -- norint, kad medžiagos reaguotų kuo lėčiau, reikia pasirūpinti, kad skirtingų medžiagų koncentracijos būtų kaip įmanoma toli viena nuo kitos, kaip pavaizudota @split-squares-initial-condition
 
+=== Nepalankios pradinės sąlygos
+
 // Slowest arrangement for n particles per side: the materials are fully separated,
 // the lower half holds only c1 particles and the upper half only c2 particles
 #let split-ic(n) = random-ic(
@@ -127,4 +129,89 @@ Galime numanyti, kad toks išsidėstymas turės stiprų poveikį vidutinei reakc
   ],
 ) <split-squares-initial-condition>
 
-Analogiško efekto su pradinėmis sąlygomis, kurios lemtų trumpą reakcijos trukmę nėra dėl to, kad padidinta pradinė sąlyga jau yra geriausia, kurią galime sukonstruoti. Taip nutinka dėl prieš tai minėto trumpiausio atstumo tarp tolimiausių skirtingų medžiagų taškų -- difuzija yra vienintelė priemonė medžiagai judėti. Norint tuo įsitikinti, galime apskaičiuoti reakcijos trukmę daugybei skirtingų atsitiktinu būdu sudarytų pradinių sąlygų su skirtingais dydžaisi, tokiu būdu pamatytumėme kaip evoliucionuoja reakcijos trukmės pasiskirstymas priklausomai nuo erdvės dydžio $n$.
+Analogiško efekto su pradinėmis sąlygomis, kurios lemtų trumpą reakcijos trukmę nėra dėl to, kad ideali pradinė sąlyga jau yra geriausia, kurią galime sukonstruoti. Taip nutinka dėl prieš tai minėto trumpiausio atstumo tarp tolimiausių skirtingų medžiagų taškų -- difuzija yra vienintelė priemonė medžiagai judėti. Norint tuo įsitikinti, galime apskaičiuoti reakcijos trukmę daugybei skirtingų atsitiktinu būdu sudarytų pradinių sąlygų su skirtingais dydžaisi, tokiu būdu pamatytumėme kaip evoliucionuoja reakcijos trukmės pasiskirstymas priklausomai nuo erdvės dydžio $n$. Rezultatai pavaizduoti @random-squares-end-time-distribution
+
+#figure(
+  image("../assets/diagrams/random-squares-end-time-distribution.png", width: 85%),
+  caption: [ Atsitiktinai išsidėsčiusių idealių dalelių reakcijos trukmės pasiskirstymas skirtingiems dydžiams $n$, kiekvienam dydžiui sumodeliuota po 1000 atsitiktinių konfigūracijų. Viršuje -- branduoliniu tankio įverčiu (_angl. kernel density estimate, KDE_) gautos pasiskirstymo kreivės, apačioje -- kiekvienos konfigūracijos reakcijos trukmė (taškai). Brūkšninės linijos ir juodi brūkšniai žymi medianas. Naudojami modelio parametrai: $D_i = 10^(-2) mu m^2\/s$, $k_1=1.0, k_2=0.5, k_3=0.1, "kur" [k_i] = mu m^3\/("mol" dot s)$, pradinės koncentracijos $c^0_1 = 5$ ir $c^0_2 = 3 "mol"\/mu m^3$. Naudota diskrečios erdvės rezoliucija $20n times 20n$, laiko žingsnis -- geometriškai didėjantis nuo $Delta t_0 = 2 dot 10^(-3)s$ santykiu $r = 1.01$ iki ribos $Delta t_"max" = 0.2s$. Reakcija laikoma pasibaigusia, kai reagentų masė sumažėja iki 10% pradinės masės.],
+) <random-squares-end-time-distribution>
+
+
+Akivaizdu, kad idealią pradinę sąlygą su kiekvienu erdvės dydžiu atsitiktinai sutikti darosi vis sunkiau todėl @random-squares-end-time-distribution matome, kad kairioji pasiskirstymo uodega slenkasi dešinėn su kiekvienu dydžiu $n$. Tačiau galime pastebėti ir keletą įdomių reiškinių. $n=4$ atveju pasiskirstymas turi keletą viršūnių. Norint išsiaiškinti, kodėl taip nutinka galime iš arčiau patyrinėti šį pasiskirstymą. Kalneliai pasiskirstyme sufleruoja, kad pasiskirstymas turi iš tikro slepia kelis skirtingus rinkinius pradinių sąlygų su skirtingomis vidutinėmis reakcijos trukmėmis. Tikrojo požymio, kuris tai nulemia nežinome, tačiau žinome, kad atstumas tarp dalelių yra susijęs su reakcijos trukme, todėl galime pabandyti tai naudoti kaip heurisitiką. Specifiškai bandysime klasifikuoti pradinės sąlygas pagal vidutinį mažiausią atstumą iki skirtingos medžiagos dalelės kaip pavaizduota @n4-mean-distance-examples
+
+// Examples of the most common mean distances for n = 4, printed by n4_mean_distance.py (the trial
+// closest to each group median). Arrangement as in random-ic, and each particle farther than 1 from
+// the other material with an arrow to one of its nearest particles of the other material:
+// (i, j, nearest i, nearest j, distance), i counts columns from the left and j rows from the bottom
+#let mean-distance-ic(arrangement, marks, label) = canvas({
+  let rows = arrangement.split(" ")
+  let side = 2.8
+  let n = rows.len()
+  let unit = side / n
+  let middle(i, j) = ((i + 0.5) * unit, (j + 0.5) * unit)
+
+  for (j, row) in rows.enumerate() {
+    for (i, particle) in row.clusters().enumerate() {
+      draw.rect(
+        (i * unit, j * unit),
+        ((i + 1) * unit, (j + 1) * unit),
+        stroke: 0.5pt,
+        fill: if particle == "1" { rgb("dededeff") } else { none },
+      )
+    }
+  }
+  draw.rect((0, 0), (side, side), stroke: 1pt)
+
+  for (i, j, ni, nj, d) in marks {
+    let (x, y) = middle(i, j)
+    let (dx, dy) = (ni - i, nj - j)
+    let len = calc.sqrt(dx * dx + dy * dy)
+    draw.line((x, y), middle(ni, nj), stroke: 0.75pt, mark: (end: ">", fill: black, scale: 0.5))
+    draw.circle((x, y), radius: 0.04, fill: black, stroke: none)
+    // The distance on the side of the particle away from the arrow
+    draw.content((x - dx / len * 0.24 * unit, y - dy / len * 0.24 * unit), text(size: 8pt, d))
+  }
+
+  draw.content((side / 2, 0), anchor: "north", padding: 0.2, align(center, label))
+})
+
+#figure(
+  grid(
+    columns: (1fr,) * 5,
+    align: center + top,
+    mean-distance-ic("0110 0110 1101 0001", (), [$overline(d) = 1$ \ visos 1 \ $t approx 61$ s]),
+    mean-distance-ic("1100 0110 0000 1111", ((3, 0, 2, 1, $sqrt(2)$),), [$overline(d) approx 1.026$ \ $1 times sqrt(2)$ \ $t approx 101$ s]),
+    mean-distance-ic(
+      "1101 1000 0100 1101",
+      ((0, 0, 1, 1, $sqrt(2)$), (2, 1, 1, 0, $sqrt(2)$)),
+      [$overline(d) approx 1.052$ \ $2 times sqrt(2)$ \ $t approx 139$ s],
+    ),
+    mean-distance-ic(
+      "0010 1100 0011 0111",
+      ((2, 3, 1, 2, $sqrt(2)$), (3, 3, 3, 1, $2$)),
+      [$overline(d) approx 1.088$ \ $1 times sqrt(2), 1 times 2$ \ $t approx 169$ s],
+    ),
+    mean-distance-ic(
+      "0001 0010 1011 1110",
+      ((0, 0, 0, 2, $2$), (1, 0, 2, 1, $sqrt(2)$), (0, 3, 1, 2, $sqrt(2)$)),
+      [$overline(d) approx 1.114$ \ $2 times sqrt(2), 1 times 2$ \ $t approx 176$ s],
+    ),
+  ),
+  caption: [
+    Dažniausių vidutinio atstumo $overline(d)$ reikšmių pavyzdžiai, kai $n = 4$. Kiekvienai dalelei imamas atstumas nuo jos centro iki artimiausios kitos medžiagos dalelės centro (dalelės pločiais), $overline(d)$ -- šių atstumų vidurkis per visas daleles. Rodyklės žymi daleles, kurios neturi bendros kraštinės su kitos medžiagos dalele, ir jų artimiausią kitos medžiagos dalelę. Žymėjimas $1 times sqrt(2)$ reiškia, kad viena dalelė yra $sqrt(2)$ atstumu, o visos kitos -- atstumu 1. Po kiekvienu pavyzdžiu nurodyta jo reakcijos trukmė $t$.
+  ],
+) <n4-mean-distance-examples>
+
+@n4-mean-distance-examples 
+
+#figure(
+  image("../assets/diagrams/n4-end-time-by-mean-distance.png", width: 85%),
+  caption: [
+    Reakcijos trukmės pasiskirstymas, kai $n = 4$ (@random-squares-end-time-distribution), išskaidytas pagal penkias dažniausias vidutinio atstumo $overline(d)$ reikšmes (@n4-mean-distance-examples). Kiekviena kreivė padauginta iš grupės dalies tarp visų 1000 konfigūracijų, todėl kreivių suma lygi visam pasiskirstymui (brūkšninė linija). Skliaustuose nurodytas konfigūracijų skaičius, "kitos" apima likusias 25 reikšmes, o taškinės linijos žymi pasiskirstymo viršūnes.
+  ],
+) <n4-end-time-by-mean-distance>
+
+
+
+== Perlino triukšmu grįsta pradinė sąlyga
+
