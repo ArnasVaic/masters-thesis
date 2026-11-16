@@ -8,7 +8,7 @@
 # Afterwards, merge the results:     python py/results/ic_param_search/collect_params.py
 #
 # A timed out task resumes where it stopped when submitted again (same --trials and --cells).
-# Rough cost: one solve ~45 s with 20 cells per particle, so 500 trials on 32 CPUs is ~15 min
+# Rough cost: one solve ~45 s with 20 cells per particle, so 1500 trials on 32 CPUs is ~40 min
 # per case. Adjust --cpus-per-task to the nodes of the partition.
 
 #SBATCH -p main
@@ -27,4 +27,4 @@ conda activate yag_model
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 
 cd "$SLURM_SUBMIT_DIR"
-python -u py/results/ic_param_search/fit_params.py --case-index "$SLURM_ARRAY_TASK_ID" --trials 500
+python -u py/results/ic_param_search/fit_params.py --case-index "$SLURM_ARRAY_TASK_ID" --trials 1500

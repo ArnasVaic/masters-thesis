@@ -20,11 +20,14 @@ import optuna
 from optuna.storages import JournalStorage
 from optuna.storages.journal import JournalFileBackend
 from optuna.trial import TrialState
-from yag_model import Discretization, SolutionState
+import yag_model as yag
+from yag_model import Discretization, ModelParameters, SolutionState
 from yag_utils import initial_conditions as ics
 from yag_utils import particles, physical
 from yag_utils.constants import AL2O3_CONCENTRATION
-from yag_utils.optimization import DEFAULT_SCALES
+from yag_utils.mass import field_masses, total_mass
+from yag_utils.optimization import DEFAULT_SCALES, experiment_config
+from yag_utils.scaling import to_dimensionless
 from yag_utils.paths import repo_root
 
 SIZE = 16
@@ -37,9 +40,28 @@ SCALES = DEFAULT_SCALES
 C1 = SCALES.dimensionless_concentration(AL2O3_CONCENTRATION)
 C2 = SCALES.dimensionless_concentration(3 / 5 * AL2O3_CONCENTRATION)
 
-# Search space, log10 of D in m^2/s and of k in m^3/(mol s), as in find_params.py
-LOG_D_RANGE = (-16.0, -14.0)
-LOG_K_RANGE = (-9.0, -7.0)
+# Search space, log10 of D in m^2/s and of k in m^3/(mol s). Wide on purpose, the limits come
+# from where the solver or the data stop telling anything apart (checked on the 20 cell mesh):
+#   D below 1e-20: nothing reacts in 6 h. Above about 1e-14 the result no longer depends on D
+#     (the domain mixes faster than it reacts), so beyond 1e-12 there is only more flat loss and
+#     ever larger diffusion numbers for the solver.
+#   k below 1e-12: nothing reacts. With all k at 1e-7 about 96% is YAG after 6 h (the experiment
+#     has 12%) and the solver is still sound for every D. From 10^-6.5 the explicit reaction term
+#     can overshoot with dt = 1 s, depending on D and the arrangement: the solution blows up or
+#     ends with negative concentrations. solve() reports the lowest concentration and such trials
+#     fail, so the sampler learns to stay away. Fits close to the upper k limit need a smaller dt.
+# The earlier fit (FITTED_LOG_D/K) lies inside. A fitted value at a limit (collect_params.py
+# flags those) means that limit should move.
+LOG_D_RANGE = (-20.0, -12.0)
+LOG_K_RANGE = (-12.0, -6.0)
+# Fitted values closer than this to a limit are flagged
+EDGE_MARGIN = 0.1
+
+
+def at_edge(key: str, value: float) -> bool:
+    """Whether a fitted logD*/logk* value lies within EDGE_MARGIN of its search limit."""
+    lo, hi = LOG_D_RANGE if key.startswith("logD") else LOG_K_RANGE
+    return value - lo < EDGE_MARGIN or hi - value < EDGE_MARGIN
 
 # Everything the search writes, one directory per case. IC_PARAM_SEARCH_DATA moves it elsewhere,
 # e.g. to a scratch file system of the cluster or a throwaway directory for a test run.
@@ -80,6 +102,26 @@ CASES: dict[str, Case] = {
 }
 
 
+# A solution dipping below this (dimensionless, c1 = 1) is not a solution: too large k (and D)
+# make the explicit reaction term overshoot, which can end with finite but negative concentrations
+NEGATIVE_TOLERANCE = -1e-6
+
+
+def solve(params: ModelParameters, disc: Discretization, ic: SolutionState) -> tuple[np.ndarray, float]:
+    """Mass percentages of the species after the 6 hour experiment from ic, with physical
+    parameters, and the lowest concentration anywhere in that last frame."""
+    capture = yag.capture_config(
+        reducer=yag.reducers.concentration_field(),
+        trigger=yag.last_frame_trigger(),
+        sink=yag.in_memory_sink(capacity=1),
+    )
+    # A config (and its sink) per solve, they must not be shared between concurrent solves
+    result = yag.solve(experiment_config(disc, SCALES, capture), ic, to_dimensionless(params, SCALES))
+    fields, _ = result.all()
+    p_pred = 100 * field_masses(fields, disc)[0] / total_mass(ic, disc)
+    return p_pred, float(np.min(fields))
+
+
 def discretization(cells_per_particle: int = DEFAULT_CELLS_PER_PARTICLE) -> Discretization:
     """Dimensionless mesh of SIZE x SIZE particles."""
     n = cells_per_particle * SIZE
@@ -107,7 +149,7 @@ SUMMARY_FIELDS = (
     + [f"logD{i}" for i in range(1, 6)]
     + [f"logk{i}" for i in range(1, 4)]
     + [f"p{i}" for i in range(1, 6)]
-    + ["mean_solve_s"]
+    + ["mean_solve_s", "at_edge"]
 )
 
 
@@ -139,4 +181,6 @@ def summary_row(name: str, study: optuna.Study) -> dict | None:
     }
     row.update({key: best.params[key] for key in SUMMARY_FIELDS if key in best.params})
     row.update({f"p{i}": p for i, p in enumerate(best.user_attrs["p_pred"], 1)})
+    # Parameters within EDGE_MARGIN of a search limit, e.g. "logD3 logk1", empty if none
+    row["at_edge"] = " ".join(k for k, v in best.params.items() if at_edge(k, v))
     return row

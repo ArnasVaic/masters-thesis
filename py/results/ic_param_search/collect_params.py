@@ -45,6 +45,9 @@ def main() -> None:
     line("experiment", "", [float("nan")] * 5, [float("nan")] * 3, P_TRUE)
     line("earlier fit (start)", "", FITTED_LOG_D, FITTED_LOG_K, [float("nan")] * 5)
     for r in rows:
+        if r["at_edge"]:
+            print(f"WARNING: {r['case']}: {r['at_edge']} at the search limit, widen it in cases.py and resume")
+    for r in rows:
         line(
             f"{r['case']} ({r['n_complete']})", f"{r['loss']:.4f}",
             [r[f"logD{i}"] for i in range(1, 6)], [r[f"logk{i}"] for i in range(1, 4)],

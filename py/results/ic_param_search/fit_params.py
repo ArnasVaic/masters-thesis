@@ -30,7 +30,7 @@ import yag_model as yag
 from optuna.study import MaxTrialsCallback
 from optuna.trial import TrialState
 from yag_utils.constants import FITTED_LOG_D, FITTED_LOG_K, P_TRUE
-from yag_utils.optimization import evaluate_on, loss
+from yag_utils.optimization import loss
 
 import cases
 from cases import CASES, LOG_D_RANGE, LOG_K_RANGE, SCALES
@@ -91,16 +91,20 @@ def worker(name: str, index: int, n_trials: int, cells: int, seed: int) -> None:
         params = yag.model_params(D=[10**d for d in log_D], k=[10**k for k in log_k])
 
         start = time.perf_counter()
-        p_pred = evaluate_on(params, disc, ic, SCALES)
+        p_pred, min_c = cases.solve(params, disc, ic)
         solve_s = time.perf_counter() - start
 
         trial.set_user_attr("p_pred", p_pred.tolist())
+        trial.set_user_attr("min_c", min_c)
         trial.set_user_attr("solve_s", solve_s)
         trial.set_user_attr("worker", f"{socket.gethostname()}:{who}")
 
-        if not np.isfinite(p_pred).all():
-            log(name, who, f"#{trial.number:4d} non-finite masses after {solve_s:.1f} s, trial failed")
-            # Optuna marks a NaN result as a failed trial, the sampler then avoids that region
+        # Optuna marks a NaN result as a failed trial, the sampler then avoids that region
+        if not np.isfinite(p_pred).all() or not np.isfinite(min_c):
+            log(name, who, f"#{trial.number:4d} solution blew up after {solve_s:.1f} s, trial failed")
+            return float("nan")
+        if min_c < cases.NEGATIVE_TOLERANCE:
+            log(name, who, f"#{trial.number:4d} negative concentration {min_c:.3g} after {solve_s:.1f} s, trial failed")
             return float("nan")
         return loss(p_pred)
 
@@ -160,6 +164,8 @@ def write_best(name: str, study: optuna.Study) -> None:
     print(f"[{name}] {'species':<8} {'pred %':>8} {'true %':>8}")
     for i, (pred, true) in enumerate(zip([row[f"p{i}"] for i in range(1, 6)], P_TRUE), 1):
         print(f"[{name}] c_{i:<6} {pred:8.2f} {true:8.2f}")
+    if row["at_edge"]:
+        print(f"[{name}] WARNING: {row['at_edge']} at the search limit, widen it in cases.py and resume", flush=True)
     print(f"[{name}] written to {path}", flush=True)
 
 
@@ -220,7 +226,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("cases", nargs="*", help=f"case names or 'all': {', '.join(CASES)}")
     parser.add_argument("--case-index", type=int, help="run only the case at this index (SLURM_ARRAY_TASK_ID)")
-    parser.add_argument("--trials", type=int, default=500, help="finished trials per case (default 500)")
+    parser.add_argument("--trials", type=int, default=1500, help="finished trials per case (default 1500)")
     parser.add_argument("--workers", type=int, default=available_cpus(), help="parallel solves (default: all CPUs)")
     parser.add_argument("--cells", type=int, default=cases.DEFAULT_CELLS_PER_PARTICLE, help="mesh cells per particle side")
     parser.add_argument("--seed", type=int, default=0, help="sampler seed, mixed with the worker index and the trials already done")

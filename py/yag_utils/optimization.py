@@ -84,13 +84,3 @@ def evaluate(params: ModelParameters, scales: Scales = DEFAULT_SCALES) -> np.nda
     result = yag.solve(config, ic, to_dimensionless(params, scales))
     return predicted_mass_percent(result, ic)
 
-
-def evaluate_on(
-        params: ModelParameters,
-        disc: Discretization,
-        ic: SolutionState,
-        scales: Scales = DEFAULT_SCALES) -> np.ndarray:
-    """Solve the experiment from initial condition ic on disc (both dimensionless), with
-    physical parameters, return predicted mass percentages."""
-    result = yag.solve(experiment_config(disc, scales), ic, to_dimensionless(params, scales))
-    return predicted_mass_percent(result, ic)
