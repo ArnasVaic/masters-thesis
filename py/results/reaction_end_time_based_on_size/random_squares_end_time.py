@@ -6,6 +6,10 @@
 # it is not used here. The parameters only illustrate how the end time spreads with size. The
 # rates are 10 times below those of checkerboard_end_time.py, so the step can be 10 times larger
 # and many arrangements are affordable, while the arrangement still decides the end time.
+#
+# The arrangement comes from particles.PARTICLE_ICS, random squares by default. Another one is
+# picked with the IC environment variable, e.g. `IC=perlin python random_squares_end_time.py`,
+# and gets its own results file and figure.
 
 import os
 
@@ -17,6 +21,10 @@ from tqdm.auto import tqdm
 from yag_utils import particles
 from yag_utils.batch import csv_appender, load_rows, run_batch
 from yag_utils.paths import diagrams_dir, repo_root
+
+IC = os.environ.get("IC", "random_rectangles")
+# File name stem of the results and figure, random squares keep the names they had before
+NAMES = {"random_rectangles": "random_squares", "perlin": "perlin"}
 
 SIZES = [4, 8, 12, 16]
 TRIALS_PER_SIZE = 1000
@@ -45,7 +53,7 @@ WORKERS = os.cpu_count() or 1
 # already in the file, so the run can be interrupted and resumed, and rerunning a finished
 # study only redraws the figure. Delete the file after changing the setup above.
 RESULTS_PATH = (
-    repo_root() / "py" / "results" / "reaction_end_time_based_on_size" / "data" / "random_squares_end_time_k1.csv"
+    repo_root() / "py" / "results" / "reaction_end_time_based_on_size" / "data" / f"{NAMES[IC]}_end_time_k1.csv"
 )
 FIELDS = ["size", "trial", "end_time"]
 
@@ -71,7 +79,7 @@ def reaction_end_time(size: int, trial: int) -> float:
     )
     # Seeded by (size, trial), trial 0 is the arrangement drawn in the thesis figure
     rng = np.random.default_rng([size, trial])
-    ic = particles.PARTICLE_ICS["random_rectangles"].build(disc, size, C1, C2, rng)
+    ic = particles.PARTICLE_ICS[IC].build(disc, size, C1, C2, rng)
 
     masses, times = yag.solve(config, ic, yag.model_params(D=D, k=K)).all()
     if not np.isfinite(masses).all():
@@ -157,5 +165,5 @@ ax_points.grid(False, axis="y")
 ax_points.set_xlabel("Reakcijos pabaigos laikas (s)")
 
 fig.align_ylabels()
-fig.savefig(diagrams_dir() / "random-squares-end-time-distribution.png", dpi=300)
+fig.savefig(diagrams_dir() / f"{NAMES[IC].replace('_', '-')}-end-time-distribution.png", dpi=300)
 plt.show()
