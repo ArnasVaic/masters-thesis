@@ -2,7 +2,7 @@
 
 import numpy as np
 import yag_model as yag
-from yag_model import CaptureConfig, IResult, ModelParameters, SolutionState, SolverConfig
+from yag_model import CaptureConfig, Discretization, IResult, ModelParameters, SolutionState, SolverConfig
 
 from . import physical
 from .constants import AL2O3_CONCENTRATION, P_TRUE
@@ -32,6 +32,17 @@ def optimization_config(
         scales, disc, AL2O3_CONCENTRATION, 3 / 5 * AL2O3_CONCENTRATION
     )
 
+    return experiment_config(disc, scales, capture), ic
+
+
+def experiment_config(
+        disc: Discretization,
+        scales: Scales = DEFAULT_SCALES,
+        capture: CaptureConfig | None = None) -> SolverConfig:
+    """Dimensionless config of the 6 hour experiment on any (dimensionless) mesh.
+
+    By default only the per-species mass of the last frame is captured.
+    """
     if capture is None:
         capture = yag.capture_config(
             reducer=yag.reducers.total_mass(),
@@ -52,7 +63,7 @@ def optimization_config(
         capture=capture,
     )
 
-    return config, ic
+    return config
 
 
 def predicted_mass_percent(result: IResult, ic: SolutionState) -> np.ndarray:
@@ -71,4 +82,15 @@ def evaluate(params: ModelParameters, scales: Scales = DEFAULT_SCALES) -> np.nda
     """Solve the experiment with physical parameters, return predicted mass percentages."""
     config, ic = optimization_config(scales)
     result = yag.solve(config, ic, to_dimensionless(params, scales))
+    return predicted_mass_percent(result, ic)
+
+
+def evaluate_on(
+        params: ModelParameters,
+        disc: Discretization,
+        ic: SolutionState,
+        scales: Scales = DEFAULT_SCALES) -> np.ndarray:
+    """Solve the experiment from initial condition ic on disc (both dimensionless), with
+    physical parameters, return predicted mass percentages."""
+    result = yag.solve(experiment_config(disc, scales), ic, to_dimensionless(params, scales))
     return predicted_mass_percent(result, ic)
