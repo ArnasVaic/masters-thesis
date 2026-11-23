@@ -20,4 +20,6 @@ Atlikti šią reakciją laboratorijoje reikia daug laiko ir energijos, tačiau k
 
 - Užtikrinti, kad įgyvendintas skaitinis YAG sintezės modelis tenkina masės tvermės dėsnį
 
-- Naudojantis VU MIF HPC infrastruktūra ir sukurta programine įranga, identifikuoti modelio parametrų rinkinį, užtikrinantį gerą modelio rezultatų atitiktį eksperimentiniams duomenims praktiniam taikymui priimtinos paklaidos ribose.
+- Pasiūlyti tris padidintų pradinių sąlygų konstrukcijas
+
+- Naudojantis VU MIF HPC infrastruktūra ir sukurta programine įranga, identifikuoti modelio parametrų rinkinius skirtingoms pradinėms sąlygoms, užtikrinantį gerą modelio rezultatų atitiktį eksperimentiniams duomenims praktiniam taikymui priimtinos paklaidos ribose.

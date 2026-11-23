@@ -5,12 +5,13 @@
 #   python fit_params.py --case-index 3               the 4th case, for a SLURM array job
 #   python fit_params.py --list                       print the cases and their progress
 #
-# Every case is its own Optuna study, stored in data/<case>/optuna-journal.log. The study is
-# run by --workers processes (all CPUs this job may use by default), each one solves a trial,
-# asks Optuna for the next one and so on, all sharing the journal. Workers stop once the study
-# holds --trials finished trials, so an interrupted or timed out run is resumed by running the
-# same command again, and a finished one is extended by a larger --trials. Up to workers - 1
-# trials past --trials still finish, as they were already running.
+# Every case is its own Optuna study, stored in data/<case>/optuna-journal.log. One process runs
+# the study with --workers threads (all CPUs this job may use by default): the solver releases
+# Python's lock while it runs, so the threads solve in parallel, and only this one process writes
+# the journal. (Separate processes per worker would all compete for the journal's file lock, which
+# is slow on a shared file system like Lustre.) The run stops once the study holds --trials
+# finished trials, so an interrupted or timed out run is resumed by running the same command
+# again, and a finished one is extended by a larger --trials. Only one job may run a case at a time.
 #
 # When a case is done its best parameters go to data/<case>/best_params.csv, and
 # collect_params.py merges those of all cases into data/fitted_params.csv.
@@ -21,13 +22,12 @@ import os
 import platform
 import socket
 import sys
+import threading
 import time
-from multiprocessing import get_context
 
 import numpy as np
 import optuna
 import yag_model as yag
-from optuna.study import MaxTrialsCallback
 from optuna.trial import TrialState
 from yag_utils.constants import FITTED_LOG_D, FITTED_LOG_K, P_TRUE
 from yag_utils.optimization import loss
@@ -67,23 +67,26 @@ def load_study(name: str, sampler: optuna.samplers.BaseSampler | None = None) ->
     )
 
 
-def worker(name: str, index: int, n_trials: int, cells: int, seed: int) -> None:
-    """Runs trials of the case's study until it holds n_trials finished ones."""
-    who = f"w{index:02d}"
-    # A spawned process starts with Optuna's defaults, its own lines below say the same in one line
-    optuna.logging.set_verbosity(optuna.logging.WARNING)
+def optimize(name: str, n_trials: int, workers: int, cells: int, seed: int, done: int) -> None:
+    """Runs trials of the case's study in `workers` threads until it holds n_trials finished ones."""
     disc = cases.discretization(cells)
+    # solve() only reads the initial condition, so all threads share it
     ic = CASES[name].build(disc)
 
     # The seed also depends on the trials already in the study, so a resumed run does not repeat
     # the random proposals of the previous one
-    done = finished(load_study(name))
-    if done >= n_trials:
-        return
-    sampler_seed = int(np.random.SeedSequence([seed, index, done]).generate_state(1)[0])
+    sampler_seed = int(np.random.SeedSequence([seed, done]).generate_state(1)[0])
     # Constant liar keeps parallel workers from proposing the same point while others still run
     sampler = optuna.samplers.TPESampler(multivariate=True, constant_liar=True, seed=sampler_seed)
     study = load_study(name, sampler)
+
+    # Short worker names (w00, w01, ...) for the log instead of thread ids
+    names: dict[int, str] = {}
+    names_lock = threading.Lock()
+
+    def who() -> str:
+        with names_lock:
+            return names.setdefault(threading.get_ident(), f"w{len(names):02d}")
 
     def objective(trial: optuna.Trial) -> float:
         log_D = [trial.suggest_float(f"logD{i}", *LOG_D_RANGE) for i in range(1, 6)]
@@ -97,38 +100,38 @@ def worker(name: str, index: int, n_trials: int, cells: int, seed: int) -> None:
         trial.set_user_attr("p_pred", p_pred.tolist())
         trial.set_user_attr("min_c", min_c)
         trial.set_user_attr("solve_s", solve_s)
-        trial.set_user_attr("worker", f"{socket.gethostname()}:{who}")
+        trial.set_user_attr("worker", f"{socket.gethostname()}:{who()}")
 
         # Optuna marks a NaN result as a failed trial, the sampler then avoids that region
         if not np.isfinite(p_pred).all() or not np.isfinite(min_c):
-            log(name, who, f"#{trial.number:4d} solution blew up after {solve_s:.1f} s, trial failed")
+            log(name, who(), f"#{trial.number:4d} solution blew up after {solve_s:.1f} s, trial failed")
             return float("nan")
         if min_c < cases.NEGATIVE_TOLERANCE:
-            log(name, who, f"#{trial.number:4d} negative concentration {min_c:.3g} after {solve_s:.1f} s, trial failed")
+            log(name, who(), f"#{trial.number:4d} negative concentration {min_c:.3g} after {solve_s:.1f} s, trial failed")
             return float("nan")
         return loss(p_pred)
 
     def report(study: optuna.Study, trial: optuna.trial.FrozenTrial) -> None:
         if trial.state != TrialState.COMPLETE:
             return
-        done = finished(study)
         best = study.best_trial
         log(
-            name, who,
+            name, who(),
             f"#{trial.number:4d} loss {trial.value:9.4f} | best {best.value:9.4f} (#{best.number}) | "
-            f"{done}/{n_trials} | solve {trial.user_attrs['solve_s']:5.1f} s | "
+            f"{finished(study)}/{n_trials} | solve {trial.user_attrs['solve_s']:5.1f} s | "
             f"logD {fmt(trial.params[f'logD{i}'] for i in range(1, 6))} | "
             f"logk {fmt(trial.params[f'logk{i}'] for i in range(1, 4))}",
         )
 
-    log(name, who, f"started, pid {os.getpid()}")
     study.optimize(
         objective,
-        callbacks=[MaxTrialsCallback(n_trials, states=FINISHED), report],
-        # A solver error fails that trial only, the worker goes on with the next one
+        # Counts the trials of this run, failed ones included, so the study ends at n_trials
+        n_trials=n_trials - done,
+        n_jobs=workers,
+        callbacks=[report],
+        # A solver error fails that trial only, the thread goes on with the next one
         catch=(Exception,),
     )
-    log(name, who, "done")
 
 
 def describe(name: str, cells: int) -> None:
@@ -191,32 +194,22 @@ def run_case(name: str, n_trials: int, workers: int, cells: int, seed: int) -> N
         )
         print("  new study, the first trial is the earlier fit (yag_utils.constants FITTED_LOG_D/K)", flush=True)
 
+    # Trials still marked running were cut off when an earlier run stopped (time limit, Ctrl+C).
+    # Nothing else runs this case, so they are failed, otherwise the sampler keeps treating them
+    # as in progress.
+    for trial in study.get_trials(deepcopy=False, states=(TrialState.RUNNING,)):
+        study._storage.set_trial_state_values(trial._trial_id, TrialState.FAIL)
+        print(f"  trial #{trial.number} was cut off by an earlier run, marked failed", flush=True)
+
     done = finished(study)
     print(f"  journal {cases.journal_path(name)}: {done} finished trials, target {n_trials}", flush=True)
     if done >= n_trials:
         print("  already done", flush=True)
     else:
         workers = min(workers, n_trials - done)
-        print(f"  starting {workers} workers", flush=True)
+        print(f"  running {n_trials - done} trials on {workers} threads", flush=True)
         start = time.time()
-        # spawn: workers import everything anew instead of inheriting the parent's open journal
-        processes = [
-            get_context("spawn").Process(target=worker, args=(name, i, n_trials, cells, seed), daemon=True)
-            for i in range(workers)
-        ]
-        for p in processes:
-            p.start()
-        try:
-            for p in processes:
-                p.join()
-        except KeyboardInterrupt:
-            print(f"[{name}] interrupted, stopping workers, running trials are lost", flush=True)
-            for p in processes:
-                p.terminate()
-            raise
-        failed = [p.exitcode for p in processes if p.exitcode != 0]
-        if failed:
-            print(f"[{name}] WARNING: {len(failed)} workers exited with codes {failed}", flush=True)
+        optimize(name, n_trials, workers, cells, seed, done)
         print(f"[{name}] {finished(load_study(name)) - done} trials in {(time.time() - start) / 60:.1f} min", flush=True)
 
     write_best(name, load_study(name))
@@ -229,7 +222,7 @@ def main() -> None:
     parser.add_argument("--trials", type=int, default=1500, help="finished trials per case (default 1500)")
     parser.add_argument("--workers", type=int, default=available_cpus(), help="parallel solves (default: all CPUs)")
     parser.add_argument("--cells", type=int, default=cases.DEFAULT_CELLS_PER_PARTICLE, help="mesh cells per particle side")
-    parser.add_argument("--seed", type=int, default=0, help="sampler seed, mixed with the worker index and the trials already done")
+    parser.add_argument("--seed", type=int, default=0, help="sampler seed, mixed with the trials already done")
     parser.add_argument("--list", action="store_true", help="print the cases and their progress, then exit")
     args = parser.parse_args()
 

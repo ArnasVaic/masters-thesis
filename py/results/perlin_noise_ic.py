@@ -20,6 +20,7 @@ plt.rcParams.update({
     "mathtext.it": "Libertinus Serif:italic",
     "mathtext.rm": "Libertinus Serif",
     "mathtext.cal": "Libertinus Serif",
+    "mathtext.bf": "Libertinus Serif:bold",
     "font.size": 11,
     "axes.labelsize": 12,
     "axes.titlesize": 11,
@@ -150,4 +151,86 @@ for row, n in enumerate(SIZES):
             ax.set_ylabel(f"$n = {n}$", rotation=0, labelpad=18, va="center", color="black")
 
 fig.savefig(diagrams_dir() / "perlin-parameter-grid.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+plt.show()
+
+# %%
+# One lattice cell: gradients v_ij at the corners, offsets d_ij = p - (i, j) and the dot products g_ij
+CELL_P = np.array([0.36, 0.58])
+# Fixed angles (degrees) instead of random ones so the arrows do not overlap the offsets
+CELL_ANGLES = {(0, 0): 15, (1, 0): 250, (0, 1): 70, (1, 1): 305}
+GRAD_LEN = 0.38
+GRAD_COLOR = "0.15"
+OFFSET_COLOR = "#c0392b"
+
+
+def cell_noise(p: np.ndarray) -> float:
+    """Perlin noise inside the cell, same formula as perlin_noise."""
+    fade = lambda t: 6 * t**5 - 15 * t**4 + 10 * t**3
+    g = {
+        c: np.dot([np.cos(np.radians(a)), np.sin(np.radians(a))], p - np.array(c))
+        for c, a in CELL_ANGLES.items()
+    }
+    u, v = fade(p[0]), fade(p[1])
+    bottom = g[(0, 0)] + u * (g[(1, 0)] - g[(0, 0)])
+    top = g[(0, 1)] + u * (g[(1, 1)] - g[(0, 1)])
+    return bottom + v * (top - bottom)
+
+
+def arrow(ax, start, end, color, linestyle="solid", linewidth=1.4, shrink=0):
+    ax.annotate(
+        "", xy=end, xytext=start,
+        arrowprops=dict(
+            arrowstyle="-|>", color=color, linewidth=linewidth, linestyle=linestyle,
+            shrinkA=0, shrinkB=shrink, mutation_scale=11,
+        ),
+        zorder=4,
+    )
+
+
+fig, ax = plt.subplots(figsize=(4.2, 4.2), dpi=150, layout="constrained")
+domain_axes(ax, 1, 1, pad=0.55)
+
+# Faint background with the noise these gradients produce, same colors as perlin-construction (b)
+grid = pixel_centers(1)
+field = np.array([[cell_noise(np.array([x, y])) for x in grid] for y in grid])
+limit = np.abs(field).max()
+ax.imshow(field, extent=(0, 1, 0, 1), origin="lower", cmap="RdBu_r", vmin=-limit, vmax=limit, alpha=0.35)
+draw_frame(ax, 1, 1)
+
+# Where to put the labels of each corner, relative to the corner (outside the square)
+corner_label_dir = {(0, 0): (-1, -1), (1, 0): (1, -1), (0, 1): (-1, 1), (1, 1): (1, 1)}
+
+for (i, j), angle in CELL_ANGLES.items():
+    corner = np.array([i, j], dtype=float)
+    direction = np.array([np.cos(np.radians(angle)), np.sin(np.radians(angle))])
+
+    # Offset vector d_ij from the corner to p
+    arrow(ax, corner, CELL_P, OFFSET_COLOR, linestyle=(0, (4, 2)), linewidth=1.1, shrink=4)
+    mid = corner + 0.5 * (CELL_P - corner)
+    normal = np.array([-(CELL_P - corner)[1], (CELL_P - corner)[0]])
+    normal /= np.linalg.norm(normal)
+    ax.text(*(mid + 0.07 * normal), rf"$\mathbf{{d}}_{{{i}{j}}}$", color=OFFSET_COLOR,
+            ha="center", va="center", fontsize=12, zorder=5)
+
+    # Random unit gradient v_ij at the corner
+    tip = corner + GRAD_LEN * direction
+    arrow(ax, corner, tip, GRAD_COLOR)
+    ax.text(*(corner + (GRAD_LEN + 0.09) * direction), rf"$\mathbf{{v}}_{{{i}{j}}}$", color=GRAD_COLOR,
+            ha="center", va="center", fontsize=12, zorder=5)
+
+    ax.scatter(*corner, s=22, color="black", zorder=6)
+
+    # Corner coordinates and the value g_ij = v_ij . d_ij
+    sx, sy = corner_label_dir[(i, j)]
+    ha = "right" if sx < 0 else "left"
+    ax.text(i + 0.04 * sx, j + 0.05 * sy, f"$({i},\\,{j})$", ha=ha, va="top" if sy < 0 else "bottom",
+            fontsize=10, color="0.3")
+    ax.text(i + 0.04 * sx, j + 0.17 * sy,
+            rf"$g_{{{i}{j}}} = \mathbf{{v}}_{{{i}{j}}} \cdot \mathbf{{d}}_{{{i}{j}}}$",
+            ha=ha, va="top" if sy < 0 else "bottom", fontsize=12)
+
+ax.scatter(*CELL_P, s=30, color=OFFSET_COLOR, zorder=7)
+ax.text(CELL_P[0] + 0.075, CELL_P[1] - 0.005, "$p = (x,\\,y)$", ha="left", va="center", fontsize=12, zorder=7)
+
+fig.savefig(diagrams_dir() / "perlin-cell.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
 plt.show()

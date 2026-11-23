@@ -1,3 +1,28 @@
+#import "../config/todo.typ": todo, todo-inline
+
+= Modelio parametrų paieška
+
+== Pradinių sąlygų pasirinkimas
+
+#todo[
+  Key details for the text about @end-time-quartile-examples:
+  - Goal: pick representative initial conditions for the parameter search, i.e. ones whose reaction end time is typical for their distribution.
+  - Largest size $n = 16$ ($16 times 16 mu m$), 1000 trials per IC type, same data as @random-squares-end-time-distribution and @perlin-end-time-distribution (same model parameters, $20n times 20n$ mesh, same time step, end at 10% of reagent mass).
+  - For each IC type, the trial whose end time is closest to $Q_1$, the median and $Q_3$ is chosen.
+  - Random squares: $Q_1$ trial 814 ($123.4$ s), median trial 287 ($161.2$ s), $Q_3$ trial 383 ($218.0$ s).
+  - Perlin ($n = 16$ lattice, $t = 0.5$): $Q_1$ trial 2 ($21.6$ s), median trial 12 ($22.6$ s), $Q_3$ trial 18 ($23.6$ s).
+  - Perlin end times only take values $0.2$ s apart (the step has reached $Delta t_"max"$), so many trials tie; the lowest trial number among them is taken.
+  - Visible in the figure: Perlin regions are smaller than a $1 mu m$ particle, random squares join into clusters several particles wide.
+  - Script: `py/results/reaction_end_time_based_on_size/quartile_examples.py`.
+]
+
+#figure(
+  image("../assets/diagrams/end-time-quartile-examples.png", width: 85%),
+  caption: todo-inline[
+    caption: $n = 16$ initial conditions closest to $Q_1$, median, $Q_3$ of end time; top row random squares, bottom row Perlin; $t$ under each is its end time; white $c_1$, gray $c_2$; parameters as in @random-squares-end-time-distribution.
+  ],
+) <end-time-quartile-examples>
+
 = Modelio parametro optimizavimas
 
 #let it-ox = $"Y"_2"O"_3$

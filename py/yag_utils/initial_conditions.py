@@ -116,6 +116,8 @@ def perlin_based_rectangles(
     noise = perlin_noise(disc.nx, disc.ny, n, m, rng)
 
     # Threshold such that approximately t fraction is assigned to c1
+    # Since range is -0.5; 0.5, 0.5 quantile means
+    # threshold > 0
     threshold = np.quantile(noise, 1 - t)
 
     mask = noise >= threshold

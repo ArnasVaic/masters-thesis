@@ -27,7 +27,7 @@ Norint užtikrinti sprendiklio efektyvumą, pagrindinė sprendinį randanti funk
 
 === Diskretizacija
 
-Modelyje naudojame tolygų tinklelį -- horizontalūs ($Delta x$) ir vertikalūs ($Delta y$) atstumai tarp diskrečių tinklelio taškų išlieka pastovūs. Diskrečių taškų kiekis $x$ ir $y$ ašimis yra modeliuojamos erdvės rezoliucija. Diagramoje šis komponentas pažymėtas *`Discretization`*.
+Modelyje naudojame tolygų tinklelį -- horizontalūs ($Delta x$) ir vertikalūs ($Delta y$) atstumai tarp diskrečių tinklelio taškų išlieka pastovūs. Diskrečių taškų kiekis $x$ ir $y$ ašimis yra modeliuojamos erdvės rezoliucija. Tiesiogiai iš šių dydžių galima apskaičiuoti fizinį tinklelio dydį. Diagramoje šis komponentas pažymėtas *`Discretization`*.
 
 === Laiko žingsnis
 

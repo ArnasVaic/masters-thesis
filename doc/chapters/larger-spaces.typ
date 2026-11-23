@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.5.1": canvas, draw
+#import "../config/todo.typ": todo, todo-inline
 
 = Didesnių erdvių modeliavimas
 
@@ -125,7 +126,7 @@ Galime numanyti, kad toks išsidėstymas turės stiprų poveikį vidutinei reakc
     ..(4, 8, 12).map(split-ic),
   ),
   caption: [
-    Itin nepalanki pradinė sąlyga -- skirtingų medžiagų dalelės visiškai atskirtos: viršutinę erdvės pusę užima viena medžiaga, o apatinę -- kita.
+    Itin nepalanki pradinė sąlyga -- skirtingų medžiagų dalelės visiškai atskirtos: viršutinę erdvės pusę užima viena medžiaga, o apatinę -- kita. Tokios pradinės sąlygos reakcija truks ilgai dėl to, kad dominuojant reakcijai, prireiks daug laiko kol viršuje esanti medžiaga difuzijos būdu pasieks pačioje apačioje esančią medžiagą.
   ],
 ) <split-squares-initial-condition>
 
@@ -137,7 +138,7 @@ Analogiško efekto su pradinėmis sąlygomis, kurios lemtų trumpą reakcijos tr
 ) <random-squares-end-time-distribution>
 
 
-Akivaizdu, kad idealią pradinę sąlygą su kiekvienu erdvės dydžiu atsitiktinai sutikti darosi vis sunkiau todėl @random-squares-end-time-distribution matome, kad kairioji pasiskirstymo uodega slenkasi dešinėn su kiekvienu dydžiu $n$. Tačiau galime pastebėti ir keletą įdomių reiškinių. $n=4$ atveju pasiskirstymas turi keletą viršūnių. Norint išsiaiškinti, kodėl taip nutinka galime iš arčiau patyrinėti šį pasiskirstymą. Kalneliai pasiskirstyme sufleruoja, kad pasiskirstymas turi iš tikro slepia kelis skirtingus rinkinius pradinių sąlygų su skirtingomis vidutinėmis reakcijos trukmėmis. Tikrojo požymio, kuris tai nulemia nežinome, tačiau žinome, kad atstumas tarp dalelių yra susijęs su reakcijos trukme, todėl galime pabandyti tai naudoti kaip heurisitiką. Specifiškai bandysime klasifikuoti pradinės sąlygas pagal vidutinį mažiausią atstumą iki skirtingos medžiagos dalelės kaip pavaizduota @n4-mean-distance-examples
+Akivaizdu, kad idealią pradinę sąlygą su kiekvienu erdvės dydžiu atsitiktinai sutikti darosi vis sunkiau todėl @random-squares-end-time-distribution matome, kad kairioji pasiskirstymo uodega slenkasi dešinėn su kiekvienu dydžiu $n$. Tačiau galime pastebėti ir keletą įdomių reiškinių. $n=4$ atveju pasiskirstymas turi keletą viršūnių. Norint išsiaiškinti, kodėl taip nutinka galime iš arčiau patyrinėti šį pasiskirstymą. Kalneliai pasiskirstyme sufleruoja, kad pasiskirstymas turi iš tikro slepia kelis skirtingus rinkinius pradinių sąlygų su skirtingomis vidutinėmis reakcijos trukmėmis. Tikrojo požymio, kuris tai nulemia nežinome, tačiau žinome, kad atstumas tarp dalelių yra susijęs su reakcijos trukme, todėl galime pabandyti tai naudoti kaip heurisitiką. Specifiškai bandysime klasifikuoti pradinės sąlygas pagal vidutinį mažiausią atstumą iki skirtingos medžiagos dalelės. @n4-mean-distance-examples vaizduoja kaip skaičiuojamas toks vidurkis.
 
 // Examples of the most common mean distances for n = 4, printed by n4_mean_distance.py (the trial
 // closest to each group median). Arrangement as in random-ic, and each particle farther than 1 from
@@ -202,16 +203,77 @@ Akivaizdu, kad idealią pradinę sąlygą su kiekvienu erdvės dydžiu atsitikti
   ],
 ) <n4-mean-distance-examples>
 
-@n4-mean-distance-examples 
+Kiekvieną pradinę konfigūraciją galime priskirti prie grupės, kurios $overline(d)$ reikšmės sutampa. Tokiu būdu galime pamatyti iš ko susideda pasiskirstymas su keliomis viršunėmis.
 
 #figure(
   image("../assets/diagrams/n4-end-time-by-mean-distance.png", width: 85%),
   caption: [
-    Reakcijos trukmės pasiskirstymas, kai $n = 4$ (@random-squares-end-time-distribution), išskaidytas pagal penkias dažniausias vidutinio atstumo $overline(d)$ reikšmes (@n4-mean-distance-examples). Kiekviena kreivė padauginta iš grupės dalies tarp visų 1000 konfigūracijų, todėl kreivių suma lygi visam pasiskirstymui (brūkšninė linija). Skliaustuose nurodytas konfigūracijų skaičius, "kitos" apima likusias 25 reikšmes, o taškinės linijos žymi pasiskirstymo viršūnes.
+    Reakcijos trukmės pasiskirstymas, kai $n = 4$ (@random-squares-end-time-distribution), išskaidytas pagal penkias dažniausias vidutinio atstumo $overline(d)$ reikšmes (@n4-mean-distance-examples). Skliaustuose nurodytas konfigūracijų skaičius, "kitos" apima likusias 25 reikšmes, o taškuotos linijos žymi pasiskirstymo viršūnes.
   ],
 ) <n4-end-time-by-mean-distance>
 
+@n4-end-time-by-mean-distance matome, kad prie pirmosios viršūnės (iš kairės) atsiradimo stipriai prisideda konfigūracijos, kurių $overline(d)=1$ ir $overline(d) approx 1.026$. Nėra tokio vienareikšmiškos grupių kombinacijos, kuri lemtų vidurinės viršunės atsiradimą, kaip nutinka pirmuoju atveju. Matome, kad daugiausiai prisideda grupės su $overline(d) approx 1.026, overline(d) approx 1.052$. Trečioji viršūnė atsiranda dėl daugelio grupių, panašią įtaką turi iš grupė, kurios $overline(d) approx 1.052$ ir likusios grupės, kurios nėra detalizuojamos. Taip pat arti šios trukmės yra grupių medianos turinčios mažiau narių ($overline(d) approx 1.088, overline(d) approx 1.114$).
 
+@random-squares-end-time-distribution taip pat matome, kad reakcijos trukmės pasiskirstymai, kurie konstruojami naudojant didesnį $n$ šia savybe beveik nepasižymi (smulkūs artefaktai matomi dešinėse pasiskirstymų uodegose). Tai galėtų lemti faktas, kad pradinių sąlygų variantų skaičius auga eksponentiškai dalelių skaičius atžvilgiu $N = 2^(n ^ 2)$, o su juo ir grupių skaičius, kas reiškia, kad individualiai grupei iškreipti bendrą pasiskirstymą darosi vis sunkiau.
+
+#pagebreak(weak: true)
 
 == Perlino triukšmu grįsta pradinė sąlyga
 
+Ši pradinė salygą pateikiame kaip alternatyvą atsitiktinai išsidėsčiusioms idealioms dalelėms, kuri pasižymi keliomis skirtingomis savybėmis. Šios pradinės sąlygos pagrindas yra Perlino triukšmas -- tolydus pseudoatsitiktinis triukšmas, kuriam sukonstruoti yra apibrėžtas tikslus algoritmas. Ši pradinė sąlyga turi daug daugiau variantų negu prieš tai siūlytas atsitiktinis išsidėstymas su idealiomis dalelėmis, todėl ir reakcijos trukmė gauta naudojant šią pradinę sąlygą yra tolydus pseudoatsitiktinis dydis. 
+
+#figure(
+  image("../assets/diagrams/perlin-construction.png", width: 100%),
+  caption: [
+    Perlino triukšmu grįstos pradinės sąlygos sudarymas, kai $n = 4$. (a) Atsitiktiniai vienetiniai vektoriais gardelės mazguose. (b) Iš jų gautas triukšmas, juoda linija žymi slenkstį, kuris nustatomas pagal $t$ kvantilės parametrą -- $t=0.5$ padalina visas reikšme į dvi grupes (lygias pagal plotą). (c) Gauta pradinė sąlyga: baltos sritys žymi medžiagą $c_1$, pilkos -- $c_2$.
+  ],
+) <perlin-construction>
+
+@perlin-construction vaizduoja pradinės sąlygos generavimo žingsnius. Pirmasis žingsnis yra paruošti $n times n$ gardelę. Reikėtų atkreipti dėmesį, kad ši gardelė yra daug didesnė nei indvidualių diskrečių taškų gardelė, kuri naudojama modeliuoti molinę medžiagų koncentraciją diskrečiuose erdvės taškuose. Ši gardelė yra naudojama sugeneruoti triukšmo reikšmes. Paskutinis žingsnis yra surasti
+
+Algoritmas naudojamas gauti triukšmo reikšmę konkrečiame taške yra pavaizduotas @perlin-cell čia matome
+
+#figure(
+  image("../assets/diagrams/perlin-cell.png", width: 300pt),
+  caption: [
+    Perlino triukšmo reikšmės apskaičiavimas taške $p = (x, y)$. Kvadrato kampai žymi artimiausius gardelės taškus. Poslinkio vektoriai pažymėti $bold(d)_("ij")$, pseudoatsitiktiniai vienetiniai vektoriai pažymėti $bold(v)_"ij"$. Kiekvienas kampas turi priskirtą reikšmę $bold(g)_"ij"$, o konkretaus taško $p$ reikšmė randama interpoliacijos pagalba.
+  ]
+) <perlin-cell>
+
+
+
+Norint gauti vizualizaciją (b) iš @perlin-construction reikia kiekvienam taškui smulkesnėje gardelėje priskirti reikšmę. Ieškodami reikšmės konkrečiam taškui $p = (x, y)$ surasime keturis artimiausius kvadrato taškus ir apskaičiuosime poslinkio vektorius -- kiekvieno iš kvadrato kampų atstumą nuo taško $p$. Turėdami šiuos vektorius galime
+
+, kurios taškuose sugeneruojame atsitiktinį vienetinį vektorių, tuomet 
+
+
+// Perlino triukšmas yra tolydus atsitiktinis laukas, sudaromas keliais žingsniais, kaip pavaizduota @perlin-construction Pirmiausia erdvę padengiame $n times n$ gardele ir kiekvienam jos mazgui priskiriame atsitiktinį vienetinį gradiento vektorių. Tada kiekviename erdvės taške apskaičiuojame keturių artimiausių mazgų gradientų skaliarines sandaugas su vektoriais nuo tų mazgų iki taško ir šias reikšmes interpoliuojame naudodami glodinimo funkciją $f(x) = 6x^5 - 15x^4 + 10x^3$. Gautas laukas gardelės mazguose lygus nuliui, o jo struktūrų dydis apytiksliai atitinka vieną gardelės langelį. Galiausiai triukšmą paverčiame pradine sąlyga parinkdami slenkstį taip, kad dalį $t$ erdvės, kurioje triukšmo reikšmės didžiausios, užimtų medžiaga $c_1$, o likusią dalį -- medžiaga $c_2$.
+
+
+
+Tokią pradinę sąlygą valdo du parametrai: gardelės dydis $n$, nusakantis struktūrų dydį, ir medžiagos $c_1$ užimama erdvės dalis $t$. Jų poveikis pavaizduotas @perlin-parameter-grid
+
+#figure(
+  image("../assets/diagrams/perlin-parameter-grid.png", width: 70%),
+  caption: [
+    Perlino triukšmu grįstos pradinės sąlygos priklausomybė nuo gardelės dydžio $n$ ir medžiagos $c_1$ užimamos erdvės dalies $t$. Kiekvienoje eilutėje naudojamas tas pats triukšmas, skiriasi tik slenkstis. Baltos sritys žymi medžiagą $c_1$, pilkos -- $c_2$.
+  ],
+) <perlin-parameter-grid>
+
+
+#todo[
+  Key details for the text about @perlin-end-time-distribution:
+  - Same study as @random-squares-end-time-distribution, with the Perlin IC: $n times n mu m$ domain, lattice size $n$ (one lattice cell per $1 mu m$ particle), $t = 0.5$, all other parameters unchanged; 1000 trials for each $n in {4, 8, 12, 16}$.
+  - Medians: $35.5$, $26.4$, $24.0$, $22.6$ s for $n = 4, 8, 12, 16$; random squares: $116.6$, $148.2$, $157.3$, $161.3$ s.
+  - Ranges: $n = 4$: $13.9$--$153.6$ s, $n = 8$: $18.5$--$58.2$ s, $n = 12$: $19.1$--$35.6$ s, $n = 16$: $18.5$--$28.4$ s.
+  - Perlin: end time falls and the spread narrows as $n$ grows, opposite to random squares. Only $n = 4$ has a long right tail.
+  - Step check: with $Delta t_"max" = 0.02$ s instead of $0.2$ s, end times differ by at most 0.6% (9 trials), so the short end times are not caused by the step.
+  - Script: `IC=perlin python random_squares_end_time.py`, data in `data/perlin_end_time_k1.csv`.
+]
+
+#figure(
+  image("../assets/diagrams/perlin-end-time-distribution.png", width: 85%),
+  caption: todo-inline[
+    caption: end time distribution of the Perlin IC for each $n$, 1000 trials per $n$; lattice size $n$, $t = 0.5$; marks, parameters, mesh and step as in @random-squares-end-time-distribution.
+  ],
+) <perlin-end-time-distribution>
