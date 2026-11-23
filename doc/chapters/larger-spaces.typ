@@ -132,6 +132,8 @@ Galime numanyti, kad toks išsidėstymas turės stiprų poveikį vidutinei reakc
 
 Analogiško efekto su pradinėmis sąlygomis, kurios lemtų trumpą reakcijos trukmę nėra dėl to, kad ideali pradinė sąlyga jau yra geriausia, kurią galime sukonstruoti. Taip nutinka dėl prieš tai minėto trumpiausio atstumo tarp tolimiausių skirtingų medžiagų taškų -- difuzija yra vienintelė priemonė medžiagai judėti. Norint tuo įsitikinti, galime apskaičiuoti reakcijos trukmę daugybei skirtingų atsitiktinu būdu sudarytų pradinių sąlygų su skirtingais dydžaisi, tokiu būdu pamatytumėme kaip evoliucionuoja reakcijos trukmės pasiskirstymas priklausomai nuo erdvės dydžio $n$. Rezultatai pavaizduoti @random-squares-end-time-distribution
 
+=== Reakcijos trukmės pasiskirstymas
+
 #figure(
   image("../assets/diagrams/random-squares-end-time-distribution.png", width: 85%),
   caption: [ Atsitiktinai išsidėsčiusių idealių dalelių reakcijos trukmės pasiskirstymas skirtingiems dydžiams $n$, kiekvienam dydžiui sumodeliuota po 1000 atsitiktinių konfigūracijų. Viršuje -- branduoliniu tankio įverčiu (_angl. kernel density estimate, KDE_) gautos pasiskirstymo kreivės, apačioje -- kiekvienos konfigūracijos reakcijos trukmė (taškai). Brūkšninės linijos ir juodi brūkšniai žymi medianas. Naudojami modelio parametrai: $D_i = 10^(-2) mu m^2\/s$, $k_1=1.0, k_2=0.5, k_3=0.1, "kur" [k_i] = mu m^3\/("mol" dot s)$, pradinės koncentracijos $c^0_1 = 5$ ir $c^0_2 = 3 "mol"\/mu m^3$. Naudota diskrečios erdvės rezoliucija $20n times 20n$, laiko žingsnis -- geometriškai didėjantis nuo $Delta t_0 = 2 dot 10^(-3)s$ santykiu $r = 1.01$ iki ribos $Delta t_"max" = 0.2s$. Reakcija laikoma pasibaigusia, kai reagentų masė sumažėja iki 10% pradinės masės.],
@@ -268,6 +270,8 @@ $
   - Step check: with $Delta t_"max" = 0.02$ s instead of $0.2$ s, end times differ by at most 0.6% (9 trials), so the short end times are not caused by the step.
   - Script: `IC=perlin python random_squares_end_time.py`, data in `data/perlin_end_time_k1.csv`.
 ]
+
+=== Reakcijos trukmės pasiskirstymas
 
 #figure(
   image("../assets/diagrams/perlin-end-time-distribution.png", width: 85%),
