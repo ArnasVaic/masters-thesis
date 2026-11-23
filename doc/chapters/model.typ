@@ -244,5 +244,5 @@ Verta paminėti, kad pradinėje sąlygoje naudojamos pradinių medžiagų molin�
 $
   c^0_1 = c_(#al-ox) = rho_(#al-ox) / M_(#al-ox) = (3.987 " g cm"^(-3)) / (101.96 " g mol"^(-1)) = 3.91 times 10^(-14) "mol" / (mu"m"^3)\
   c^0_2 = 3/5 c^0_1
-$
+$ <stoichiometric-ratio-derivation>
 

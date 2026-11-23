@@ -229,29 +229,27 @@ Kiekvieną pradinę konfigūraciją galime priskirti prie grupės, kurios $overl
   ],
 ) <perlin-construction>
 
-@perlin-construction vaizduoja pradinės sąlygos generavimo žingsnius. Pirmasis žingsnis yra paruošti $n times n$ gardelę. Reikėtų atkreipti dėmesį, kad ši gardelė yra daug didesnė nei indvidualių diskrečių taškų gardelė, kuri naudojama modeliuoti molinę medžiagų koncentraciją diskrečiuose erdvės taškuose. Ši gardelė yra naudojama sugeneruoti triukšmo reikšmes. Paskutinis žingsnis yra surasti
-
-Algoritmas naudojamas gauti triukšmo reikšmę konkrečiame taške yra pavaizduotas @perlin-cell čia matome
+@perlin-construction vaizduoja pradinės sąlygos generavimo žingsnius. Pirmasis žingsnis yra paruošti $n times n$ gardelę. Reikėtų atkreipti dėmesį, kad ši gardelė yra daug didesnė nei indvidualių diskrečių taškų gardelė, kuri naudojama modeliuoti molinę medžiagų koncentraciją diskrečiuose erdvės taškuose. Ši gardelė yra naudojama sugeneruoti triukšmo reikšmes. Paskutinis žingsnis yra surasti pasirinktą $t$ kvantilę, pagal kurią tuomet triukšmas gali būti padalintas į dvi nesikertančius plotus, kur $100t$% ploto sudaro pirmoji medžiaga (aliuminio oksidas), o $100(1-t)$% antroji medžiaga (itrio oksidas). Triukšmas naudojamas tik sukonstruoti ploto padalijimą, reagentams naudojamos tos pačios pradinės koncentracijos reikšmės iš @stoichiometric-ratio-derivation[lygties], kurioje buvo išvestas stoichiometrinis medžiagų molių santykis.
 
 #figure(
   image("../assets/diagrams/perlin-cell.png", width: 300pt),
   caption: [
-    Perlino triukšmo reikšmės apskaičiavimas taške $p = (x, y)$. Kvadrato kampai žymi artimiausius gardelės taškus. Poslinkio vektoriai pažymėti $bold(d)_("ij")$, pseudoatsitiktiniai vienetiniai vektoriai pažymėti $bold(v)_"ij"$. Kiekvienas kampas turi priskirtą reikšmę $bold(g)_"ij"$, o konkretaus taško $p$ reikšmė randama interpoliacijos pagalba.
+    Įvairių elementų vizualizacija, kurie yra naudojami apskaičiuoti perlino triukšmo reikšmę taške $p=(x,y)$.
   ]
 ) <perlin-cell>
 
 
+Vizualizaciją (b) iš @perlin-construction yra sukurta kiekvienam taškui smulkesnėje gardelėje priskyrus triuškmo reikšmę. Triuško reikšmė konkrečiam taškui $p = (x, y)$ yra apskaičiuojama taip kaip pavaizduota @perlin-cell. Randame keturis artimiausius kvadrato taškus gardelėje, pavyzdyje jie suindeksuoti $(0, 0), (0, 1), (1, 0), (1, 1)$. Apskaičiuosime poslinkio vektorius $bold(d)_"ij"$ -- kiekvieno iš kvadrato kampų poslinkį iki taško $p$. Žingsnyje (a) ,@perlin-construction pavaizduoti pseudoatsitiktiniai vektoriai yra pažymėti $bold(v)_"ij"$. Kiekviename gardelės kampe turime du vektorius $bold(v)$ ir $bold(d)$, kurių taškinė sandauga nulemia kampo reikšmę $bold(g)_"ij"$. Triukšmo reikšmė taške $p$ yra gaunama interpoliuojant tarp reikšmių $bold(g)_"ij"$ pirmiausiai $x$ ašimi, o po $y$ naudojant funkciją $S_2(x)$, kitaip žinomą kaip #raw("smootherstep") funkciją.
 
-Norint gauti vizualizaciją (b) iš @perlin-construction reikia kiekvienam taškui smulkesnėje gardelėje priskirti reikšmę. Ieškodami reikšmės konkrečiam taškui $p = (x, y)$ surasime keturis artimiausius kvadrato taškus ir apskaičiuosime poslinkio vektorius -- kiekvieno iš kvadrato kampų atstumą nuo taško $p$. Turėdami šiuos vektorius galime
+$
+  f(x) = cases(
+    0 ", kai " x < 0,
+    6x^5 - 15x^4+10x^3 ", kai " x in [0, 1], 
+    1 ", kai " x > 1
+  )
+$
 
-, kurios taškuose sugeneruojame atsitiktinį vienetinį vektorių, tuomet 
-
-
-// Perlino triukšmas yra tolydus atsitiktinis laukas, sudaromas keliais žingsniais, kaip pavaizduota @perlin-construction Pirmiausia erdvę padengiame $n times n$ gardele ir kiekvienam jos mazgui priskiriame atsitiktinį vienetinį gradiento vektorių. Tada kiekviename erdvės taške apskaičiuojame keturių artimiausių mazgų gradientų skaliarines sandaugas su vektoriais nuo tų mazgų iki taško ir šias reikšmes interpoliuojame naudodami glodinimo funkciją $f(x) = 6x^5 - 15x^4 + 10x^3$. Gautas laukas gardelės mazguose lygus nuliui, o jo struktūrų dydis apytiksliai atitinka vieną gardelės langelį. Galiausiai triukšmą paverčiame pradine sąlyga parinkdami slenkstį taip, kad dalį $t$ erdvės, kurioje triukšmo reikšmės didžiausios, užimtų medžiaga $c_1$, o likusią dalį -- medžiaga $c_2$.
-
-
-
-Tokią pradinę sąlygą valdo du parametrai: gardelės dydis $n$, nusakantis struktūrų dydį, ir medžiagos $c_1$ užimama erdvės dalis $t$. Jų poveikis pavaizduotas @perlin-parameter-grid
+Ši funkcija ypatinga tuo, kad $S_2(0) = 0, S_2(1) = 1, S'_2(0) = 0, S'_2(1) = 0$.
 
 #figure(
   image("../assets/diagrams/perlin-parameter-grid.png", width: 70%),
