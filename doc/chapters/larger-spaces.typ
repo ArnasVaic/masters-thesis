@@ -241,10 +241,10 @@ Kiekvieną pradinę konfigūraciją galime priskirti prie grupės, kurios $overl
 ) <perlin-cell>
 
 
-Vizualizaciją (b) iš @perlin-construction yra sukurta kiekvienam taškui smulkesnėje gardelėje priskyrus triuškmo reikšmę. Triuško reikšmė konkrečiam taškui $p = (x, y)$ yra apskaičiuojama taip kaip pavaizduota @perlin-cell. Randame keturis artimiausius kvadrato taškus gardelėje, pavyzdyje jie suindeksuoti $(0, 0), (0, 1), (1, 0), (1, 1)$. Apskaičiuosime poslinkio vektorius $bold(d)_"ij"$ -- kiekvieno iš kvadrato kampų poslinkį iki taško $p$. Žingsnyje (a) ,@perlin-construction pavaizduoti pseudoatsitiktiniai vektoriai yra pažymėti $bold(v)_"ij"$. Kiekviename gardelės kampe turime du vektorius $bold(v)$ ir $bold(d)$, kurių taškinė sandauga nulemia kampo reikšmę $bold(g)_"ij"$. Triukšmo reikšmė taške $p$ yra gaunama interpoliuojant tarp reikšmių $bold(g)_"ij"$ pirmiausiai $x$ ašimi, o po $y$ naudojant funkciją $S_2(x)$, kitaip žinomą kaip #raw("smootherstep") funkciją.
+Vizualizaciją (b) iš @perlin-construction yra sukurta kiekvienam taškui smulkesnėje gardelėje priskyrus triuškmo reikšmę. Triuško reikšmė konkrečiam taškui $p = (x, y)$ yra apskaičiuojama taip kaip pavaizduota @perlin-cell Randame keturis artimiausius kvadrato taškus gardelėje, pavyzdyje jie suindeksuoti $(0, 0), (0, 1), (1, 0), (1, 1)$. Apskaičiuosime poslinkio vektorius $bold(d)_"ij"$ -- kiekvieno iš kvadrato kampų poslinkį iki taško $p$. Žingsnyje (a), @perlin-construction pavaizduoti pseudoatsitiktiniai vektoriai yra pažymėti $bold(v)_"ij"$. Kiekviename gardelės kampe turime du vektorius $bold(v)$ ir $bold(d)$, kurių taškinė sandauga nulemia kampo reikšmę $bold(g)_"ij"$. Triukšmo reikšmė taške $p$ yra gaunama interpoliuojant tarp reikšmių $bold(g)_"ij"$ pirmiausiai $x$ ašimi, o po $y$ naudojant funkciją $S_2(x)$, kitaip žinomą kaip #raw("smootherstep") funkciją.
 
 $
-  f(x) = cases(
+  S_2(x) = cases(
     0 ", kai " x < 0,
     6x^5 - 15x^4+10x^3 ", kai " x in [0, 1], 
     1 ", kai " x > 1
@@ -256,26 +256,22 @@ $
 #figure(
   image("../assets/diagrams/perlin-parameter-grid.png", width: 70%),
   caption: [
-    Perlino triukšmu grįstos pradinės sąlygos priklausomybė nuo gardelės dydžio $n$ ir medžiagos $c_1$ užimamos erdvės dalies $t$. Kiekvienoje eilutėje naudojamas tas pats triukšmas, skiriasi tik slenkstis. Baltos sritys žymi medžiagą $c_1$, pilkos -- $c_2$.
+    Perlino triukšmu grįstos pradinės sąlygos priklausomybė nuo gardelės dydžio $n$ ir medžiagos $c_1$ užimamos erdvės dalies $t$. Kiekvienoje eilutėje naudojamas tas pats triukšmas, skiriasi tik slenkstis.
   ],
 ) <perlin-parameter-grid>
 
-
-#todo[
-  Key details for the text about @perlin-end-time-distribution:
-  - Same study as @random-squares-end-time-distribution, with the Perlin IC: $n times n mu m$ domain, lattice size $n$ (one lattice cell per $1 mu m$ particle), $t = 0.5$, all other parameters unchanged; 1000 trials for each $n in {4, 8, 12, 16}$.
-  - Medians: $35.5$, $26.4$, $24.0$, $22.6$ s for $n = 4, 8, 12, 16$; random squares: $116.6$, $148.2$, $157.3$, $161.3$ s.
-  - Ranges: $n = 4$: $13.9$--$153.6$ s, $n = 8$: $18.5$--$58.2$ s, $n = 12$: $19.1$--$35.6$ s, $n = 16$: $18.5$--$28.4$ s.
-  - Perlin: end time falls and the spread narrows as $n$ grows, opposite to random squares. Only $n = 4$ has a long right tail.
-  - Step check: with $Delta t_"max" = 0.02$ s instead of $0.2$ s, end times differ by at most 0.6% (9 trials), so the short end times are not caused by the step.
-  - Script: `IC=perlin python random_squares_end_time.py`, data in `data/perlin_end_time_k1.csv`.
-]
+@perlin-parameter-grid pavaizduota kaip šio tipo pradinė sąlyga gali kisti priklausomai nuo gardelės dydžio, nei slenksčio reikšmės pasirinkimo. Eksperimentuose gardelės dydį galime pasirinkti priklausomai nuo to, kokio dydžio sritį norime modeliuoti, tačiau slenkstinę reikšmę galime rinktis bet kokią, todėl reikia nustatyti kaip tą darysime. Nagrinėdame matematinį modelį kartu apibrėžėme stoichiometrinę pradinę sąlygą -- reagentų molių santykis sistemoje turi būti 5:3 norint, kad medžiagos pilnai sureaguotų. Tai galima būtų modeliuoti skirtingais būdais.
+Galėtume sukonstruoti tokią pradinę sąlygą, kad skirtingų medžiagų molinė kocentraciją būtų vienoda, tačiau pagal užimama plotą, pirmos medžiagos būtų atitinkamai daugiau, tokiu atveju galėtume pasirinkti slenksčio reikšmę $t = 5 / (3 + 5)$. Alternatyva yra naudoti skirtingas koncentracijų reikšmes suteikiant joms tokį pat plotą, šį metodą taikome modeliuodami kitas pradines sąlygas. Kadangi norime gebėti palyginti sprendinius gautus naudojant skirtingas pradines sąlygas šį metodą taikysime ir su šią pradine sąlyga, taigi naudosime $t = 0.5$.
 
 === Reakcijos trukmės pasiskirstymas
 
 #figure(
   image("../assets/diagrams/perlin-end-time-distribution.png", width: 85%),
-  caption: todo-inline[
-    caption: end time distribution of the Perlin IC for each $n$, 1000 trials per $n$; lattice size $n$, $t = 0.5$; marks, parameters, mesh and step as in @random-squares-end-time-distribution.
-  ],
+  caption: 
+    [Reakcijos trukmės pasiskirstymai, kai naudojama perlino triukšmu grįsta pradinė sąlyga su skirtingo dydžio gardelėmis, $n$ žymi gardelės dydį. Kiekvienam dydžiui įgyvendinta 1000 bandymų.],
 ) <perlin-end-time-distribution>
+
+@perlin-end-time-distribution matome panašią vizualizaciją, kurią analizavome su atsitiktinio idealių dalelių išdėstymo pradine sąlyga. Pavyzdyje matome įdomu reiškinį -- @random-squares-end-time-distribution matėme, kad didinant dalelių skaičių reakcijos trukmė didėja vis mažesniais tempais artėdama prie nusistovėjusios reikšmės. Šiuo atveju matome priešingą veikimą, reikšmė taip pat nusistovi, tačiau reakcijos trukmė mažėja. 
+
+
+Taip pat galime pastebėti, kad didinant gardelę, standartinė pasiskirstymo deviacija mažėja. Taip galėtų nutikti dėl to, kad perlino triukšmu grįstoje pradinėje sąlygoje nepalankios reakcijai struktūros turi vis mažesnę galimybę formuotis. Kaip matome @perlin-construction triukšmo reikšmė taškuose, kurie stumpa su gardelės taškais, yra 0. Atidžiai įsižiūrėjus į šitą pavyzdį galime matyti, kad juoda slenksčio linija krinta kaip tik ten kur yra perlino triukšmo reikšmės yra lygiai 0 (balti plotai). Taip yra todėl, kad naudojant kvantilės parametrą $t=0.5$ pradinę sąlygą konstruojantis algoritmas pasirinks tokią slenkstinę reikšmę, kad puse visų reikšmių būtų didesnės už ją. Triukšmo reikšmių intervalas yra simetriškas aplink 0, tai pasirinkta slenkstinė reikšmė bus lygi 0, o tai reiškia, kad slenksčio linija eis per kiekvieną gardelės tašką. Tai paaiškina kodėl

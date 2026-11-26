@@ -109,8 +109,10 @@ Stoichiometrinė matricą lemia modeliuojama cheminė reakcija, dažniausiai tai
 
 == Sprendiklio efektyvumas
 
-- Ką rašysiu?
-- Tridiagonalinis sprendimas
-  - in place
-  - stabilumas
+Šioje archiketūroje yra numatyta daugelis abstrakčių komponentų supančių sprendėją, kurie kontroliuoja kaip jis sprendžią apibūdintą sistemą. Nepaisant to, sprendėjo branduolys išlieka paprastas -- turint sprendinį diskrečiu laiko žingsniu $t$, surasti sprendinį sekančiame žingsyje $t + Delta t$. Norint optimizuoti šį žingsnį buvo pasitelkta keletas gerai žinomų matematinių metodų ir programavimo gerųjų praktikų.
 
+Kaip buvo minėta skaitinio modelio skyriuje, naudojame ADI schemą, todėl turint sprendinį $c^n in RR^(5 times W times H)$ turime rasti tarpinį sprendinį $c^*$ ir tik tuomet galime ieškoti $c^(n+1)$. Pirmame žingsnyje turime išspręsti $H$ lygčių formoje $bold(A) X=B$ -- randame sprendinio $c^*$ eilutes, o tada $W$ lygčių tokioje pat formoje, tačiau čia randame $c^(n+1)$ stulpelius. Bendrai išsprendžiame $W + H$ tridiagonalinių lygčių sistemų. Šiom sistemoms spręsti yra naudojamas Tomo algoritmas.
+
+Svarbu pastebėti, kad visos lygtys pirmąjame žingsnyje naudoja ta pačią matricą #box($bold(I)-mu_(x,m)bold(L)_W$), analogiškai antrame žingsnyje sistemos sprendžiamos naudojant matricą #box($bold(I)-mu_(y,m)bold(L)_H$). Todėl galime taikyti papildomą optimizaciją: atliekame šių matricų LU dekompoziciją. Tai leidžia iš anksto pasiruošti dalį reikšmių Tomo algoritmui ir jas pernaudoti. Tai galime daryti ne tik vieno laiko žingsnio sprendimui, o tol kol nesikeičia matrica $bold(A)$.
+
+Iš programinės pusės, sprendimo metu pagrindiniame cikle nėra vykdomos jokios alokacijos, o ciklai rašomi su labai nuspėjamu indeksavimu, kad kompiliatorius galėtų naudoti kodo vektorizaciją. Atmintyje saugomos dekompozicijos reikšmės yra atvirkščios, kad sistemos sprendimo metu nebūtų naudojamas dalybos operatorius -- dalyba kainuoja žymiai daugiau procesoriaus ciklų nei daugyba.
