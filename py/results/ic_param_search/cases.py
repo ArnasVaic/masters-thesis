@@ -9,7 +9,14 @@
 # yag_utils.optimization.
 #
 # The arrangements are rebuilt from the same seeds as in random_squares_end_time.py, only the
-# concentrations are the physical ones (Al2O3 and 3/5 of it, dimensionless 1 and 0.6).
+# concentrations are the physical ones (Al2O3 and by default 3/5 of it, dimensionless 1 and 0.6).
+#
+# IC_PARAM_SEARCH_RATIO sets the Y2O3 / Al2O3 molar ratio of the mixture, through the Y2O3
+# concentration (the arrangement, and so the area of each reagent, stays the same):
+#   stoichiometric   5:3, both reagents react fully (default)
+#   experiment       the ratio the experimental mass percentages P_TRUE imply (about 5:2.79)
+#   a:b              any other, e.g. 5:2.9
+# Every ratio other than 5:3 keeps its studies apart, in data-<ratio>/ next to data/.
 
 import os
 from pathlib import Path
@@ -24,11 +31,12 @@ import yag_model as yag
 from yag_model import Discretization, ModelParameters, SolutionState
 from yag_utils import initial_conditions as ics
 from yag_utils import particles, physical
-from yag_utils.constants import AL2O3_CONCENTRATION
+from yag_utils.constants import AL2O3_CONCENTRATION, P_TRUE
 from yag_utils.mass import field_masses, total_mass
 from yag_utils.optimization import DEFAULT_SCALES, experiment_config
 from yag_utils.scaling import to_dimensionless
 from yag_utils.paths import repo_root
+from yag_utils.stoichiometry import y2o3_per_al2o3
 
 SIZE = 16
 PARTICLE_SIZE = 1e-6  # m
@@ -36,9 +44,32 @@ PARTICLE_SIZE = 1e-6  # m
 # and checkerboard, Perlin boundaries are only drawn coarser.
 DEFAULT_CELLS_PER_PARTICLE = 20
 
+
+
+def _ratio(value: str) -> tuple[str, float]:
+    """Name (used in the data directory) and Y2O3 / Al2O3 molar ratio of IC_PARAM_SEARCH_RATIO."""
+    match value.strip().lower():
+        case "stoichiometric" | "5:3":
+            return "stoichiometric", 3 / 5
+        case "experiment":
+            return "experiment", y2o3_per_al2o3(P_TRUE)
+        case other:
+            try:
+                al2o3, y2o3 = (float(x) for x in other.split(":"))
+            except ValueError:
+                raise SystemExit(
+                    f"IC_PARAM_SEARCH_RATIO={value!r}: give stoichiometric, experiment or Al2O3:Y2O3 like 5:2.9"
+                ) from None
+            if al2o3 <= 0 or y2o3 <= 0:
+                raise SystemExit(f"IC_PARAM_SEARCH_RATIO={value!r}: both parts must be positive")
+            return f"{al2o3:g}-{y2o3:g}", y2o3 / al2o3
+
+
+RATIO_NAME, Y2O3_PER_AL2O3 = _ratio(os.environ.get("IC_PARAM_SEARCH_RATIO", "stoichiometric"))
+
 SCALES = DEFAULT_SCALES
 C1 = SCALES.dimensionless_concentration(AL2O3_CONCENTRATION)
-C2 = SCALES.dimensionless_concentration(3 / 5 * AL2O3_CONCENTRATION)
+C2 = SCALES.dimensionless_concentration(Y2O3_PER_AL2O3 * AL2O3_CONCENTRATION)
 
 # Search space, log10 of D in m^2/s and of k in m^3/(mol s). Wide on purpose, the limits come
 # from where the solver or the data stop telling anything apart (checked on the 20 cell mesh):
@@ -63,9 +94,13 @@ def at_edge(key: str, value: float) -> bool:
     lo, hi = LOG_D_RANGE if key.startswith("logD") else LOG_K_RANGE
     return value - lo < EDGE_MARGIN or hi - value < EDGE_MARGIN
 
-# Everything the search writes, one directory per case. IC_PARAM_SEARCH_DATA moves it elsewhere,
-# e.g. to a scratch file system of the cluster or a throwaway directory for a test run.
-DATA_DIR = Path(os.environ.get("IC_PARAM_SEARCH_DATA", repo_root() / "py" / "results" / "ic_param_search" / "data"))
+# Everything the search writes, one directory per case, data/ for 5:3 and data-<ratio>/ for any
+# other ratio. IC_PARAM_SEARCH_DATA moves it elsewhere, e.g. to a scratch file system of the
+# cluster or a throwaway directory for a test run (then it is up to you to keep ratios apart).
+_DEFAULT_DATA_DIR = repo_root() / "py" / "results" / "ic_param_search" / (
+    "data" if RATIO_NAME == "stoichiometric" else f"data-{RATIO_NAME}"
+)
+DATA_DIR = Path(os.environ.get("IC_PARAM_SEARCH_DATA", _DEFAULT_DATA_DIR))
 
 
 class Case(NamedTuple):
@@ -145,7 +180,7 @@ def best_params_path(name: str) -> Path:
 
 # Columns of best_params.csv and of the merged fitted_params.csv
 SUMMARY_FIELDS = (
-    ["case", "ic", "seed_trial", "quantile", "cells_per_particle", "n_complete", "n_fail", "best_trial", "loss"]
+    ["case", "ic", "seed_trial", "quantile", "y2o3_per_al2o3", "cells_per_particle", "n_complete", "n_fail", "best_trial", "loss"]
     + [f"logD{i}" for i in range(1, 6)]
     + [f"logk{i}" for i in range(1, 4)]
     + [f"p{i}" for i in range(1, 6)]
@@ -172,6 +207,8 @@ def summary_row(name: str, study: optuna.Study) -> dict | None:
         "ic": case.ic,
         "seed_trial": "" if case.trial is None else case.trial,
         "quantile": case.quantile or "",
+        # Studies from before the ratio was configurable did not store it, they all ran 5:3
+        "y2o3_per_al2o3": study.user_attrs.get("y2o3_per_al2o3", 3 / 5),
         "cells_per_particle": study.user_attrs.get("cells_per_particle", ""),
         "n_complete": len(complete),
         "n_fail": sum(t.state == TrialState.FAIL for t in trials),

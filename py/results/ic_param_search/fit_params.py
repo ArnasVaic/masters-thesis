@@ -4,6 +4,8 @@
 #   python fit_params.py all                          every case, one after another
 #   python fit_params.py --case-index 3               the 4th case, for a SLURM array job
 #   python fit_params.py --list                       print the cases and their progress
+#   IC_PARAM_SEARCH_RATIO=experiment python fit_params.py ...   the experiment's molar ratio
+#                                                     instead of 5:3, see cases.py
 #
 # Every case is its own Optuna study, stored in data/<case>/optuna-journal.log. One process runs
 # the study with --workers threads (all CPUs this job may use by default): the solver releases
@@ -143,7 +145,10 @@ def describe(name: str, cells: int) -> None:
     D_max = 10 ** LOG_D_RANGE[1] / SCALES.D_ref
     dt = SCALES.dimensionless_time(1.0)
     print(f"  initial condition: {case.ic}, seed trial {case.trial}, end time quantile {case.quantile}")
-    print(f"  c1 (Al2O3) = {cases.C1}, c2 (Y2O3) = {cases.C2} dimensionless, c1 takes {100 * c1_part:.1f}% of the area")
+    print(
+        f"  molar ratio Al2O3 : Y2O3 = 5 : {5 * cases.Y2O3_PER_AL2O3:.4f} ({cases.RATIO_NAME}), "
+        f"c1 (Al2O3) = {cases.C1}, c2 (Y2O3) = {cases.C2:.4g} dimensionless, c1 takes {100 * c1_part:.1f}% of the area"
+    )
     print(f"  mesh {disc.nx} x {disc.ny} ({cells} cells per particle), dx = {disc.dx:.4g}, domain {disc.physical_size}")
     print(f"  dt = 1 s ({dt:.4g} dimensionless), 6 h = {int(6 * 3600)} steps, max 1/2 dt D / dx^2 = {0.5 * dt * D_max / disc.dx**2:.3g}")
     print(f"  search: logD in {LOG_D_RANGE}, logk in {LOG_K_RANGE}, loss = mean squared error of mass % vs {P_TRUE.tolist()}")
@@ -184,6 +189,15 @@ def run_case(name: str, n_trials: int, workers: int, cells: int, seed: int) -> N
             f"or move {cases.journal_path(name)} away to start over."
         )
     study.set_user_attr("cells_per_particle", cells)
+
+    # Studies from before the ratio was configurable did not store it, they all ran 5:3
+    stored_ratio = study.user_attrs.get("y2o3_per_al2o3", 3 / 5 if study.trials else None)
+    if stored_ratio is not None and not np.isclose(stored_ratio, cases.Y2O3_PER_AL2O3):
+        sys.exit(
+            f"[{name}] the study was run with Y2O3 / Al2O3 = {stored_ratio:.4f}, not {cases.Y2O3_PER_AL2O3:.4f} "
+            f"(IC_PARAM_SEARCH_RATIO={cases.RATIO_NAME}). Use the same ratio or another data directory."
+        )
+    study.set_user_attr("y2o3_per_al2o3", cases.Y2O3_PER_AL2O3)
 
     if not study.trials:
         # Start from the parameters fitted earlier on the 1 x 1 um checkerboard domain
@@ -252,6 +266,7 @@ def main() -> None:
     print(f"host {socket.gethostname()}, python {platform.python_version()}, optuna {optuna.__version__}")
     print(f"cpus available {available_cpus()} (node has {os.cpu_count()}), workers {args.workers}")
     print(f"slurm job {os.environ.get('SLURM_JOB_ID', '-')}, array task {os.environ.get('SLURM_ARRAY_TASK_ID', '-')}")
+    print(f"ratio {cases.RATIO_NAME} (Y2O3 / Al2O3 = {cases.Y2O3_PER_AL2O3:.4f}), IC_PARAM_SEARCH_RATIO to change")
     print(f"cases {names}, {args.trials} trials each, data in {cases.DATA_DIR}", flush=True)
 
     start = time.time()

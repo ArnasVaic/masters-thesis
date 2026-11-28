@@ -2,6 +2,7 @@
 #
 # Reads the Optuna journals in data/<case>/ (finished or still running) and writes
 # data/fitted_params.csv, one row per case with the best trial so far, then prints it.
+# IC_PARAM_SEARCH_RATIO picks which ratio's data, as in fit_params.py.
 
 import csv
 
@@ -33,7 +34,7 @@ def main() -> None:
         writer = csv.DictWriter(f, fieldnames=cases.SUMMARY_FIELDS)
         writer.writeheader()
         writer.writerows(rows)
-    print(f"{len(rows)} cases written to {path}\n")
+    print(f"ratio {cases.RATIO_NAME} (Y2O3 / Al2O3 = {cases.Y2O3_PER_AL2O3:.4f}), {len(rows)} cases written to {path}\n")
 
     def line(label, loss, log_D, log_k, p):
         print(

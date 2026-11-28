@@ -206,3 +206,11 @@ def test_paths_locate_repository():
 
     assert (repo_root() / "pyproject.toml").is_file()
     assert diagrams_dir().is_dir()
+
+
+def test_y2o3_per_al2o3_from_mass_percent():
+    # Any mix of products of a 5:3 mixture gives back 3/5, whatever the conversion
+    moles = np.array([5.0, 3.0, 0, 0, 0]) - 0.4 * np.array([2.5, 1.5, 0, 0, -1]) - 0.3 * np.array([1, 2, -1, 0, 0])
+    assert stoichiometry.y2o3_per_al2o3(moles * constants.MOLAR_MASSES) == pytest.approx(3 / 5)
+    # Only Al2O3 left over: Y2O3 short of 5:3
+    assert stoichiometry.y2o3_per_al2o3([10, 0, 0, 0, 90]) < 3 / 5

@@ -8,6 +8,12 @@
 #   conda activate yag_model && pip install -e . --no-build-isolation
 #
 # Submit from the repository root:   sbatch script/fit_ic_params_hpc.sh
+# With another molar ratio:          sbatch script/fit_ic_params_hpc.sh experiment
+#                                    sbatch script/fit_ic_params_hpc.sh 5:2.9
+#   stoichiometric (default, 5:3), experiment (the ratio implied by the experiment's mass
+#   percentages, about 5:2.79) or Al2O3:Y2O3. Each ratio other than 5:3 writes to its own
+#   py/results/ic_param_search/data-<ratio>/, so runs of different ratios can go at the same time.
+#   For progress and merging, prefix the commands below with IC_PARAM_SEARCH_RATIO=<same ratio>.
 # Progress:                          tail -f slurm-ic-params-<job>_<task>.out
 #                                    python py/results/ic_param_search/fit_params.py --list
 # Afterwards, merge the results:     python py/results/ic_param_search/collect_params.py
@@ -68,5 +74,9 @@ if ! python -c "import yag_model, yag_utils; print('yag_model', yag_model.__file
   python -m pip list 2>/dev/null | grep -i yag || echo "  none, run pip install -e . --no-build-isolation in this environment"
   exit 1
 fi
+
+# Molar ratio from the first argument, else from the environment, else 5:3
+export IC_PARAM_SEARCH_RATIO="${1:-${IC_PARAM_SEARCH_RATIO:-stoichiometric}}"
+echo "molar ratio $IC_PARAM_SEARCH_RATIO"
 
 python -u py/results/ic_param_search/fit_params.py --case-index "$SLURM_ARRAY_TASK_ID" --trials 1500
